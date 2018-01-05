@@ -1,0 +1,92 @@
+<!-- Use this file to deploy some handlers/chains and services      -->
+<!-- Two ways to do this:                                           -->
+<!--   java org.apache.axis.client.AdminClient deploy.wsdd          -->
+<!--      after the axis server is running                          -->
+<!-- or                                                             -->
+<!--   java org.apache.axis.utils.Admin client|server deploy.wsdd   -->
+<!--      from the same directory that the Axis engine runs         -->
+
+<deployment
+    xmlns="http://xml.apache.org/axis/wsdd/"
+    xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+
+  <!-- Services from ServiceCovoiturageService WSDL service -->
+
+  <service name="ServiceCovoiturage" provider="java:RPC" style="wrapped" use="literal">
+      <parameter name="wsdlTargetNamespace" value="http://services.covoiturage.ests.com"/>
+      <parameter name="wsdlServiceElement" value="ServiceCovoiturageService"/>
+      <parameter name="schemaQualified" value="http://services.covoiturage.ests.com"/>
+      <parameter name="wsdlServicePort" value="ServiceCovoiturage"/>
+      <parameter name="className" value="com.ests.covoiturage.services.ServiceCovoiturageSoapBindingImpl"/>
+      <parameter name="wsdlPortType" value="ServiceCovoiturage"/>
+      <parameter name="typeMappingVersion" value="1.2"/>
+      <operation name="listAllConducteurs" qname="operNS:listAllConducteurs" xmlns:operNS="http://services.covoiturage.ests.com" returnQName="retNS:listAllConducteursReturn" xmlns:retNS="http://services.covoiturage.ests.com" returnType="rtns:Conducteur" xmlns:rtns="http://services.covoiturage.ests.com" soapAction="" >
+      </operation>
+      <operation name="supprimerAnnonce" qname="operNS:supprimerAnnonce" xmlns:operNS="http://services.covoiturage.ests.com" soapAction="" >
+        <parameter qname="pns:numero" xmlns:pns="http://services.covoiturage.ests.com" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="inscrirPassager" qname="operNS:inscrirPassager" xmlns:operNS="http://services.covoiturage.ests.com" soapAction="" >
+        <parameter qname="pns:login" xmlns:pns="http://services.covoiturage.ests.com" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="pns:pwd" xmlns:pns="http://services.covoiturage.ests.com" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="pns:nom" xmlns:pns="http://services.covoiturage.ests.com" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="pns:prenom" xmlns:pns="http://services.covoiturage.ests.com" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="pns:tel" xmlns:pns="http://services.covoiturage.ests.com" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="pns:adresse" xmlns:pns="http://services.covoiturage.ests.com" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="deposerAnnonce" qname="operNS:deposerAnnonce" xmlns:operNS="http://services.covoiturage.ests.com" soapAction="" >
+        <parameter qname="pns:numero" xmlns:pns="http://services.covoiturage.ests.com" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="pns:codecond" xmlns:pns="http://services.covoiturage.ests.com" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="pns:dateDep" xmlns:pns="http://services.covoiturage.ests.com" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="pns:heureDep" xmlns:pns="http://services.covoiturage.ests.com" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="pns:heureArriv" xmlns:pns="http://services.covoiturage.ests.com" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="pns:villeDep" xmlns:pns="http://services.covoiturage.ests.com" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="pns:villeArriv" xmlns:pns="http://services.covoiturage.ests.com" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="listAllAnnonce" qname="operNS:listAllAnnonce" xmlns:operNS="http://services.covoiturage.ests.com" returnQName="retNS:listAllAnnonceReturn" xmlns:retNS="http://services.covoiturage.ests.com" returnType="rtns:Annonce" xmlns:rtns="http://services.covoiturage.ests.com" soapAction="" >
+      </operation>
+      <operation name="listAllPassagers" qname="operNS:listAllPassagers" xmlns:operNS="http://services.covoiturage.ests.com" returnQName="retNS:listAllPassagersReturn" xmlns:retNS="http://services.covoiturage.ests.com" returnType="rtns:Passager" xmlns:rtns="http://services.covoiturage.ests.com" soapAction="" >
+      </operation>
+      <operation name="chercherAnnonceparVilleDepart" qname="operNS:chercherAnnonceparVilleDepart" xmlns:operNS="http://services.covoiturage.ests.com" returnQName="retNS:chercherAnnonceparVilleDepartReturn" xmlns:retNS="http://services.covoiturage.ests.com" returnType="rtns:Annonce" xmlns:rtns="http://services.covoiturage.ests.com" soapAction="" >
+        <parameter qname="pns:villeDep" xmlns:pns="http://services.covoiturage.ests.com" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="inscrirConducteur" qname="operNS:inscrirConducteur" xmlns:operNS="http://services.covoiturage.ests.com" soapAction="" >
+        <parameter qname="pns:code" xmlns:pns="http://services.covoiturage.ests.com" type="tns:int" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="pns:nom" xmlns:pns="http://services.covoiturage.ests.com" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="pns:prenom" xmlns:pns="http://services.covoiturage.ests.com" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="pns:tel" xmlns:pns="http://services.covoiturage.ests.com" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="pns:adresse" xmlns:pns="http://services.covoiturage.ests.com" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="chercherAnnonceparDate" qname="operNS:chercherAnnonceparDate" xmlns:operNS="http://services.covoiturage.ests.com" returnQName="retNS:chercherAnnonceparDateReturn" xmlns:retNS="http://services.covoiturage.ests.com" returnType="rtns:Annonce" xmlns:rtns="http://services.covoiturage.ests.com" soapAction="" >
+        <parameter qname="pns:dateDepart" xmlns:pns="http://services.covoiturage.ests.com" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="chercherAnnonceparVilleArrivee" qname="operNS:chercherAnnonceparVilleArrivee" xmlns:operNS="http://services.covoiturage.ests.com" returnQName="retNS:chercherAnnonceparVilleArriveeReturn" xmlns:retNS="http://services.covoiturage.ests.com" returnType="rtns:Annonce" xmlns:rtns="http://services.covoiturage.ests.com" soapAction="" >
+        <parameter qname="pns:villeArrivee" xmlns:pns="http://services.covoiturage.ests.com" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <parameter name="allowedMethods" value="chercherAnnonceparDate listAllAnnonce deposerAnnonce inscrirConducteur supprimerAnnonce listAllConducteurs listAllPassagers inscrirPassager chercherAnnonceparVilleDepart chercherAnnonceparVilleArrivee"/>
+
+      <typeMapping
+        xmlns:ns="http://services.covoiturage.ests.com"
+        qname="ns:Conducteur"
+        type="java:com.ests.covoiturage.services.Conducteur"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://services.covoiturage.ests.com"
+        qname="ns:Annonce"
+        type="java:com.ests.covoiturage.services.Annonce"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://services.covoiturage.ests.com"
+        qname="ns:Passager"
+        type="java:com.ests.covoiturage.services.Passager"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+  </service>
+</deployment>

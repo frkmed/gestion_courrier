@@ -1,0 +1,8 @@
+eclipse.preferences.version=1
+encoding//src/com/ests/covoiturage/services/Annonce.java=UTF-8
+encoding//src/com/ests/covoiturage/services/Conducteur.java=UTF-8
+encoding//src/com/ests/covoiturage/services/Passager.java=UTF-8
+encoding//src/com/ests/covoiturage/services/ServiceCovoiturage.java=UTF-8
+encoding//src/com/ests/covoiturage/services/ServiceCovoiturageService.java=UTF-8
+encoding//src/com/ests/covoiturage/services/ServiceCovoiturageServiceLocator.java=UTF-8
+encoding//src/com/ests/covoiturage/services/ServiceCovoiturageSoapBindingStub.java=UTF-8
