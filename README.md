@@ -1,8 +1,6 @@
-
-
-
 # gestion_courrier
+Application de gestion de courrier en PHP (Silex/Angular)
 
-Application de gestion de courrier en PHP CodeIgniter !
 
 by Mehdi
+by mha
