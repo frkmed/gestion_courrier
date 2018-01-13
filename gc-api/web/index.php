@@ -9,8 +9,6 @@ require __DIR__.'/../config/prod.php';
 require __DIR__.'/../src/controllers.php';
 
 
-$app['debug']=true;
-
 
 $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
     'dbs.options' => array (
