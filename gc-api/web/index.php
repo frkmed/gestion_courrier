@@ -23,28 +23,22 @@ $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
     ),
 ));
 
-$app->post('/hello/{name}/{param2}', function ($name, $param2) use ($app) {
-    return 'Hello '.$app->escape($name);
-});
-
-
-$app->get('/user/{login}/{mot_pass}', function ($login,$mot_pass) use ($app) {
+$app->get('/auth/{login}/{mot_pass}', function ($login,$mot_pass) use ($app) {
     $sql = "SELECT * FROM utilisateur WHERE login = ?";
-    $user = $app['db']->fetchAssoc($sql,array() $login));
-    if(!$user['mot_pass']==$mot_pass){
-    	$reponse = array('operation' =>'ko','erreur'=> 'Mot de passe incorrect');    		
-    }
-    return  $app->json($reponse);
+    $user = $app['db']->fetchAssoc($sql,array($login));
+	
     if(!$user){
-    	$reponse = array('operation' => 'ko' , 'erreur' => 'Utilisateur n existe pas');
+    	$reponse = array('operation' => 'ko' , 'erreur' => "Utilisateur "  . $login .  "n'existe pas !");
+		return $app->json($reponse);
+    } else if($user['mot_passe']!=$mot_pass){
+    	$reponse = array('operation' =>'ko','erreur'=> 'Mot de passe incorrect !');    		
+		return  $app->json($reponse);
     }
-    return $app->json($reponse);
-    if(trim($login)=='' OR trim($mot_pass=='')){
-    	$reponse = array('operation' => 'ko' , 'erreur' => 'Veuillez remplir les champs');
-    }
-    return $app->json($reponse);
-}
- 
+	
+    $reponse = array('operation' =>'ok');
+	return  $app->json($reponse);
 });
+
+
 
 $app->run();
