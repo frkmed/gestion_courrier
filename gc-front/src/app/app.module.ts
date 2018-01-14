@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterModule, Routes } from '@angular/router';
 
 import { routing } from './app.routing';
 import { AuthGuard } from './_guards/index';
@@ -9,7 +10,8 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './component/login/index';
 import { HomeComponent } from './component/home/index';
 import { MenuComponent } from './component/menu/index';
-import { UserService } from './_services/index';
+import { UserService, AuthenticationService } from './_services/index';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 
 
@@ -23,11 +25,13 @@ import { UserService } from './_services/index';
   imports: [
     BrowserModule,
     FormsModule,
+    HttpClientModule,
     routing
   ],
   providers: [
     AuthGuard,
-    UserService
+    UserService,
+    AuthenticationService
   ],
   bootstrap: [AppComponent]
 })
