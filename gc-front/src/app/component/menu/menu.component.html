@@ -1,0 +1,18 @@
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg bg-primary fixed-top ">
+    <div class="container">
+        <div class="navbar-translate">
+            <a class="navbar-brand" href="#" rel="tooltip">
+                IAM COURRIER
+            </a>
+        </div>
+        <div class="collapse navbar-collapse justify-content-end" id="navigation" data-nav-image="../assets/img/blurred-image-1.jpg">
+            <ul class="navbar-nav">
+                <li class="nav-item"  *ngFor="let m of menu">
+                    <a class="nav-link"  routerLink="/{{m.link}}">{{m.title}}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+  </nav>
+  <!-- End Navbar -->

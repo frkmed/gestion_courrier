@@ -3,24 +3,32 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { routing } from './app.routing';
+import { AuthGuard } from './_guards/index';
 
 import { AppComponent } from './app.component';
-import { LoginComponent } from './component/login/login.component';
-import { HomeComponent } from './component/home/home.component';
+import { LoginComponent } from './component/login/index';
+import { HomeComponent } from './component/home/index';
+import { MenuComponent } from './component/menu/index';
+import { UserService } from './_services/index';
+
 
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    HomeComponent,
+    MenuComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     routing
   ],
-  providers: [],
+  providers: [
+    AuthGuard,
+    UserService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
