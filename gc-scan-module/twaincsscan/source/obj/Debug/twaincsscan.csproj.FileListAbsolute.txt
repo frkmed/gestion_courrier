@@ -1,0 +1,14 @@
+C:\xampp\htdocs\gestion_courrier\gc-scan-module\twaincsscan\source\bin\AnyCPU\Debug\twaincsscan.exe.config
+C:\xampp\htdocs\gestion_courrier\gc-scan-module\twaincsscan\source\bin\AnyCPU\Debug\twaincsscan.exe
+C:\xampp\htdocs\gestion_courrier\gc-scan-module\twaincsscan\source\bin\AnyCPU\Debug\twaincsscan.pdb
+C:\xampp\htdocs\gestion_courrier\gc-scan-module\twaincsscan\source\bin\AnyCPU\Debug\TWAIN.dll
+C:\xampp\htdocs\gestion_courrier\gc-scan-module\twaincsscan\source\bin\AnyCPU\Debug\TWAINCSToolkit.dll
+C:\xampp\htdocs\gestion_courrier\gc-scan-module\twaincsscan\source\bin\AnyCPU\Debug\TWAIN.pdb
+C:\xampp\htdocs\gestion_courrier\gc-scan-module\twaincsscan\source\bin\AnyCPU\Debug\TWAINCSToolkit.pdb
+C:\xampp\htdocs\gestion_courrier\gc-scan-module\twaincsscan\source\obj\Debug\TWAINCSScan.FormScan.resources
+C:\xampp\htdocs\gestion_courrier\gc-scan-module\twaincsscan\source\obj\Debug\TWAINCSScan.FormSelect.resources
+C:\xampp\htdocs\gestion_courrier\gc-scan-module\twaincsscan\source\obj\Debug\TWAINCSScan.Properties.Resources.resources
+C:\xampp\htdocs\gestion_courrier\gc-scan-module\twaincsscan\source\obj\Debug\twaincsscan.csproj.GenerateResource.Cache
+C:\xampp\htdocs\gestion_courrier\gc-scan-module\twaincsscan\source\obj\Debug\twaincsscan.exe
+C:\xampp\htdocs\gestion_courrier\gc-scan-module\twaincsscan\source\obj\Debug\twaincsscan.pdb
+C:\xampp\htdocs\gestion_courrier\gc-scan-module\twaincsscan\source\obj\Debug\twaincsscan.csprojResolveAssemblyReference.cache

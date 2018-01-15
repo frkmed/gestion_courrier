@@ -1,0 +1,4 @@
+C:\xampp\htdocs\gestion_courrier\gc-scan-module\Fleck\bin\Debug\Fleck.dll
+C:\xampp\htdocs\gestion_courrier\gc-scan-module\Fleck\bin\Debug\Fleck.pdb
+C:\xampp\htdocs\gestion_courrier\gc-scan-module\Fleck\obj\Debug\Fleck.dll
+C:\xampp\htdocs\gestion_courrier\gc-scan-module\Fleck\obj\Debug\Fleck.pdb

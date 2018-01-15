@@ -15,3 +15,11 @@ application/logs/*
 !application/logs/index.html
 !application/logs/.htaccess
 /vendor/
+
+gc-scan-module/.vs/*
+gc-scan-module/obj/*
+Fleck/bin/*
+Fleck/obj/*
+twaincsscan/source/bin/*
+twaincsscan/source/obj/*
+
