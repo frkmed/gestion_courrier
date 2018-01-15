@@ -20,6 +20,10 @@ export class MenuComponent implements OnInit {
       'link': ['user'],
     },
     {
+      'title': 'ENREGISTREMENT',
+      'link': ['enregistrement'],
+    },
+    {
       'title': 'ADMINISTRATION',
       'link': ['admin'],
     },

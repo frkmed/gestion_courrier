@@ -12,6 +12,7 @@ import { HomeComponent } from './component/home/index';
 import { MenuComponent } from './component/menu/index';
 import { UserService, AuthenticationService } from './_services/index';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { EnregistrementComponent } from './component/enregistrement/enregistrement.component';
 
 
 
@@ -20,7 +21,8 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
     AppComponent,
     LoginComponent,
     MenuComponent,
-    HomeComponent
+    HomeComponent,
+    EnregistrementComponent
   ],
   imports: [
     BrowserModule,
