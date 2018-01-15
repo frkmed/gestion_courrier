@@ -9,11 +9,11 @@ export class MenuComponent implements OnInit {
   private menu: any = [
     {
       'title': 'COURRIER',
-      'link': ['courrier'],
+      'link': ['login'],
     },
     {
       'title': 'ARCHIVAGE',
-      'link': ['/archive'],
+      'link': ['home'],
     },
     {
       'title': 'UTILISATEURS',
