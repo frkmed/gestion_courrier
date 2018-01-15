@@ -10,16 +10,10 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './component/login/index';
 import { HomeComponent } from './component/home/index';
 import { MenuComponent } from './component/menu/index';
-<<<<<<< HEAD
 import { UserService, AuthenticationService } from './_services/index';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { EnregistrementComponent } from './component/enregistrement/enregistrement.component';
-=======
-import { UserService, AuthenticationService } from './_services/index'; 
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'; 
 import { UsersComponent } from './component/users/index';
-
->>>>>>> b4e59236d27577cdb10e31193d3814e468413dc7
 
 
 
@@ -29,11 +23,8 @@ import { UsersComponent } from './component/users/index';
     LoginComponent,
     MenuComponent,
     HomeComponent,
-<<<<<<< HEAD
-    EnregistrementComponent
-=======
+    EnregistrementComponent,
     UsersComponent
->>>>>>> b4e59236d27577cdb10e31193d3814e468413dc7
   ],
   imports: [
     BrowserModule,
