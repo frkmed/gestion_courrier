@@ -10,6 +10,8 @@ import { LoginComponent } from './component/login/index';
 import { HomeComponent } from './component/home/index';
 import { MenuComponent } from './component/menu/index';
 import { UserService } from './_services/index';
+import { UsersComponent } from './component/users/index';
+
 
 
 
@@ -18,7 +20,8 @@ import { UserService } from './_services/index';
     AppComponent,
     LoginComponent,
     MenuComponent,
-    HomeComponent
+    HomeComponent,
+    UsersComponent
   ],
   imports: [
     BrowserModule,

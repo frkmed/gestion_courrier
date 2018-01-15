@@ -17,7 +17,7 @@ export class MenuComponent implements OnInit {
     },
     {
       'title': 'UTILISATEURS',
-      'link': ['user'],
+      'link': ['users'],
     },
     {
       'title': 'ADMINISTRATION',
