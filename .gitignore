@@ -18,8 +18,8 @@ application/logs/*
 
 gc-scan-module/.vs/*
 gc-scan-module/obj/*
-Fleck/bin/*
-Fleck/obj/*
-twaincsscan/source/bin/*
-twaincsscan/source/obj/*
+gc-scan-module/Fleck/bin/*
+gc-scan-module/Fleck/obj/*
+gc-scan-module/twaincsscan/source/bin/*
+gc-scan-module/twaincsscan/source/obj/*
 
