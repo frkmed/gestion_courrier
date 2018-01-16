@@ -1,0 +1,13 @@
+.form-control{
+    border-radius: 0px;
+    background: #FFFFFF !important;
+    color: #C2C2C2 !important;
+}
+
+.content-center{
+    max-width: 33% !important;
+   left:93% !important;
+}
+.login-page .card-login .input-group:last-child {
+    margin-bottom: 20px;
+}
