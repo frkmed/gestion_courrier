@@ -14,6 +14,8 @@ import { UserService, AuthenticationService } from './_services/index';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { EnregistrementComponent } from './component/enregistrement/enregistrement.component';
 import { UsersComponent } from './component/users/index';
+import { RechercheCourrierComponent } from './component/recherche-courrier/recherche-courrier.component';
+
 
 
 
@@ -24,7 +26,8 @@ import { UsersComponent } from './component/users/index';
     MenuComponent,
     HomeComponent,
     EnregistrementComponent,
-    UsersComponent
+    UsersComponent,
+    RechercheCourrierComponent
   ],
   imports: [
     BrowserModule,

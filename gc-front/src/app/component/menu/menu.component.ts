@@ -24,6 +24,10 @@ export class MenuComponent implements OnInit {
       'link': ['enregistrement'],
     },
     {
+      'title': 'RECHERCHE',
+      'link': ['recherche'],
+    },
+    {
       'title': 'ADMINISTRATION',
       'link': ['admin'],
     },
