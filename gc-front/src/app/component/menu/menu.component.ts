@@ -8,16 +8,16 @@ import { Component, OnInit } from '@angular/core';
 export class MenuComponent implements OnInit {
   private menu: any = [
     {
-      'title': 'COURRIER',
+      'title': 'LOGIN',
       'link': ['login'],
     },
     {
-      'title': 'ARCHIVAGE',
-      'link': ['home'],
+      'title': 'COURRIER',
+      'link': ['courrier'],
     },
     {
-      'title': 'UTILISATEURS',
-      'link': ['users'],
+      'title': 'ARCHIVAGE',
+      'link': ['archive'],
     },
     {
       'title': 'ENREGISTREMENT',
@@ -30,6 +30,10 @@ export class MenuComponent implements OnInit {
     {
       'title': 'ADMINISTRATION',
       'link': ['admin'],
+    },
+    {
+      'title': 'UTILISATEURS',
+      'link': ['users'],
     },
     {
       'title': 'STATISTIQUES',
