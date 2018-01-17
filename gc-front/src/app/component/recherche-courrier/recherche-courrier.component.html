@@ -1,7 +1,16 @@
+<style type='text/css'>
+    </style>
+
 <div class="wrapper">
     <div class="section">
         <div class="container">
             <h3 class="title">RECHERCHE COURRIER </h3>
+            <div class="recherche_p">
+                    <form action="/search" id="searchthis" method="get">
+                    <input id="search" name="q" type="text" placeholder="Rechercher" />
+                    <input id="search-btn" type="submit" value="Rechercher" />
+                    </form>
+                    </div>
             <div class="row">
                 <div class="col-md-12">
                   
@@ -10,15 +19,23 @@
                             <td>ID</td>
                             <td>TYPE</td>
                             <td>NATURE</td>
+                            <td>Date d'arrivée</td>
+                            <td>Correspondant</td>
+                            <td>Objet</td>
+                            <td>Destination</td>
                         </tr>
                         <tr *ngFor="let d of data" >
                             <td>{{d.id}}</td>
                             <td>{{d.type}}</td>
                             <td>{{d.categorie}}</td>
+                            <td>{{d.date}}</td>
+                            <td>{{d.correspondant}}</td>
+                            <td>{{d.objet}}</td>
+                            <td>{{d.destination}}</td>
                         </tr>
                     </table>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</div> 
