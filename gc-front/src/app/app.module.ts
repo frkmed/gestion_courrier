@@ -12,9 +12,13 @@ import { HomeComponent } from './component/home/index';
 import { MenuComponent } from './component/menu/index';
 import { UserService, AuthenticationService } from './_services/index';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { EnregistrementComponent } from './component/enregistrement/enregistrement.component';
+import { EnregistrementComponent } from './component/enregistrement/index';
 import { UsersComponent } from './component/users/index';
-import { RechercheCourrierComponent } from './component/recherche-courrier/recherche-courrier.component';
+import { ArchiveComponent } from './component/archive/index';
+import { CourrierComponent } from './component/courrier/index';
+import { AdministrationComponent } from './component/administration/index';
+import { StatistiquesComponent } from './component/statistiques/index';
+import { RechercheCourrierComponent } from './component/recherche-courrier/index';
 
 
 
@@ -26,8 +30,12 @@ import { RechercheCourrierComponent } from './component/recherche-courrier/reche
     MenuComponent,
     HomeComponent,
     EnregistrementComponent,
+    RechercheCourrierComponent,
     UsersComponent,
-    RechercheCourrierComponent
+    ArchiveComponent,
+    CourrierComponent,
+    AdministrationComponent,
+    StatistiquesComponent
   ],
   imports: [
     BrowserModule,
