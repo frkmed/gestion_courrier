@@ -3,18 +3,18 @@ tr{
    
 }
 .recherche_p {
-    background-color: #E8B960;   /* Couleur de fond */
-    border-style: solid;   /* Style de la bordure  */
-    border-width: 1px;   /* Epaisseur de la bordure  */
-    border-color: #E8B960;   /* Couleur de la bordure  */
-    padding: 5px 10px 5px 10px;   /* Espace entre les bords et le contenu : haut droite bas gauche  */
-    width: 98.5%;   /* Permet d'ajuster la largeur du bouton à 100% */
-    box-sizing: border-box;   /* Important */
-    font-family: PT sans;   /* Police du texte */
-    font-size: 13px;   /* Taille de la police du texte */
-    font-weight: normal;   /* Graisse du texte : normal = normal ; bold = gras */
-    letter-spacing: 2px;   /* Espacement des caractères */
-    margin: 10px 0 0 0;   /* Espace autour du bouton : haut droite bas gauche  */
-    text-transform: uppercase;   /* Transforme le texte en majuscules */
-    color: #ffffff;   /* Couleur du texte */
+    background-color: #E8B960;   
+    border-style: solid;   
+    border-width: 1px;   
+    border-color: #E8B960;   
+    padding: 5px 10px 5px 10px;  
+    width: 98.5%;  
+    box-sizing: border-box;   
+    font-family: PT sans;   
+    font-size: 13px;   
+    font-weight: normal;   
+    letter-spacing: 2px;   
+    margin: 10px 0 0 0;  
+    text-transform: uppercase;   
+    color: #ffffff;  
 }
