@@ -10,7 +10,7 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './component/login/index';
 import { HomeComponent } from './component/home/index';
 import { MenuComponent } from './component/menu/index';
-import { UserService, AuthenticationService } from './_services/index';
+import { UserService, AuthenticationService, AlertService } from './_services/index';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { EnregistrementComponent } from './component/enregistrement/index';
 import { UsersComponent } from './component/users/index';
@@ -20,9 +20,12 @@ import { CourrierComponent } from './component/courrier/index';
 import { AdministrationComponent } from './component/administration/index';
 import { StatistiquesComponent } from './component/statistiques/index';
 import { RechercheCourrierComponent } from './component/recherche-courrier/index';
+
 import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatTableModule, MatButtonModule, MatPaginatorModule, MatFormFieldModule, MatInputModule} from '@angular/material';
 import {MatDialogModule} from '@angular/material/dialog'; 
+import { JwtInterceptor, fakeBackendProvider } from './_helpers/index';
+import { AlertComponent } from './_directives/index';
 
 @NgModule({
   declarations: [
@@ -37,7 +40,8 @@ import {MatDialogModule} from '@angular/material/dialog';
     CourrierComponent,
     AdministrationComponent,
     StatistiquesComponent,
-    AddUserDialog
+    AddUserDialog,
+    AlertComponent
   ],
   imports: [
     BrowserModule,
@@ -54,8 +58,17 @@ import {MatDialogModule} from '@angular/material/dialog';
   ],
   providers: [
     AuthGuard,
-    UserService,
-    AuthenticationService
+        AlertService,
+        AuthenticationService,
+        UserService,
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: JwtInterceptor,
+            multi: true
+        },
+
+        // provider used to create fake backend
+        fakeBackendProvider
   ],
   entryComponents : [
     AddUserDialog
