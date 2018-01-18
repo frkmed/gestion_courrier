@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Output, Input } from '@angular/core/src/metadata/directives';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-menu',
@@ -7,12 +7,9 @@ import { Output, Input } from '@angular/core/src/metadata/directives';
   styleUrls: ['./menu.component.css']
 })
 export class MenuComponent implements OnInit {
-
+  @Output() messageEvent = new EventEmitter<String>();
+  message: String = 'MENU COMPONENT';
   menu: any = [
-    /*{
-      'title': 'LOGIN',
-      'link': '/login',
-    },*/
     {
       'title': 'COURRIER',
       'link': '/courrier',
@@ -44,14 +41,23 @@ export class MenuComponent implements OnInit {
   ];
   selectedMenu: any;
 
-  constructor() { }
+  constructor(private router: Router) {
+
+  }
 
   ngOnInit() {
+    var u = this.menu.filter(
+      book => book.link === this.router.url);
+    if (u.length == 0) {
+      this.sendMessage("ACCUEIL");
+    } else {
+      this.sendMessage(u[0].title);
+    }
+
   }
 
-  onClickMe(mm) {
-    console.log(mm.title);
-    this.selectedMenu = mm.title;
-  }
 
+  sendMessage(title) {
+    this.messageEvent.emit(title?title:'ACCUEIL');
+  }
 }
