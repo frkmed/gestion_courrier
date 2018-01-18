@@ -61,6 +61,42 @@ ALTER TABLE `utilisateur`
 --
 ALTER TABLE `utilisateur`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  
+  
+  
+--
+-- Structure de la table `entite`
+--
+
+CREATE TABLE `entite` (
+  `id` int(11) NOT NULL,
+  `id_parent` int(11) DEFAULT NULL,
+  `type` varchar(50) COLLATE utf8_bin NOT NULL,
+  `nom` varchar(50) COLLATE utf8_bin NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Index pour les tables déchargées
+--
+
+--
+-- Index pour la table `entite`
+--
+ALTER TABLE `entite`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT pour les tables déchargées
+--
+
+--
+-- AUTO_INCREMENT pour la table `entite`
+--
+ALTER TABLE `entite`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;  
+  
+  
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
