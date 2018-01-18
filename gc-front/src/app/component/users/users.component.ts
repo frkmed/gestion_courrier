@@ -55,12 +55,6 @@ export class UsersComponent implements OnInit {
     dialogRef1.afterClosed().subscribe(result => {
       console.log('The dialog 1 was closed');
     });
-    
-    let dialogRef2 = this.dialog.open(AddUserDialog, { data: { title: 'Second Dialog' } });
-  
-    dialogRef2.afterClosed().subscribe(result => {
-      console.log('The dialog 1 was closed');
-    });
   }
 
 }

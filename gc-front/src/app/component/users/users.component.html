@@ -9,7 +9,7 @@
             </div>
             <div class="row">
                 <div class="col-md-12 text-left">
-                    <button mat-button>Ajouter un nouveau utilisateur</button>
+                    <button mat-button (click)="openDialog()">Ajouter un nouveau utilisateur</button>
                 </div>
             </div>
             <div class="row">
@@ -23,7 +23,9 @@
                         <mat-table [dataSource]="dataSource">
                             <ng-container matColumnDef="login">
                                 <mat-header-cell *matHeaderCellDef>Nom d'utilisateur</mat-header-cell>
-                                <mat-cell *matCellDef="let user">{{user.login}}</mat-cell>
+                                <mat-cell *matCellDef="let user">
+                                    <button mat-button (click)="openDialog()">{{user.login}}</button>
+                                </mat-cell>
                             </ng-container>
                             <ng-container matColumnDef="nom">
                                 <mat-header-cell *matHeaderCellDef>Nom</mat-header-cell>
@@ -49,19 +51,6 @@
                     </div>
                 </div>
             </div>
-            <ol>
-                    <li>
-                      <mat-form-field>
-                        <input matInput [(ngModel)]="name" placeholder="What's your name?">
-                      </mat-form-field>
-                    </li>
-                    <li>
-                      <button mat-raised-button (click)="openDialog()">Pick one</button>
-                    </li>
-                    <li *ngIf="animal">
-                      You chose: <i>{{animal}}</i>
-                    </li>
-                  </ol>
         </div>
     </div>
 </div>
