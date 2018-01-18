@@ -1,230 +1,256 @@
-<div class="login-page sidebar-collapse">
-  <div class="page-header" filter-color="orange">
-      <div class="page-header-image" style="background-image:url(../assets/img/login.jpg)"></div>
-      <div class="container">
-          <div class="col-md-12">
-            <H3> + Enregistrer Un courrier</H3>
+<div class="wrapper">
+  <div class="section">
+    <div class="container">
+      <h3 class="title">Enregistrer Un courrier </h3>
+      <div class="row">
         <div class="recherche">
-                   <input type="text" placeholder="RECHERCHER" class="form-control" />
-               </div>
-           </div>
-           <div class="form-group" align="left">
-              <label class="col-md-4 control-label"></label>
-              <div class="col-md-4">
-                <button type="submit" class="btn btn-warning" > + Enregistré Un Courrier <span class="glyphicon glyphicon-send"></span></button>
-              </div>
-            </div>
+          <input type="text" placeholder="RECHERCHER" class="form-control" />
+        </div>
+      </div>
+      <div class="form-group" align="left">
+        <label class="col-md-4 control-label"></label>
+        <div class="col-md-4">
+          <button type="submit" class="btn btn-warning"> + Enregistré Un Courrier
+            <span class="glyphicon glyphicon-send"></span>
+          </button>
+        </div>
+      </div>
 
-            <div class="form-group" align="right">
-              <div id="col">
-                <label>Fichier (tous formats | max. 1 Mo) : 
-                  <input type="file" name="nom" /> </label>
-              </div>
-            </div>
+      <div class="form-group" align="right">
+        <div id="col">
+          <label>Fichier (tous formats | max. 1 Mo) :
+            <input type="file" name="nom" /> </label>
+        </div>
+      </div>
 
-           <div class="content" align="center">
-              <form class="F" action=" " method="post"  id="contact_form">
-                  <fieldset>
-                    <div class="row">
-                  <div class="form-group col-md-6" >
-                    <label class="control-label">Nom et Prenom</label>  
-                    <div class="inputGroupContainer">
-                    <div class="input-group">
-                    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                    <input  name="first_name" placeholder="Tapez votre Nom complet" class="form-control"  type="text">
-                      </div>
-                    </div>
-                  </div>
-                  
-                         <div class="form-group col-md-6">
-                    <label class="control-label">Address E-Mail</label>  
-                      <div class="inputGroupContainer">
-                      <div class="input-group">
-                          <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
-                    <input name="email" placeholder="email@address.ma" class="form-control"  type="text">
-                      </div>
-                    </div>
+      <div class="content" align="center">
+        <form class="F" action=" " method="post" id="contact_form">
+          <fieldset>
+            <div class="row">
+              <div class="form-group col-md-6">
+                <label class="control-label">Nom et Prenom</label>
+                <div class="inputGroupContainer">
+                  <div class="input-group">
+                    <span class="input-group-addon">
+                      <i class="glyphicon glyphicon-user"></i>
+                    </span>
+                    <input name="first_name" placeholder="Tapez votre Nom complet" class="form-control" type="text">
                   </div>
                 </div>
-                  
-                  
-                         
-                  <div class="form-group">
-                    <label class="col-md-4 control-label">Numero de Telephone</label>  
-                      <div class="col-md-4 inputGroupContainer">
-                      <div class="input-group">
-                          <span class="input-group-addon"><i class="glyphicon glyphicon-earphone"></i></span>
-                    <input name="phone" placeholder="(+212)06********" class="form-control" type="text">
-                      </div>
-                    </div>
-                  </div>
-                  
-                        
-                  <div class="form-group">
-                    <label class="col-md-4 control-label">Address</label>  
-                      <div class="col-md-4 inputGroupContainer">
-                      <div class="input-group">
-                          <span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span>
-                    <input name="address" placeholder="Address" class="form-control" type="text">
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <!-- Text input-->
-                   
-                  <div class="form-group">
-                    <label class="col-md-4 control-label">Ville de résidence</label>  
-                      <div class="col-md-4 inputGroupContainer">
-                      <div class="input-group">
-                          <span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span>
-                    <input name="city" placeholder="Ville" class="form-control"  type="text">
-                      </div>
-                    </div>
-                  </div>
-                     
-                  <div class="form-group"> 
-                    <label class="col-md-4 control-label">ville depuis le courrier est envoyé</label>
-                      <div class="col-md-4 selectContainer">
-                      <div class="input-group">
-                          <span class="input-group-addon"><i class="glyphicon glyphicon-list"></i></span>
-                      <select name="state" class="form-control selectpicker" >
-                        <option value=" " >Veuillez Selectionné la Ville</option>
-                        <option>Rabat</option>
-                        <option>Casablanca</option>
-                        <option >Marrakech</option>
-                        <option >Agadir</option>
-                        <option >Tetouan</option>
-                        <option >Fes</option>
-                        <option >Tanger</option>
-                        <option >Taounat</option>
-                      </select>
-                    </div>
-                  </div>
-                  </div>
-                  
-                  
-                  <div class="form-group">
-                    <label class="col-md-4 control-label">Tappez un Code d'enregistrement d'envoi</label>  
-                      <div class="col-md-4 inputGroupContainer">
-                      <div class="input-group">
-                          <span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span>
-                    <input name="zip" placeholder="Zip Code" class="form-control"  type="text">
-                      </div>
-                  </div>
-                  </div>
-                  <!-- radio checks -->
-                   <div class="form-group">
-                    <label class="col-md-4 control-label">Liée a un Document ?</label>
-                    <div class="col-md-4">
-                     <div class="radio">
-                     <label>
-                     <input type="radio" name="hosting" value="yes" /> Oui
-                      </label>
-                      </div>
-                      <div class="radio">
-                      <label>
-                      <input type="radio" name="hosting" value="no" /> Non
-                      </label>
-                      </div>
-                      </div>
-                    </div>
-                  
-                  <!-- Text area -->
-                  
-                  <div class="form-group2"> 
-                    <label class="col-md-4 control-label">Categorie</label>
-                      <div class="col-md-4 selectContainer">
-                      <div class="input-group">
-                          <span class="input-group-addon"><i class="glyphicon glyphicon-list"></i></span>
-                      <select name="state" class="form-control selectpicker" >
-                        <option value=" " >Veuillez Selectionné la Ville</option>
-                        <option>Courrier Arrivé</option>
-                        <option>Courrier Départ</option>
-                        <option >Courrier Interne</option>
-                      </select>
-                    </div>
-                  </div>
-                  </div>
-                  
-                  <!-- Text area -->
-                  
-                  <div class="form-group3"> 
-                    <label class="col-md-4 control-label">Type de Courrier</label>
-                      <div class="col-md-4 selectContainer">
-                      <div class="input-group">
-                          <span class="input-group-addon"><i class="glyphicon glyphicon-list"></i></span>
-                      <select name="state" class="form-control selectpicker" >
-                        <option value=" " >Veuillez le Type du courrier</option>
-                        <option>Demande de service</option>
-                        <option>convocation</option>
-                        <option >Invitation</option>
-                       <option >Rapport ou compte rendu </option>
-                        <option >offre commerciale</option>
-                      </select>
-                    </div>
-                  </div>
-                  </div>
-                  
-                  <!-- Text area -->
+              </div>
 
-                  <form>
-                      <div>
-                        <label for="bday">Veuillez saisir la date d'envoi du courrier :</label>
-                        <input type="date" id="bday" name="bday">
-                      </div>
-                    </form>
-                  <!-- Text area -->
-                  <form>
-                      <div>
-                        <label for="bday">Veuillez saisir la date d'Arrivé du courrier :</label>
-                        <input type="date" id="bday1" name="bday1">
-                      </div>
-                    </form>
-                  <!-- Text area -->
-                  
-                  <div class="form-group3"> 
-                    <label class="col-md-4 control-label">Priorité</label>
-                      <div class="col-md-4 selectContainer">
-                      <div class="input-group">
-                          <span class="input-group-addon"><i class="glyphicon glyphicon-list"></i></span>
-                      <select name="state" class="form-control selectpicker" >
-                        <option value=" " >tapez la priorité demandé</option>
-                        <option>Urgente</option>
-                        <option>Trés urgente</option>
-                        <option >Normale</option>
-                      </select>
-                    </div>
+              <div class="form-group col-md-6">
+                <label class="control-label">Address E-Mail</label>
+                <div class="inputGroupContainer">
+                  <div class="input-group">
+                    <span class="input-group-addon">
+                      <i class="glyphicon glyphicon-envelope"></i>
+                    </span>
+                    <input name="email" placeholder="email@address.ma" class="form-control" type="text">
                   </div>
-                  </div>
-                  
-                  <!-- Text area -->
-                    
-                  <div class="form-group">
-                    <label class="col-md-4 control-label">Description</label>
-                      <div class="col-md-4 inputGroupContainer">
-                      <div class="input-group">
-                          <span class="input-group-addon"><i class="glyphicon glyphicon-pencil"></i></span>
-                            <textarea class="form-control" name="comment" placeholder="Project Description"></textarea>
-                    </div>
-                    </div>
-                  </div>
-                  
-                  <!-- Success message -->
-                  <div class="alert alert-success" role="alert" id="success_message"><i class="glyphicon glyphicon-thumbs-up"></i> Votre demande sera traité une fois que vous allez taper sur enregistré </div>
-                  
-                  <!-- Button -->
-                  <div class="form-group">
-                    <label class="col-md-4 control-label"></label>
-                    <div class="col-md-4">
-                      <button type="submit" class="btn btn-warning" >Enregistré <span class="glyphicon glyphicon-send"></span></button>
-                    </div>
-                  </div>
-                  
-                  </fieldset>
-                  </form>
+                </div>
+              </div>
+            </div>
 
-           </div>
 
-          </div>
+
+            <div class="form-group">
+              <label class="col-md-4 control-label">Numero de Telephone</label>
+              <div class="col-md-4 inputGroupContainer">
+                <div class="input-group">
+                  <span class="input-group-addon">
+                    <i class="glyphicon glyphicon-earphone"></i>
+                  </span>
+                  <input name="phone" placeholder="(+212)06********" class="form-control" type="text">
+                </div>
+              </div>
+            </div>
+
+
+            <div class="form-group">
+              <label class="col-md-4 control-label">Address</label>
+              <div class="col-md-4 inputGroupContainer">
+                <div class="input-group">
+                  <span class="input-group-addon">
+                    <i class="glyphicon glyphicon-home"></i>
+                  </span>
+                  <input name="address" placeholder="Address" class="form-control" type="text">
+                </div>
+              </div>
+            </div>
+
+            <!-- Text input-->
+
+            <div class="form-group">
+              <label class="col-md-4 control-label">Ville de résidence</label>
+              <div class="col-md-4 inputGroupContainer">
+                <div class="input-group">
+                  <span class="input-group-addon">
+                    <i class="glyphicon glyphicon-home"></i>
+                  </span>
+                  <input name="city" placeholder="Ville" class="form-control" type="text">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-md-4 control-label">ville depuis le courrier est envoyé</label>
+              <div class="col-md-4 selectContainer">
+                <div class="input-group">
+                  <span class="input-group-addon">
+                    <i class="glyphicon glyphicon-list"></i>
+                  </span>
+                  <select name="state" class="form-control selectpicker">
+                    <option value=" ">Veuillez Selectionné la Ville</option>
+                    <option>Rabat</option>
+                    <option>Casablanca</option>
+                    <option>Marrakech</option>
+                    <option>Agadir</option>
+                    <option>Tetouan</option>
+                    <option>Fes</option>
+                    <option>Tanger</option>
+                    <option>Taounat</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="form-group">
+              <label class="col-md-4 control-label">Tappez un Code d'enregistrement d'envoi</label>
+              <div class="col-md-4 inputGroupContainer">
+                <div class="input-group">
+                  <span class="input-group-addon">
+                    <i class="glyphicon glyphicon-home"></i>
+                  </span>
+                  <input name="zip" placeholder="Zip Code" class="form-control" type="text">
+                </div>
+              </div>
+            </div>
+            <!-- radio checks -->
+            <div class="form-group">
+              <label class="col-md-4 control-label">Liée a un Document ?</label>
+              <div class="col-md-4">
+                <div class="radio">
+                  <label>
+                    <input type="radio" name="hosting" value="yes" /> Oui
+                  </label>
+                </div>
+                <div class="radio">
+                  <label>
+                    <input type="radio" name="hosting" value="no" /> Non
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Text area -->
+
+            <div class="form-group2">
+              <label class="col-md-4 control-label">Categorie</label>
+              <div class="col-md-4 selectContainer">
+                <div class="input-group">
+                  <span class="input-group-addon">
+                    <i class="glyphicon glyphicon-list"></i>
+                  </span>
+                  <select name="state" class="form-control selectpicker">
+                    <option value=" ">Veuillez Selectionné la Ville</option>
+                    <option>Courrier Arrivé</option>
+                    <option>Courrier Départ</option>
+                    <option>Courrier Interne</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Text area -->
+
+            <div class="form-group3">
+              <label class="col-md-4 control-label">Type de Courrier</label>
+              <div class="col-md-4 selectContainer">
+                <div class="input-group">
+                  <span class="input-group-addon">
+                    <i class="glyphicon glyphicon-list"></i>
+                  </span>
+                  <select name="state" class="form-control selectpicker">
+                    <option value=" ">Veuillez le Type du courrier</option>
+                    <option>Demande de service</option>
+                    <option>convocation</option>
+                    <option>Invitation</option>
+                    <option>Rapport ou compte rendu </option>
+                    <option>offre commerciale</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Text area -->
+
+            <form>
+              <div>
+                <label for="bday">Veuillez saisir la date d'envoi du courrier :</label>
+                <input type="date" id="bday" name="bday">
+              </div>
+            </form>
+            <!-- Text area -->
+            <form>
+              <div>
+                <label for="bday">Veuillez saisir la date d'Arrivé du courrier :</label>
+                <input type="date" id="bday1" name="bday1">
+              </div>
+            </form>
+            <!-- Text area -->
+
+            <div class="form-group3">
+              <label class="col-md-4 control-label">Priorité</label>
+              <div class="col-md-4 selectContainer">
+                <div class="input-group">
+                  <span class="input-group-addon">
+                    <i class="glyphicon glyphicon-list"></i>
+                  </span>
+                  <select name="state" class="form-control selectpicker">
+                    <option value=" ">tapez la priorité demandé</option>
+                    <option>Urgente</option>
+                    <option>Trés urgente</option>
+                    <option>Normale</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Text area -->
+
+            <div class="form-group">
+              <label class="col-md-4 control-label">Description</label>
+              <div class="col-md-4 inputGroupContainer">
+                <div class="input-group">
+                  <span class="input-group-addon">
+                    <i class="glyphicon glyphicon-pencil"></i>
+                  </span>
+                  <textarea class="form-control" name="comment" placeholder="Project Description"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- Success message -->
+            <div class="alert alert-success" role="alert" id="success_message">
+              <i class="glyphicon glyphicon-thumbs-up"></i> Votre demande sera traité une fois que vous allez taper sur enregistré </div>
+
+            <!-- Button -->
+            <div class="form-group">
+              <label class="col-md-4 control-label"></label>
+              <div class="col-md-4">
+                <button type="submit" class="btn btn-warning">Enregistré
+                  <span class="glyphicon glyphicon-send"></span>
+                </button>
+              </div>
+            </div>
+
+          </fieldset>
+        </form>
+
       </div>
+
+    </div>
   </div>
+</div>

@@ -1,33 +1,51 @@
 import { Component, OnInit } from '@angular/core';
-import { User } from '../../_models/index';
+import { Router, ActivatedRoute } from '@angular/router';
 
-import { AuthenticationService } from '../../_services/index';
-import { Router } from '@angular/router';
+import { AlertService, AuthenticationService } from '../../_services/index';
+import { User } from '../../_models/index';
 
 @Component({
   selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  templateUrl: 'login.component.html'
 })
+
 export class LoginComponent implements OnInit {
+  model: any = {};
   user: User = new User();
+  loading = false;
   returnUrl: string;
-  constructor(private route: Router, private authenticationService: AuthenticationService) { }
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private authenticationService: AuthenticationService,
+    private alertService: AlertService) {
+  }
 
   ngOnInit() {
     // reset login status
     this.authenticationService.logout();
-
+    /*this.user.id = 2;
+    this.user.firstName = 'admin';
+    this.user.lastName = 'admin';
+    this.user.username = 'admin';
+    this.user.password = 'admin';
+    localStorage.setItem('currentUser', JSON.stringify(this.user));
+*/
     // get return url from route parameters or default to '/'
-   // this.returnUrl = this.route.
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
-  seConnecter() {
-    if (this.user.username === 'user' && this.user.password === '1234') {
-      localStorage.setItem('currentUser', 'user');
-    } else {
-      console.log('NOT CONNECTED');
-    }
+  login() {
+    this.loading = true;
+    this.authenticationService.login(this.model.username, this.model.password)
+      .subscribe(
+      data => {
+        this.router.navigate([this.returnUrl]);
+      },
+      error => {
+        this.alertService.error(error);
+        this.loading = false;
+      });
   }
-
 }

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Input } from '@angular/core/src/metadata/directives';
 
 @Component({
   selector: 'app-home',
@@ -7,6 +8,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
+// @Input()
+
+
+  title: String = 'SSSSS';
   constructor() { }
 
   ngOnInit() {
