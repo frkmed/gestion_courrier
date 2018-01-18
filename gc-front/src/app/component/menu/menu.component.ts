@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Output, Input } from '@angular/core/src/metadata/directives';
 
 @Component({
   selector: 'app-menu',
@@ -6,43 +7,51 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./menu.component.css']
 })
 export class MenuComponent implements OnInit {
-  private menu: any = [
-    {
+
+  menu: any = [
+    /*{
       'title': 'LOGIN',
-      'link': ['login'],
-    },
+      'link': '/login',
+    },*/
     {
       'title': 'COURRIER',
-      'link': ['courrier'],
+      'link': '/courrier',
     },
     {
       'title': 'ARCHIVAGE',
-      'link': ['archive'],
+      'link': '/archive',
     },
     {
       'title': 'ENREGISTREMENT',
-      'link': ['enregistrement'],
+      'link': '/enregistrement',
     },
     {
       'title': 'RECHERCHE',
-      'link': ['recherche'],
+      'link': '/recherche',
     },
     {
       'title': 'ADMINISTRATION',
-      'link': ['admin'],
+      'link': '/admin',
     },
     {
       'title': 'UTILISATEURS',
-      'link': ['users'],
+      'link': '/users',
     },
     {
       'title': 'STATISTIQUES',
-      'link': ['stat'],
+      'link': '/stat',
     },
   ];
+  selectedMenu: any;
+
   constructor() { }
 
   ngOnInit() {
+  }
+
+  onClickMe(mm) {
+    console.log(mm.title);
+    this.selectedMenu = mm.title;
   }
 
 }

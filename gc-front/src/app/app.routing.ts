@@ -11,18 +11,36 @@ import { CourrierComponent } from './component/courrier/index';
 import { AdministrationComponent } from './component/administration/index';
 import { StatistiquesComponent } from './component/statistiques/index';
 
-const appRoutes: Routes = [
-    { path: '', redirectTo: 'home', pathMatch: 'full' },
+const routers: Routes = [
+    { path: '', component: HomeComponent, canActivate: [AuthGuard] },
     { path: 'login', component: LoginComponent },
-    { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
-    { path: 'courrier', component: CourrierComponent },
-    { path: 'enregistrement', component: EnregistrementComponent },
-    { path: 'recherche', component: RechercheCourrierComponent },
-    { path: 'archive', component: ArchiveComponent },
-    { path: 'users', component: UsersComponent },
-    { path: 'admin', component: AdministrationComponent },
-    { path: 'stat', component: StatistiquesComponent },
+    { path: 'courrier', component: CourrierComponent, canActivate: [AuthGuard], outlet: 'loged', },
+    { path: 'enregistrement', component: EnregistrementComponent, canActivate: [AuthGuard], outlet: 'loged' },
+    { path: 'recherche', component: RechercheCourrierComponent, canActivate: [AuthGuard], outlet: 'loged' },
+    { path: 'archive', component: ArchiveComponent, canActivate: [AuthGuard], outlet: 'loged' },
+    { path: 'users', component: UsersComponent, canActivate: [AuthGuard], outlet: 'loged' },
+    { path: 'admin', component: AdministrationComponent, canActivate: [AuthGuard], outlet: 'loged' },
+    { path: 'stat', component: StatistiquesComponent, canActivate: [AuthGuard], outlet: 'loged' },
 
+    // otherwise redirect to home
+    { path: '**', redirectTo: '' }
+];
+
+
+const appRoutes: Routes = [
+    {
+        path: '', component: HomeComponent, canActivate: [AuthGuard],
+        children: [
+            { path: 'courrier', component: CourrierComponent, canActivate: [AuthGuard] },
+            { path: 'enregistrement', component: EnregistrementComponent, canActivate: [AuthGuard] },
+            { path: 'recherche', component: RechercheCourrierComponent, canActivate: [AuthGuard] },
+            { path: 'archive', component: ArchiveComponent, canActivate: [AuthGuard] },
+            { path: 'users', component: UsersComponent, canActivate: [AuthGuard] },
+            { path: 'admin', component: AdministrationComponent, canActivate: [AuthGuard] },
+            { path: 'stat', component: StatistiquesComponent, canActivate: [AuthGuard] },
+        ],
+    },
+    { path: 'login', component: LoginComponent },
     { path: '**', redirectTo: '' }
 ];
 
