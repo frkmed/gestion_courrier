@@ -1,5 +1,5 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Input } from '@angular/core/src/metadata/directives';
 
 @Component({
   selector: 'app-home',
@@ -8,14 +8,11 @@ import { Router } from '@angular/router';
 })
 export class HomeComponent implements OnInit {
 
-  message = "HOME COMPONENT";
+// @Input()
 
-  constructor(router: Router) { 
-  }
 
-  receiveMessage($event) {
-    this.message=$event;
-  }
+  title: String = 'SSSSS';
+  constructor() { }
 
   ngOnInit() {
   }

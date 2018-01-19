@@ -25,13 +25,13 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     // reset login status
     this.authenticationService.logout();
-    this.user.id = 1;
+    /*this.user.id = 2;
     this.user.firstName = 'admin';
     this.user.lastName = 'admin';
     this.user.username = 'admin';
     this.user.password = 'admin';
-    localStorage.setItem('users', JSON.stringify([this.user]));
-
+    localStorage.setItem('currentUser', JSON.stringify(this.user));
+*/
     // get return url from route parameters or default to '/'
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
