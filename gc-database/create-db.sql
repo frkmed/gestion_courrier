@@ -93,9 +93,87 @@ ALTER TABLE `entite`
 -- AUTO_INCREMENT pour la table `entite`
 --
 ALTER TABLE `entite`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;  
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;1  
   
-  
+--
+-- Structure de la table `courrier`
+--
+
+CREATE TABLE `courrier` (
+  `id` int(11) NOT NULL,
+  `titre` varchar(200) COLLATE utf8_bin NOT NULL,
+  `description` text COLLATE utf8_bin NOT NULL,
+  `datecourrier` date NOT NULL,
+  `type` varchar(50) COLLATE utf8_bin NOT NULL,
+  `nature` varchar(50) COLLATE utf8_bin NOT NULL,
+  `adresse` varchar(255) COLLATE utf8_bin NOT NULL,
+  `reference` varchar(100) COLLATE utf8_bin NOT NULL,
+  `id_entite` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `diffusion`
+--
+
+CREATE TABLE `diffusion` (
+  `id_courrier` int(11) NOT NULL,
+  `id_entite` int(11) NOT NULL,
+  `responsable` varchar(100) COLLATE utf8_bin NOT NULL,
+  `action` varchar(50) COLLATE utf8_bin NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `document`
+--
+
+CREATE TABLE `document` (
+  `id` int(11) NOT NULL,
+  `id_courrier` int(11) NOT NULL,
+  `fichier` varchar(255) COLLATE utf8_bin NOT NULL,
+  `contenu` text COLLATE utf8_bin NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Index pour les tables déchargées
+--
+
+--
+-- Index pour la table `courrier`
+--
+ALTER TABLE `courrier`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `diffusion`
+--
+ALTER TABLE `diffusion`
+  ADD PRIMARY KEY (`id_courrier`,`id_entite`);
+
+--
+-- Index pour la table `document`
+--
+ALTER TABLE `document`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT pour les tables déchargées
+--
+
+--
+-- AUTO_INCREMENT pour la table `courrier`
+--
+ALTER TABLE `courrier`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `document`
+--
+ALTER TABLE `document`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 COMMIT;
 
