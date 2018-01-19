@@ -13,7 +13,7 @@ import { MenuComponent } from './component/menu/index';
 import { UserService, AuthenticationService, AlertService } from './_services/index';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { EnregistrementComponent } from './component/enregistrement/index';
-import { UsersComponent } from './component/users/index';
+import { UsersComponent, UpdateUserDialog } from './component/users/index';
 import { AddUserDialog } from './component/users/users.component';
 import { ArchiveComponent } from './component/archive/index';
 import { CourrierComponent } from './component/courrier/index';
@@ -22,7 +22,7 @@ import { StatistiquesComponent } from './component/statistiques/index';
 import { RechercheCourrierComponent } from './component/recherche-courrier/index';
 
 import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {MatTableModule, MatButtonModule, MatPaginatorModule, MatFormFieldModule, MatInputModule} from '@angular/material';
+import {MatTableModule, MatButtonModule, MatPaginatorModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatOptionModule} from '@angular/material';
 import {MatDialogModule} from '@angular/material/dialog'; 
 import { JwtInterceptor, fakeBackendProvider } from './_helpers/index';
 import { AlertComponent } from './_directives/index';
@@ -41,6 +41,7 @@ import { AlertComponent } from './_directives/index';
     AdministrationComponent,
     StatistiquesComponent,
     AddUserDialog,
+    UpdateUserDialog,
     AlertComponent
   ],
   imports: [
@@ -54,7 +55,9 @@ import { AlertComponent } from './_directives/index';
     MatPaginatorModule,
     MatFormFieldModule,
     MatInputModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSelectModule,
+    MatOptionModule
   ],
   providers: [
     AuthGuard,
@@ -71,7 +74,8 @@ import { AlertComponent } from './_directives/index';
         fakeBackendProvider
   ],
   entryComponents : [
-    AddUserDialog
+    AddUserDialog,
+    UpdateUserDialog
   ],
   bootstrap: [AppComponent]
 })

@@ -40,12 +40,13 @@ $app->get('/auth/{login}/{mot_pass}', function ($login,$mot_pass) use ($app) {
 });
 
 $app->get('/listUsers/', function() use ($app){
-    $sql = "SELECT login,nom,prenom,email,mot_passe,role,entite FROM utilisateur u,entite e WHERE e.id_entite = u.id_entite";
+    $sql = "SELECT id,login,nom,prenom,email,mot_passe,role,entite FROM utilisateur u,entite e WHERE e.id_entite = u.id_entite";
     $users = $app['db']->fetchAssoc($sql,array());
 
     $response = [];
     foreach ($users as $utilisateur) {
         $response[] = [
+			'id' => $users['id'],
             'login' => $users['login'],
             'nom' => $users['nom'],
             'prenom' => $users['prenom'],
@@ -58,24 +59,22 @@ $app->get('/listUsers/', function() use ($app){
     return $app->json($response);
     });
 
-$app->post('/addUser/{login}/{nom}/{prenom}/{email}/{mot_passe}/{role}/{entite}', function($login,$nom,$prenom,$email,$mot_passe,$role,$entite) use ($app){
+$app->post('/addUser/{login}/{nom}/{prenom}/{email}/{mot_passe}/{role}/{id_entite}', function($login,$nom,$prenom,$email,$mot_passe,$role,$id_entite) use ($app){
 
-    $sql = "INSERT INTO utilisateur('login','nom','prenom','email','mot_passe','role','entite') VALUES (:login,:nom,:prenom,:email,:mot_passe,:role,:entite)";
+    $sql = "INSERT INTO utilisateur('login','nom','prenom','email','mot_passe','role','id_entite') VALUES (:login,:nom,:prenom,:email,:mot_passe,:role,:id_entite)";
         $query = $app['db']->prepare($sql);
+
         $query->bindValue(':login', $login, PDO::PARAM_STR);
         $query->bindValue(':nom', $nom, PDO::PARAM_STR);
         $query->bindValue(':prenom', $prenom, PDO::PARAM_STR);
         $query->bindValue(':email', $email, PDO::PARAM_STR);
         $query->bindValue(':mot_passe', $mot_passe, PDO::PARAM_STR);
         $query->bindValue(':role', $role, PDO::PARAM_STR);
-        $query->bindValue(':entite', $entite, PDO::PARAM_STR);
+        $query->bindValue(':id_entite', $id_entite, PDO::PARAM_STR);
         $query->execute();
-        return true;
-    /*$user = new Utilisateur();
-    $data = json_decode($request->getContent());
-    $todo= $app['db']->insert('utilisateur',array('content' => $data->title));
-    return new Response(json_encode($data),200,array('Content-Type' => 'application/json'));
-    */
+        
+        $reponse = array('operation' =>'Ajout reussi');
+		return  $app->json($reponse);    
 });
 
 $app->put('/updateUser/{id}/{login}/{nom}/{prenom}/{email}/{mot_passe}/{role}/{entite}', function($id,$login,$nom,$prenom,$email,$mot_passe,$role,$entite) use ($app){
@@ -90,14 +89,33 @@ $app->put('/updateUser/{id}/{login}/{nom}/{prenom}/{email}/{mot_passe}/{role}/{e
         $query->bindValue(':role', $role, PDO::PARAM_STR);
         $query->bindValue(':entite', $entite, PDO::PARAM_STR);
         $query->execute();
-        return true;
+       $reponse = array('operation' =>'Modification reussite');
+		return  $app->json($reponse);
+});
+$app->delete('/deleteUser/{id}', function($id) use ($app){
+    $sql = "DELETE FROM utilisateur WHERE id = $id AND login != 'admin'";
+    $query = $app['db']->prepare($sql);
+   
+        $query->execute();
+        $reponse = array('operation' =>'ok');
+   
+    return  $app->json($reponse);
 });
 
-$app->delete('/deleteUser/{id', function($id) use ($app){
-    $sql = "DELETE FROM utilisateur WHERE id = $id";
-    $query = $app['db']->prepare($sql);
-    $query->execute();
-    return true;
-});
+
+
+$app->get('/listEntites/', function() use ($app){
+    $sql = "SELECT nom FROM entite";
+    $entites = $app['db']->fetchAssoc($sql,array());
+
+    $response = [];
+    foreach ($entites as $entite) {
+        $response[] = [            
+            'nom' => $entits['nom']            
+        ];
+    }
+    return $app->json($response);
+    });
 
 $app->run();
+

@@ -7,4 +7,7 @@
     role: string;
     username : string;
     password: string;
+    idEentite: string;
+    nomEntite: string; 
+       
 }
