@@ -21,9 +21,9 @@ import { AdministrationComponent } from './component/administration/index';
 import { StatistiquesComponent } from './component/statistiques/index';
 import { RechercheCourrierComponent } from './component/recherche-courrier/index';
 
-import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {MatTableModule, MatButtonModule, MatPaginatorModule, MatFormFieldModule, MatInputModule} from '@angular/material';
-import {MatDialogModule} from '@angular/material/dialog'; 
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatTableModule, MatButtonModule, MatPaginatorModule, MatFormFieldModule, MatInputModule } from '@angular/material';
+import { MatDialogModule } from '@angular/material/dialog';
 import { JwtInterceptor, fakeBackendProvider } from './_helpers/index';
 import { AlertComponent } from './_directives/index';
 
@@ -58,19 +58,19 @@ import { AlertComponent } from './_directives/index';
   ],
   providers: [
     AuthGuard,
-        AlertService,
-        AuthenticationService,
-        UserService,
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: JwtInterceptor,
-            multi: true
-        },
+    AlertService,
+    AuthenticationService,
+    UserService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: JwtInterceptor,
+      multi: true
+    },
 
-        // provider used to create fake backend
-        fakeBackendProvider
+    // provider used to create fake backend
+    fakeBackendProvider
   ],
-  entryComponents : [
+  entryComponents: [
     AddUserDialog
   ],
   bootstrap: [AppComponent]
