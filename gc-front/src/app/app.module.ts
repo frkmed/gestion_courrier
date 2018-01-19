@@ -61,17 +61,17 @@ import { AlertComponent } from './_directives/index';
   ],
   providers: [
     AuthGuard,
-        AlertService,
-        AuthenticationService,
-        UserService,
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: JwtInterceptor,
-            multi: true
-        },
+    AlertService,
+    AuthenticationService,
+    UserService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: JwtInterceptor,
+      multi: true
+    },
 
-        // provider used to create fake backend
-        fakeBackendProvider
+    // provider used to create fake backend
+    fakeBackendProvider
   ],
   entryComponents : [
     AddUserDialog,
