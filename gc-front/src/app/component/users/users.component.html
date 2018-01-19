@@ -1,2 +1,56 @@
-<p>Gestion Utilisateurs</p>
-<p>BIENVENUE</p>
+<div class="login-page sidebar-collapse">
+    <div class="page-header" filter-color="orange">
+        <div class="page-header-image" style="background-image:url(../assets/img/login.jpg)"></div>
+        <div class="container" style="margin-top: 53px;">
+            <div class="row">
+                <div class="col-md-12 text-left">
+                    <h3>Gestion des utilisateurs</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 text-left">
+                    <button mat-button (click)="openDialog()">Ajouter un nouveau utilisateur</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div>
+                            <div class="example-header">
+                                    <mat-form-field>
+                                        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+                                    </mat-form-field>
+                                </div>
+                        <mat-table [dataSource]="dataSource">
+                            <ng-container matColumnDef="login">
+                                <mat-header-cell *matHeaderCellDef>Nom d'utilisateur</mat-header-cell>
+                                <mat-cell *matCellDef="let user">
+                                    <button mat-button (click)="openDialog()">{{user.login}}</button>
+                                </mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="nom">
+                                <mat-header-cell *matHeaderCellDef>Nom</mat-header-cell>
+                                <mat-cell *matCellDef="let user">{{user.nom}}</mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="prenom">
+                                <mat-header-cell *matHeaderCellDef>Prénom</mat-header-cell>
+                                <mat-cell *matCellDef="let user">{{user.prenom}}</mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="email">
+                                    <mat-header-cell *matHeaderCellDef>E-mail</mat-header-cell>
+                                    <mat-cell *matCellDef="let user">{{user.email}}</mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="role">
+                                <mat-header-cell *matHeaderCellDef>Rôle</mat-header-cell>
+                                <mat-cell *matCellDef="let user">{{user.role}}</mat-cell>
+                            </ng-container>
+                            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                            <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+                        </mat-table>
+                        <mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]">
+                        </mat-paginator>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,35 @@
+[
+  {
+    "id": 1,
+    "login": "admin",    
+    "nom": "admin",
+    "prenom": "admin",
+    "email": "admin@gmail.com",
+    "role": "Administrateur"
+  },
+  {
+    "id": 2,
+    "login": "youssef",    
+    "nom": "Youssef",
+    "prenom": "Ahmed",
+    "email": "youssef@gmail.com",
+    "role": "Agent Secrétairiat"
+  },
+  {
+    "id": 1,
+    "login": "youssef",    
+    "nom": "Youssef",
+    "prenom": "Ahmed",
+    "email": "youssef@gmail.com",
+    "role": "Agent Secrétairiat"
+  },
+  {
+    "id": 1,
+    "login": "youssef",    
+    "nom": "Youssef",
+    "prenom": "Ahmed",
+    "email": "youssef@gmail.com",
+    "role": "Responsable"
+  }
+  
+]
