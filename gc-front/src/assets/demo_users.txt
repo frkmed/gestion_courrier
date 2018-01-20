@@ -5,7 +5,9 @@
     "nom": "admin",
     "prenom": "admin",
     "email": "admin@gmail.com",
-    "role": "Administrateur"
+    "role": "Administrateur",
+    "id_entite": "1",
+     "nomEntite": "Informatique"
   },
   {
     "id": 2,
@@ -13,7 +15,9 @@
     "nom": "Youssef",
     "prenom": "Ahmed",
     "email": "youssef@gmail.com",
-    "role": "Agent Secrétairiat"
+    "role": "Agent Secrétairiat",
+    "id_entite": "1",
+    "nomEntite": "Informatique"
   },
   {
     "id": 1,
@@ -21,7 +25,9 @@
     "nom": "Youssef",
     "prenom": "Ahmed",
     "email": "youssef@gmail.com",
-    "role": "Agent Secrétairiat"
+    "role": "Agent Secrétairiat",
+    "id_entite": "2",
+    "nomEntite": "RH"
   },
   {
     "id": 1,
@@ -29,7 +35,9 @@
     "nom": "Youssef",
     "prenom": "Ahmed",
     "email": "youssef@gmail.com",
-    "role": "Responsable"
+    "role": "Responsable",
+    "id_entite": "2",
+     "nomEntite": "RH"
   }
   
 ]

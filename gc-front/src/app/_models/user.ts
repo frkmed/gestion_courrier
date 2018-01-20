@@ -7,7 +7,8 @@
     role: string;
     username : string;
     password: string;
-    idEentite: string;
+    id_entite: string;
     nomEntite: string; 
        
+    
 }
