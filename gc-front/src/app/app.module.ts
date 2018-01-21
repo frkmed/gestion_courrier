@@ -84,7 +84,6 @@ import { AlertComponent } from './_directives/index';
     AddCourrierDialog,
     UpdateCourrierDialog,
     UpdateUserDialog
-    
   ],
   bootstrap: [AppComponent]
 })
