@@ -122,25 +122,6 @@ $app->post('/saveDocument', function () use ($app) {
 });
 
 /**
- * @api {get} /listUsers Affichage de la liste des utilisateurs
- * @apiName listUsers
- * @apiGroup Utilisateurs
- * 
- * @apiSuccess {String[]} des Objets Utilisateurs dans un Objet JSON
- * @apiSuccessExample Success-Response:
- *     {
- *       {id: 1, login: "login", nom: "nom", prenom: "prenom", email: "email", mot_passe: "mot_passe", role: "role", entite: "entite"};
- *     }
- @apiError ListeUtilisateursVide 'La liste des utilisateurs est vide' si aucun utilisateur n a été insérer.
- * @apiErrorExample Error-Response:
- *     {
- *			"operation": "ko",
- *			"erreur": "ListeUtilisateursVide",
- *			"message": "La liste des utilisateurs est vide. Aucun utilisateur n'est ajouté !"
- *     }
- */
-
-/**
  * @api {get} /rechercherCourrier/:query Recherche d'un courrier par mots clés
  * @apiName rechercherCourrier
  * @apiGroup Courrier
@@ -234,6 +215,24 @@ $app->get('/supprimerCourrier/{id}', function ($id) use ($app) {
 });
 
 
+/**
+ * @api {get} /listUsers Affichage de la liste des utilisateurs
+ * @apiName listUsers
+ * @apiGroup Utilisateurs
+ * 
+ * @apiSuccess {String[]} des Objets Utilisateurs dans un Objet JSON
+ * @apiSuccessExample Success-Response:
+ *     {
+ *       {id: 1, login: "login", nom: "nom", prenom: "prenom", email: "email", mot_passe: "mot_passe", role: "role", entite: "entite"};
+ *     }
+ @apiError ListeUtilisateursVide 'La liste des utilisateurs est vide' si aucun utilisateur n a été insérer.
+ * @apiErrorExample Error-Response:
+ *     {
+ *			"operation": "ko",
+ *			"erreur": "ListeUtilisateursVide",
+ *			"message": "La liste des utilisateurs est vide. Aucun utilisateur n'est ajouté !"
+ *     }
+ */
 $app->get('/listUsers/', function() use ($app){
     $sql = "SELECT id,login,nom,prenom,email,mot_passe,role,entite FROM utilisateur u,entite e WHERE e.id_entite = u.id_entite";
     $users = $app['db']->fetchAssoc($sql,array());
