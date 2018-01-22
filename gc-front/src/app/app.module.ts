@@ -1,31 +1,46 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { RouterModule, Routes } from '@angular/router';
+import { BrowserModule } from "@angular/platform-browser";
+import { NgModule } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { RouterModule, Routes } from "@angular/router";
 
-import { routing } from './app.routing';
-import { AuthGuard } from './_guards/index';
+import { routing } from "./app.routing";
+import { AuthGuard } from "./_guards/index";
 
-import { AppComponent } from './app.component';
-import { LoginComponent } from './component/login/index';
-import { HomeComponent } from './component/home/index';
-import { MenuComponent } from './component/menu/index';
-import { UserService, AuthenticationService, AlertService } from './_services/index';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { EnregistrementComponent } from './component/enregistrement/index';
-import { UsersComponent, UpdateUserDialog } from './component/users/index';
-import { AddUserDialog } from './component/users/users.component';
-import { ArchiveComponent } from './component/archive/index';
-import { CourrierComponent } from './component/courrier/index';
-import { AdministrationComponent } from './component/administration/index';
-import { StatistiquesComponent } from './component/statistiques/index';
-import { RechercheCourrierComponent } from './component/recherche-courrier/index';
+import { AppComponent } from "./app.component";
+import { LoginComponent } from "./component/login/index";
+import { HomeComponent } from "./component/home/index";
+import { MenuComponent } from "./component/menu/index";
+import {
+  UserService,
+  AuthenticationService,
+  AlertService,
+  EntiteService
+} from "./_services/index";
+import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
+import { EnregistrementComponent } from "./component/enregistrement/index";
+import { UsersComponent, UpdateUserDialog } from "./component/users/index";
+import { AddUserDialog } from "./component/users/users.component";
+import { ArchiveComponent } from "./component/archive/index";
+import { CourrierComponent } from "./component/courrier/index";
+import { AdministrationComponent } from "./component/administration/index";
+import { StatistiquesComponent } from "./component/statistiques/index";
+import { RechercheCourrierComponent } from "./component/recherche-courrier/index";
 
-import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {MatTableModule, MatButtonModule, MatPaginatorModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatOptionModule} from '@angular/material';
-import {MatDialogModule} from '@angular/material/dialog'; 
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import {
+  MatTableModule,
+  MatButtonModule,
+  MatPaginatorModule,
+  MatFormFieldModule,
+  MatInputModule,
+  MatSelectModule,
+  MatOptionModule,
+  MatTabsModule
+} from '@angular/material';
+import { MatDialogModule } from '@angular/material/dialog';
 import { JwtInterceptor, fakeBackendProvider } from './_helpers/index';
 import { AlertComponent } from './_directives/index';
+import { EntiteComponent, AddEntiteDialog, UpdateEntiteDialog } from './component/entite/index';
 
 @NgModule({
   declarations: [
@@ -42,7 +57,10 @@ import { AlertComponent } from './_directives/index';
     StatistiquesComponent,
     AddUserDialog,
     UpdateUserDialog,
-    AlertComponent
+    AddEntiteDialog,
+    UpdateEntiteDialog,
+    AlertComponent,
+    EntiteComponent
   ],
   imports: [
     BrowserModule,
@@ -57,7 +75,8 @@ import { AlertComponent } from './_directives/index';
     MatInputModule,
     MatDialogModule,
     MatSelectModule,
-    MatOptionModule
+    MatOptionModule,
+    MatTabsModule
   ],
   providers: [
     AuthGuard,
@@ -69,14 +88,12 @@ import { AlertComponent } from './_directives/index';
       useClass: JwtInterceptor,
       multi: true
     },
+    EntiteService,
 
     // provider used to create fake backend
     fakeBackendProvider
   ],
-  entryComponents : [
-    AddUserDialog,
-    UpdateUserDialog
-  ],
+  entryComponents: [AddUserDialog, UpdateUserDialog, AddEntiteDialog, UpdateEntiteDialog],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

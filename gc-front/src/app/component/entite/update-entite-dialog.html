@@ -7,15 +7,18 @@
   <div class="col-md-6">
     
     <mat-form-field>
-      <input placeholder="Nom" matInput [(ngModel)]="data.entite.nom">
+      <input placeholder="Nom" matInput [(ngModel)]="entite.nom">
     </mat-form-field>
   </div>
   <div class="col-md-6">
     
     <mat-form-field>
-        <mat-select  placeholder="Type de l'Entite Organistionnelle" [(ngModel)]="entite.id">              
-          <mat-option *ngFor="let entite of entites" value="{{entite.id}}">{{ entite.nom }}</mat-option>
-         
+      
+
+        <mat-select placeholder="Type de l'Entite Organistionnelle">
+          <mat-option *ngFor="let type of types" [value]="type.value">
+            {{ type.viewValue }}
+          </mat-option>
         </mat-select>
       </mat-form-field>
   </div>

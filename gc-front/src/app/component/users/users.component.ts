@@ -86,9 +86,9 @@ export class UpdateUserDialog {
     nomEntite: 'Informatique'
   };
   entites = [
-    { idEntite: '0', nomEntite: 'Informatique' },
-    { idEntite: '1', nomEntite: 'RH' },
-    { idEntite: '2', nomEntite: 'Personnel' }
+    { id_entite: '0', nomEntite: 'Informatique' },
+    { id_entite: '1', nomEntite: 'RH' },
+    { id_entite: '2', nomEntite: 'Personnel' }
   ];
   selected = this.utilisateur.id_entite;
 
