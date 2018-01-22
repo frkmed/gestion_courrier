@@ -54,7 +54,7 @@ export class MenuComponent implements OnInit {
 
   ngOnInit() {
     let link = this.menu.filter(
-      book => book.link === this.router.url);
+      url => url.link === this.router.url);
     if (link.length === 0) {
       this.sendMessage('ACCUEIL');
     } else {

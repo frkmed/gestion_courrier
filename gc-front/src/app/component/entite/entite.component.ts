@@ -1,25 +1,31 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import {EntiteService} from '../../_services/entite.service';
-import {Observable} from 'rxjs/Observable';
-import {DataSource} from '@angular/cdk/collections';
-import {Entite} from '../../_models/entite';
-import {MatPaginator, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
-import { ViewChild } from '@angular/core';
-import { MatSelectModule } from '@angular/material';
+import { Component, OnInit, Inject } from "@angular/core";
+import { EntiteService } from "../../_services/entite.service";
+import { Observable } from "rxjs/Observable";
+import { DataSource } from "@angular/cdk/collections";
+import { Entite } from "../../_models/entite";
+import {
+  MatPaginator,
+  MatTableDataSource,
+  MatDialog,
+  MatDialogRef,
+  MAT_DIALOG_DATA
+} from '@angular/material';
+import { ViewChild } from "@angular/core";
+import { MatSelectModule } from "@angular/material";
 
 @Component({
-  selector: 'entite',
-  templateUrl: './entite.component.html',
-  styleUrls: ['./entite.component.css']
+  selector: "app-entite",
+  templateUrl: "./entite.component.html",
+  styleUrls: ["./entite.component.css"]
 })
 export class EntiteComponent implements OnInit {
   displayedColumns = ['nom', 'type'];
   dataSource = new MatTableDataSource<any>();
   animal: string;
- 
-  entite: Entite=new Entite();
-  
-  constructor(private entiteService: EntiteService, public dialog: MatDialog) { }
+
+  entite: Entite = new Entite();
+
+  constructor(private entiteService: EntiteService, public dialog: MatDialog) {}
 
   ngOnInit() {
     this.loadEntitesList();
@@ -35,14 +41,17 @@ export class EntiteComponent implements OnInit {
   }
 
   loadEntitesList() {
-    this.entiteService.getAll()
-        .subscribe(
-            data => {
-                console.log("hello world !" + data);
-                this.dataSource = new MatTableDataSource<Entite>(data);
-            },
-            error => console.log('loadEntitesList Method: ' + <any>error, 'alert alert-danger')
-        );
+    this.entiteService.getAll().subscribe(
+      data => {
+        console.log("hello world !" + data);
+        this.dataSource = new MatTableDataSource<Entite>(data);
+      },
+      error =>
+        console.log(
+          "loadEntitesList Method: " + <any>error,
+          "alert alert-danger"
+        )
+    );
   }
 
   applyFilter(filterValue: string) {
@@ -52,32 +61,44 @@ export class EntiteComponent implements OnInit {
   }
 
   openDialog(): void {
-    let dialogRef1 = this.dialog.open(AddEntiteDialog, {width: '450px' , data: { title: 'First Dialog' } });
-  
+    let dialogRef1 = this.dialog.open(AddEntiteDialog, {
+      width: "450px",
+      data: { title: "First Dialog" }
+    });
+
     dialogRef1.afterClosed().subscribe(result => {
-      console.log('The dialog 1 was closed');
-
-    })
-
+      console.log("The dialog 1 was closed");
+    });
   }
 
   updateDialog(): void {
-    let dialogRef1 = this.dialog.open(UpdateEntiteDialog, {width: '450px', data: { title: 'Second Dialog'} });
+    let dialogRef1 = this.dialog.open(UpdateEntiteDialog, {
+      width: "450px",
+      data: { title: "Second Dialog" }
+    });
     dialogRef1.afterClosed().subscribe(result => {
-      console.log('The dialog 2 was closed');
-    })
+      console.log("The dialog 2 was closed");
+    });
   }
-
 }
 @Component({
-  selector: 'update-entite-dialog',
-  templateUrl: './update-entite-dialog.html'
+  selector: "update-entite-dialog",
+  templateUrl: "./update-entite-dialog.html"
 })
-export class UpdateEntiteDialog{
-  entite={};
-  constructor(public dialogRef: MatDialogRef<UpdateEntiteDialog>,
-  @Inject(MAT_DIALOG_DATA) public data: any){    
-  }
+export class UpdateEntiteDialog {
+  entite = {
+    nom: 'Exploitation Informatique',
+    type: 'Division'
+  };
+  type = [
+    {value: '1', viewValue: 'Service'},
+    {value: '2', viewValue: 'Division'},
+    {value: '3', viewValue: 'Direction'}
+  ];
+  constructor(
+    public dialogRef: MatDialogRef<UpdateEntiteDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {}
 
   onClick(): void {
     //console.log(utilisateur);
@@ -85,23 +106,19 @@ export class UpdateEntiteDialog{
   }
 }
 @Component({
-  selector: 'add-entite-dialog',
-  /**template: `
-    <h1>{{data.title}}</h1>
-    <button mat-raised-button (click)="dialogRef.close()">close</button>
-  `**/
-  templateUrl : './add-entite-dialog.html'
+  selector: "add-entite-dialog",
+  templateUrl: "./add-entite-dialog.html"
 })
 export class AddEntiteDialog {
-  entite={};
-  
-  constructor(public dialogRef: MatDialogRef<AddEntiteDialog>, 
-    @Inject(MAT_DIALOG_DATA) public data: any) {
-  }
+  entite = {};
+
+  constructor(
+    public dialogRef: MatDialogRef<AddEntiteDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {}
 
   onClick(entite): void {
     console.log(entite);
     this.dialogRef.close();
   }
-
 }
