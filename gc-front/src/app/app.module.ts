@@ -10,12 +10,7 @@ import { AppComponent } from "./app.component";
 import { LoginComponent } from "./component/login/index";
 import { HomeComponent } from "./component/home/index";
 import { MenuComponent } from "./component/menu/index";
-import {
-  UserService,
-  AuthenticationService,
-  AlertService,
-  EntiteService
-} from "./_services/index";
+
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { EnregistrementComponent } from "./component/enregistrement/index";
 import { UsersComponent, UpdateUserDialog } from "./component/users/index";
@@ -37,6 +32,16 @@ import {
   MatOptionModule,
   MatTabsModule
 } from '@angular/material';
+
+import { UserService, CourrierService, AuthenticationService, AlertService, EntiteService } from './_services/index';
+
+
+
+
+import { AddCourrierDialog } from './component/courrier/courrier.component';
+import { UpdateCourrierDialog } from './component/courrier/courrier.component';
+
+import { MatIconModule } from '@angular/material';
 import { MatDialogModule } from '@angular/material/dialog';
 import { JwtInterceptor, fakeBackendProvider } from './_helpers/index';
 import { AlertComponent } from './_directives/index';
@@ -60,7 +65,10 @@ import { EntiteComponent, AddEntiteDialog, UpdateEntiteDialog } from './componen
     AddEntiteDialog,
     UpdateEntiteDialog,
     AlertComponent,
-    EntiteComponent
+    EntiteComponent,
+    AddCourrierDialog, 
+    UpdateCourrierDialog,   
+    AlertComponent
   ],
   imports: [
     BrowserModule,
@@ -76,13 +84,15 @@ import { EntiteComponent, AddEntiteDialog, UpdateEntiteDialog } from './componen
     MatDialogModule,
     MatSelectModule,
     MatOptionModule,
-    MatTabsModule
+    MatTabsModule,
+    MatIconModule
   ],
   providers: [
     AuthGuard,
     AlertService,
     AuthenticationService,
     UserService,
+    CourrierService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: JwtInterceptor,
@@ -93,7 +103,15 @@ import { EntiteComponent, AddEntiteDialog, UpdateEntiteDialog } from './componen
     // provider used to create fake backend
     fakeBackendProvider
   ],
-  entryComponents: [AddUserDialog, UpdateUserDialog, AddEntiteDialog, UpdateEntiteDialog],
+ 
+  entryComponents: [
+    AddUserDialog,
+    UpdateUserDialog,
+    AddEntiteDialog, 
+    UpdateEntiteDialog,
+    AddCourrierDialog,
+    UpdateCourrierDialog
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

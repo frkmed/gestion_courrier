@@ -93,7 +93,7 @@ ALTER TABLE `entite`
 -- AUTO_INCREMENT pour la table `entite`
 --
 ALTER TABLE `entite`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;1  
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;  
   
 --
 -- Structure de la table `courrier`
