@@ -99,7 +99,7 @@ $app->post('/saveCourrier/{titre}/{description}/{dateCourrier}/{type}/{nature}/{
  * @apiName saveDocument
  * @apiGroup Courrier
  *
- * @apiParam {Base64 String} body Le contenu du document scanné, encodé dans le format Base64.
+ * @apiParam {Base64String} body Le contenu du document scanné, encodé dans le format Base64.
  *
  * @apiSuccess {String} Objet JSON avec "operation" : "ok".
  * @apiSuccess {String} fichier le nom du fichier sur le serveur du document scanné.
@@ -117,6 +117,100 @@ $app->post('/saveCourrier/{titre}/{description}/{dateCourrier}/{type}/{nature}/{
  *     }
  */
 $app->post('/saveDocument', function () use ($app) {
+	$reponse = array('operation' =>'ko','erreur'=> 'NOT_IMPLEMENTED');
+	return  $app->json($reponse);	
+});
+
+
+/**
+ * @api {get} /rechercherCourrier/:query Recherche d'un courrier par mots clés
+ * @apiName rechercherCourrier
+ * @apiGroup Courrier
+ *
+ * @apiParam {String} query Mot clés à chercher dans le courrier stocké dans la base de données
+ *
+ * @apiSuccess {String} Objet JSON avec "operation" : "ok".
+ * @apiSuccess {Array} resultat Un tableau JSON de resultat, dont chaque élément du tableau est un courrier qui correspond au mot(s) clé(s) utilisés dans la recherche.
+ * @apiSuccessExample Success-Response:
+ *     {
+ *      	"operation": "ok",
+ *			"resultat" : [{
+ *							"reference" : "FAX/23/2018",
+ *							"titre": "Lancement du concours de recrutement des techniciens 3éme grade",
+ *							"type": "Courrier Départ",
+ *							"date": "20/01/2018",
+ *							"nature": "Fax"
+ *							"idEntite": "5",
+ *							"nomEntite": "DRH"
+ *							},
+ *							...
+ *							]
+ *     }
+ */
+$app->get('/rechercherCourrier/{query}', function ($query) use ($app) {
+	$reponse = array('operation' =>'ko','erreur'=> 'NOT_IMPLEMENTED');
+	return  $app->json($reponse);	
+});
+
+/**
+ * @api {get} /detailCourrier/:id Lire le détail d'un courrier à partir de son ID.
+ * @apiName detailCourrier
+ * @apiGroup Courrier
+ *
+ * @apiParam {Number} id ID du courrier.
+ *
+ * @apiSuccess {String} Objet JSON avec "operation" : "ok".
+ * @apiSuccess {Objet} courrier Un objet JSON contenant toute les informations du courrier
+ * @apiSuccessExample Success-Response:
+ *     {
+ *      	"operation": "ok",
+ *			"courrier" : {
+ *							"reference" : "FAX/23/2018",
+ *							"titre": "Lancement du concours de recrutement des techniciens 3éme grade",
+ *							"description": "La direction des ressources humaines lance un concours au profit des techniciens spécialisés ...",
+ *							"type": "Courrier Départ",
+ *							"adresse": "SNTL , Direction des ressources humaines Hay EL KAMRA, RABAT",
+ *							"date": "20/01/2018",
+ *							"nature": "Fax"
+ *							"idEntite": "5",
+ *							"nomEntite": "DRH"
+ *							}
+ *     }
+ * @apiError IdInvalide 'Id invalide !' si l'id n'est pas une valeur numérique.
+ * @apiError CourrierInexistant 'Le courrier avec id x est inexistant !' si l'id ne correspond à aucun courrier au niveau de la table du courrier.
+ * @apiErrorExample Error-Response:
+ *     {
+ *			"operation": "ko",
+ *			"erreur": "CourrierInexistant",
+ *			"message": "Le courrier avec id 5 est inexistant !"
+ *		}
+ */
+$app->get('/detailCourrier/{id}', function ($id) use ($app) {
+	$reponse = array('operation' =>'ko','erreur'=> 'NOT_IMPLEMENTED');
+	return  $app->json($reponse);	
+});
+
+/**
+ * @api {get} /supprimerCourrier/:id Supprimer un courrier à partir de son ID.
+ * @apiName supprimerCourrier
+ * @apiGroup Courrier
+ *
+ * @apiParam {Number} id ID du courrier.
+ *
+ * @apiSuccess {String} Objet JSON avec "operation" : "ok".
+ * @apiSuccessExample Success-Response:
+ *     {
+ *      	"operation": "ok",
+ *     }
+ * @apiError CourrierInexistant 'Le courrier avec id x est inexistant !' si l'id ne correspond à aucun courrier au niveau de la table du courrier.
+ * @apiErrorExample Error-Response:
+ *     {
+ *			"operation": "ko",
+ *			"erreur": "CourrierInexistant",
+ *			"message": "Le courrier avec id 5 est inexistant !"
+ *		}
+ */
+$app->get('/supprimerCourrier/{id}', function ($id) use ($app) {
 	$reponse = array('operation' =>'ko','erreur'=> 'NOT_IMPLEMENTED');
 	return  $app->json($reponse);	
 });
