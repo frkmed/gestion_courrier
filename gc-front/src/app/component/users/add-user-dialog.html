@@ -51,24 +51,16 @@
   </div>
   
 <div class="row">
-
-    <div class="col-md-6">
-      
-          
+    <div class="col-md-6">         
       <mat-form-field>
-          <mat-select  placeholder="Entite Organistionnelle" [(ngModel)]="utilisateur.idEntite">              
-            <mat-option *ngFor="let entite of entites" value="{{entite.idEntite}}">{{ entite.nomEntite }}</mat-option>
-           
+          <mat-select  placeholder="Entite Organistionnelle" [(ngModel)]="data.id">              
+            <mat-option *ngFor="let entite of entites" value="{{data.id}}">{{ data.nom }}</mat-option>           
           </mat-select>
-        </mat-form-field>
-         
-    </div>
-    
+        </mat-form-field>         
+    </div>    
   </div>
 </div>
-
 <div mat-dialog-actions>
-
   <button class="col-md-2" mat-button (click)="onClick(utilisateur)" mat-raised-button color="primary">Ajouter</button>
   <button class="col-md-2 ml-auto" mat-button [mat-dialog-close]="data.animal" mat-raised-button cdkFocusInitial>Fermer</button>
 </div>

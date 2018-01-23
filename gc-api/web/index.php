@@ -1,5 +1,8 @@
 <?php
 
+header("Access-Control-Allow-Origin: *");
+
+
 ini_set('display_errors', 1);
 
 require_once __DIR__.'/../vendor/autoload.php';
@@ -99,7 +102,7 @@ $app->post('/saveCourrier/{titre}/{description}/{dateCourrier}/{type}/{nature}/{
  * @apiName saveDocument
  * @apiGroup Courrier
  *
- * @apiParam {Base64 String} body Le contenu du document scanné, encodé dans le format Base64.
+ * @apiParam {Base64String} body Le contenu du document scanné, encodé dans le format Base64.
  *
  * @apiSuccess {String} Objet JSON avec "operation" : "ok".
  * @apiSuccess {String} fichier le nom du fichier sur le serveur du document scanné.
@@ -140,10 +143,13 @@ $app->post('/saveDocument', function () use ($app) {
  *     }
  */
 
+///////////////////////Test valide///////////////////////////////////
+
 $app->get('/listUsers/', function() use ($app){
-    $sql = "SELECT id,login,nom,prenom,email,mot_passe,role,entite FROM utilisateur u,entite e WHERE e.id_entite = u.id_entite";
+	//SELECT u.id,login,u.nom,prenom,email,mot_passe,role,id_entite FROM utilisateur u,entite e WHERE e.id = u.id_entite 
+    $sql = "SELECT u.id,login,u.nom,prenom,email,mot_passe,role,id_entite FROM utilisateur u,entite e WHERE e.id = u.id_entite";
     $users = $app['db']->fetchAssoc($sql,array());
-    if(is_null($users[])){
+    if(is_null($users)){
     	$response = array('operation' => 'ko' , 'erreur' => "La liste des utilisateurs est vide. Aucun utilisateur n'est ajouté !!");
 		return $app->json($reponse);
     }
@@ -157,7 +163,7 @@ $app->get('/listUsers/', function() use ($app){
             'email' => $users['email'],
             'mot_passe' => $users['mot_passe'],
             'role' => $users['role'],
-            'entite' => $users['entite']
+            'id_entite' => $users['id_entite']
         ];
     }
     return $app->json($response);
@@ -191,31 +197,26 @@ $app->get('/listUsers/', function() use ($app){
  */
 
 $app->post('/addUser/{login}/{nom}/{prenom}/{email}/{mot_passe}/{role}/{id_entite}', function($login,$nom,$prenom,$email,$mot_passe,$role,$id_entite) use ($app){
-
-    $sql = "INSERT INTO utilisateur('login','nom','prenom','email','mot_passe','role','id_entite') VALUES (:login,:nom,:prenom,:email,:mot_passe,:role,:id_entite)";
-        $query = $app['db']->prepare($sql);
-
-        $sql = "SELECT login,nom,prenom,email,role FROM utilisateur";
-    	$users = $app['db']->fetchAssoc($sql,array());
-    	foreach ($users as $user) {
-    		if(($user[$login] == ':login') && ($user[$nom] == ':nom') && ($user[$prenom] == ':prenom') && ($user[$email] == ':email') && ($user[$role] == ':role')){
-    			$response = array('operation' => 'ko' , 'erreur' => "L'utilisateur " . $user[$login] . " existe déjà !!");
-				return $app->json($reponse);
-    		}
-    	}
-
-        $query->bindValue(':login', $login, PDO::PARAM_STR);
-        $query->bindValue(':nom', $nom, PDO::PARAM_STR);
-        $query->bindValue(':prenom', $prenom, PDO::PARAM_STR);
-        $query->bindValue(':email', $email, PDO::PARAM_STR);
-        $query->bindValue(':mot_passe', $mot_passe, PDO::PARAM_STR);
-        $query->bindValue(':role', $role, PDO::PARAM_STR);
-        $query->bindValue(':id_entite', $id_entite, PDO::PARAM_STR);
-
-        $query->execute();
-        
+   	$sql = "INSERT INTO utilisateur(login,nom,prenom,email,mot_passe,role,id_entite) VALUES (:login,:nom,:prenom,:email,:mot_passe,:role,:id_entite)";
+    $query = $app['db']->prepare($sql);
+    $sql2 = "SELECT login,nom,prenom,email,role FROM utilisateur WHERE login=?";
+    	$users = $app['db']->fetchAssoc($sql2,array($login));
+    	if(empty($users)){    	
+       	$query->execute(array(
+            "login" => $login, 
+            "nom" => $nom,
+            "prenom" => $prenom,
+            "email" => $email,
+            "mot_passe" => $mot_passe,
+            "role" => $role,
+            "id_entite" => $id_entite
+            ));        
         $reponse = array('operation' =>'Ajout reussi.');
-		return  $app->json($reponse);    
+		return  $app->json($reponse);
+    	}else{
+		$reponse = array('operation' => 'ko' , 'erreur' => "Utilisateur " .$login. " existant!!");
+		return $app->json($reponse);		
+		}	
 });
 
 
@@ -303,17 +304,18 @@ $app->delete('/deleteUser/{id}', function($id) use ($app){
  */
 
 $app->get('/listEntites/', function() use ($app){
-    $sql = "SELECT nom,type FROM entite";
+    $sql = "SELECT id,nom,type FROM entite";
     $entites = $app['db']->fetchAssoc($sql,array());
-    if(is_null($entites[])){
+    if(is_null($entites)){
     	$response = array('operation' => 'ko' , 'erreur' => "La liste des utilisateurs est vide. Aucun utilisateur n'est ajouté !!");
 		return $app->json($reponse);
     }
     $response = [];
     foreach ($entites as $entite) {
-        $response[] = [            
-            'nom' => $entits['nom'],
-            'type' => $entits['type']           
+        $response[] = [   
+        	'id' => $entites['id'],         
+            'nom' => $entites['nom'],
+            'type' => $entites['type']          
         ];
     }
     return $app->json($response);

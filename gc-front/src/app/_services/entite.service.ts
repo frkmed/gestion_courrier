@@ -5,27 +5,27 @@ import { Entite } from '../_models/index';
 
 @Injectable()
 export class EntiteService {
-    private serviceUrl = 'http://localhost:4200/assets/demo_entite.txt';
+    private serviceUrl = 'http://localhost:9090/gestion_courrier/gc-api/web/index.php/listEntites/';
 
     constructor(private http: HttpClient) { }
 
     getAll() : Observable<Entite[]> {
-        return this.http.get<Entite[]>(this.serviceUrl);
+        return this.http.get<Entite[]>(this.serviceUrl);       
     }
 
     /**getById(id: number) {
-        return this.http.get('/api/users/' + id);
+        return this.http.get('/api/entite/' + id);
     }
 
-    create(user: User) {
-        return this.http.post('/api/users', user);
+    create(entite: Entite) {
+        return this.http.post('/api/entite', user);
     }
 
-    update(user: User) {
-        return this.http.put('/api/users/' + user.id, user);
+    update(entite: Entite) {
+        return this.http.put('/api/entite/' + entite.id, entite);
     }
 
     delete(id: number) {
-        return this.http.delete('/api/users/' + id);
+        return this.http.delete('/api/uentite/' + id);
     }**/
 }
