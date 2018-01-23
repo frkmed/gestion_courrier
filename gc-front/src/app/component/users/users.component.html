@@ -4,21 +4,18 @@
     </div>
 </div>
 <div class="row">
-    <button mat-fab>Basic</button>
-</div>
-<div class="row">
     <div class="col-md-12">
         <div>
-            <div class="example-header">
-                <mat-form-field>
-                    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
-                </mat-form-field>
-            </div>
+                <div class="example-header">
+                        <mat-form-field>
+                            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+                        </mat-form-field>
+                    </div>
             <mat-table [dataSource]="dataSource">
                 <ng-container matColumnDef="login">
                     <mat-header-cell *matHeaderCellDef>Nom d'utilisateur</mat-header-cell>
                     <mat-cell *matCellDef="let user">
-                        <button mat-button (click)="openDialog()">{{user.login}}</button>
+                        <button mat-button (click)="updateDialog()">{{user.login}}</button>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="nom">
@@ -29,14 +26,19 @@
                     <mat-header-cell *matHeaderCellDef>Prénom</mat-header-cell>
                     <mat-cell *matCellDef="let user">{{user.prenom}}</mat-cell>
                 </ng-container>
+               
                 <ng-container matColumnDef="email">
-                    <mat-header-cell *matHeaderCellDef>E-mail</mat-header-cell>
-                    <mat-cell *matCellDef="let user">{{user.email}}</mat-cell>
+                        <mat-header-cell *matHeaderCellDef>E-mail</mat-header-cell>
+                        <mat-cell *matCellDef="let user">{{user.email}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="role">
                     <mat-header-cell *matHeaderCellDef>Rôle</mat-header-cell>
                     <mat-cell *matCellDef="let user">{{user.role}}</mat-cell>
                 </ng-container>
+                <ng-container matColumnDef="entite">
+                        <mat-header-cell *matHeaderCellDef>Entité</mat-header-cell>
+                        <mat-cell *matCellDef="let user">{{user.nomEntite}}</mat-cell>
+                    </ng-container>
                 <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
                 <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
             </mat-table>

@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1,
+    "id_parent": 1,    
+    "nom": "Informatique",
+    "type": "Direction"    
+  },
+  {
+    "id": 2,
+    "id_parent": 2,    
+    "nom": "Exploitation Informatique",
+    "type": "Division"   
+  },
+  {
+    "id": 3,
+    "id_parent": 3,    
+    "nom": "Applications et données",
+    "type": "Service"   
+  },
+  {
+    "id": 4,
+    "id_parent": 2,    
+    "nom": "Développement Informatique",
+    "type": "Division"   
+  }
+  
+]

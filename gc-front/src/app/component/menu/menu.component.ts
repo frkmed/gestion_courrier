@@ -13,8 +13,13 @@ export class MenuComponent implements OnInit {
     {
       'title': 'COURRIER',
       'link': '/courrier',
-      'desc': 'Gestion de courrier',
+      'desc': 'Gestion du courrier',
     },
+    {
+      'title': 'ADMINISTRATION',
+      'link': '/users',
+      'desc': 'Administration',
+    }/**,
     {
       'title': 'ARCHIVAGE',
       'link': '/archive',
@@ -31,11 +36,6 @@ export class MenuComponent implements OnInit {
       'desc': 'Recherche courrier',
     },
     {
-      'title': 'ADMINISTRATION',
-      'link': '/admin',
-      'desc': 'Administration',
-    },
-    {
       'title': 'UTILISATEURS',
       'link': '/users',
       'desc': 'Gestion des utilisateurs',
@@ -44,7 +44,7 @@ export class MenuComponent implements OnInit {
       'title': 'STATISTIQUES',
       'link': '/stat',
       'desc': 'Statistiques',
-    },
+    },**/
   ];
   selectedMenu: any;
 
@@ -54,7 +54,7 @@ export class MenuComponent implements OnInit {
 
   ngOnInit() {
     let link = this.menu.filter(
-      book => book.link === this.router.url);
+      url => url.link === this.router.url);
     if (link.length === 0) {
       this.sendMessage('ACCUEIL');
     } else {
