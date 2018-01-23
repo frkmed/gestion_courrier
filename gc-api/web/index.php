@@ -125,6 +125,100 @@ $app->post('/saveDocument', function () use ($app) {
 });
 
 /**
+ * @api {get} /rechercherCourrier/:query Recherche d'un courrier par mots clés
+ * @apiName rechercherCourrier
+ * @apiGroup Courrier
+ *
+ * @apiParam {String} query Mot clés à chercher dans le courrier stocké dans la base de données
+ *
+ * @apiSuccess {String} Objet JSON avec "operation" : "ok".
+ * @apiSuccess {Array} resultat Un tableau JSON de resultat, dont chaque élément du tableau est un courrier qui correspond au mot(s) clé(s) utilisés dans la recherche.
+ * @apiSuccessExample Success-Response:
+ *     {
+ *      	"operation": "ok",
+ *			"resultat" : [{
+ *							"reference" : "FAX/23/2018",
+ *							"titre": "Lancement du concours de recrutement des techniciens 3éme grade",
+ *							"type": "Courrier Départ",
+ *							"date": "20/01/2018",
+ *							"nature": "Fax"
+ *							"idEntite": "5",
+ *							"nomEntite": "DRH"
+ *							},
+ *							...
+ *							]
+ *     }
+ */
+$app->get('/rechercherCourrier/{query}', function ($query) use ($app) {
+	$reponse = array('operation' =>'ko','erreur'=> 'NOT_IMPLEMENTED');
+	return  $app->json($reponse);	
+});
+
+/**
+ * @api {get} /detailCourrier/:id Lire le détail d'un courrier à partir de son ID.
+ * @apiName detailCourrier
+ * @apiGroup Courrier
+ *
+ * @apiParam {Number} id ID du courrier.
+ *
+ * @apiSuccess {String} Objet JSON avec "operation" : "ok".
+ * @apiSuccess {Objet} courrier Un objet JSON contenant toute les informations du courrier
+ * @apiSuccessExample Success-Response:
+ *     {
+ *      	"operation": "ok",
+ *			"courrier" : {
+ *							"reference" : "FAX/23/2018",
+ *							"titre": "Lancement du concours de recrutement des techniciens 3éme grade",
+ *							"description": "La direction des ressources humaines lance un concours au profit des techniciens spécialisés ...",
+ *							"type": "Courrier Départ",
+ *							"adresse": "SNTL , Direction des ressources humaines Hay EL KAMRA, RABAT",
+ *							"date": "20/01/2018",
+ *							"nature": "Fax"
+ *							"idEntite": "5",
+ *							"nomEntite": "DRH"
+ *							}
+ *     }
+ * @apiError IdInvalide 'Id invalide !' si l'id n'est pas une valeur numérique.
+ * @apiError CourrierInexistant 'Le courrier avec id x est inexistant !' si l'id ne correspond à aucun courrier au niveau de la table du courrier.
+ * @apiErrorExample Error-Response:
+ *     {
+ *			"operation": "ko",
+ *			"erreur": "CourrierInexistant",
+ *			"message": "Le courrier avec id 5 est inexistant !"
+ *		}
+ */
+$app->get('/detailCourrier/{id}', function ($id) use ($app) {
+	$reponse = array('operation' =>'ko','erreur'=> 'NOT_IMPLEMENTED');
+	return  $app->json($reponse);	
+});
+
+/**
+ * @api {get} /supprimerCourrier/:id Supprimer un courrier à partir de son ID.
+ * @apiName supprimerCourrier
+ * @apiGroup Courrier
+ *
+ * @apiParam {Number} id ID du courrier.
+ *
+ * @apiSuccess {String} Objet JSON avec "operation" : "ok".
+ * @apiSuccessExample Success-Response:
+ *     {
+ *      	"operation": "ok",
+ *     }
+ * @apiError CourrierInexistant 'Le courrier avec id x est inexistant !' si l'id ne correspond à aucun courrier au niveau de la table du courrier.
+ * @apiErrorExample Error-Response:
+ *     {
+ *			"operation": "ko",
+ *			"erreur": "CourrierInexistant",
+ *			"message": "Le courrier avec id 5 est inexistant !"
+ *		}
+ */
+$app->get('/supprimerCourrier/{id}', function ($id) use ($app) {
+	$reponse = array('operation' =>'ko','erreur'=> 'NOT_IMPLEMENTED');
+	return  $app->json($reponse);	
+});
+
+
+/**
  * @api {get} /listUsers Affichage de la liste des utilisateurs
  * @apiName listUsers
  * @apiGroup Utilisateurs
@@ -142,6 +236,7 @@ $app->post('/saveDocument', function () use ($app) {
  *			"message": "La liste des utilisateurs est vide. Aucun utilisateur n'est ajouté !"
  *     }
  */
+
 
 ///////////////////////Test valide///////////////////////////////////
 
@@ -196,6 +291,8 @@ $app->get('/listUsers/', function() use ($app){
  *     }
  */
 
+///////////////////////Test valide///////////////////////////////////
+
 $app->post('/addUser/{login}/{nom}/{prenom}/{email}/{mot_passe}/{role}/{id_entite}', function($login,$nom,$prenom,$email,$mot_passe,$role,$id_entite) use ($app){
    	$sql = "INSERT INTO utilisateur(login,nom,prenom,email,mot_passe,role,id_entite) VALUES (:login,:nom,:prenom,:email,:mot_passe,:role,:id_entite)";
     $query = $app['db']->prepare($sql);
@@ -239,20 +336,23 @@ $app->post('/addUser/{login}/{nom}/{prenom}/{email}/{mot_passe}/{role}/{id_entit
  *     {
  *       "operation": "Modification réussite."
  *     }
- * 
+ *
  */
 $app->put('/updateUser/{id}/{login}/{nom}/{prenom}/{email}/{mot_passe}/{role}/{id_entite}', function($id,$login,$nom,$prenom,$email,$mot_passe,$role,$entite) use ($app){
 
-    $sql = "UPDATE utilisateur SET login = :login,nom = :nom, prenom = :prenom, email= :email, mot_passe= :mot_passe, role = :role, id_entite = :id_entite WHERE id = $id";
+    $sql = "UPDATE utilisateur SET login ='?', nom ='?', prenom ='?', email='?', mot_passe='?', role ='?', id_entite =? WHERE id =?";
     $query = $app['db']->prepare($sql);
-        $query->bindValue(':login', $login, PDO::PARAM_STR);
-        $query->bindValue(':nom', $nom, PDO::PARAM_STR);
-        $query->bindValue(':prenom', $prenom, PDO::PARAM_STR);
-        $query->bindValue(':email', $email, PDO::PARAM_STR);
-        $query->bindValue(':mot_passe', $mot_passe, PDO::PARAM_STR);
-        $query->bindValue(':role', $role, PDO::PARAM_STR);
-        $query->bindValue(':id_entite', $id_entite, PDO::PARAM_STR);
-        $query->execute();
+    $query->execute(array(
+        "id" => $id,
+        "login" => $login,
+        "nom" => $nom,
+        "prenom" => $prenom,
+        "email" => $email,
+        "mot_passe" => $mot_passe,
+        "role" => $role,
+        "id_entite" => $id_entite
+    ));      
+    
        $reponse = array('operation' =>'Modification reussite');
 		return  $app->json($reponse);
 });

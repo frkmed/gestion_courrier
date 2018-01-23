@@ -75,6 +75,131 @@ define({ "api": [
     "groupTitle": "Authentification"
   },
   {
+    "type": "get",
+    "url": "/detailCourrier/:id",
+    "title": "Lire le détail d'un courrier à partir de son ID.",
+    "name": "detailCourrier",
+    "group": "Courrier",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>ID du courrier.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "Objet",
+            "description": "<p>JSON avec &quot;operation&quot; : &quot;ok&quot;.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Objet",
+            "optional": false,
+            "field": "courrier",
+            "description": "<p>Un objet JSON contenant toute les informations du courrier</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "    {\n     \t\"operation\": \"ok\",\n\t\t\t\"courrier\" : {\n\t\t\t\t\t\t\t\"reference\" : \"FAX/23/2018\",\n\t\t\t\t\t\t\t\"titre\": \"Lancement du concours de recrutement des techniciens 3éme grade\",\n\t\t\t\t\t\t\t\"description\": \"La direction des ressources humaines lance un concours au profit des techniciens spécialisés ...\",\n\t\t\t\t\t\t\t\"type\": \"Courrier Départ\",\n\t\t\t\t\t\t\t\"adresse\": \"SNTL , Direction des ressources humaines Hay EL KAMRA, RABAT\",\n\t\t\t\t\t\t\t\"date\": \"20/01/2018\",\n\t\t\t\t\t\t\t\"nature\": \"Fax\"\n\t\t\t\t\t\t\t\"idEntite\": \"5\",\n\t\t\t\t\t\t\t\"nomEntite\": \"DRH\"\n\t\t\t\t\t\t\t}\n    }",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "IdInvalide",
+            "description": "<p>'Id invalide !' si l'id n'est pas une valeur numérique.</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "CourrierInexistant",
+            "description": "<p>'Le courrier avec id x est inexistant !' si l'id ne correspond à aucun courrier au niveau de la table du courrier.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "    {\n\t\t\t\"operation\": \"ko\",\n\t\t\t\"erreur\": \"CourrierInexistant\",\n\t\t\t\"message\": \"Le courrier avec id 5 est inexistant !\"\n\t\t}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "gc-api/web/index.php",
+    "groupTitle": "Courrier"
+  },
+  {
+    "type": "get",
+    "url": "/rechercherCourrier/:query",
+    "title": "Recherche d'un courrier par mots clés",
+    "name": "rechercherCourrier",
+    "group": "Courrier",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "query",
+            "description": "<p>Mot clés à chercher dans le courrier stocké dans la base de données</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "Objet",
+            "description": "<p>JSON avec &quot;operation&quot; : &quot;ok&quot;.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Array",
+            "optional": false,
+            "field": "resultat",
+            "description": "<p>Un tableau JSON de resultat, dont chaque élément du tableau est un courrier qui correspond au mot(s) clé(s) utilisés dans la recherche.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "    {\n     \t\"operation\": \"ok\",\n\t\t\t\"resultat\" : [{\n\t\t\t\t\t\t\t\"reference\" : \"FAX/23/2018\",\n\t\t\t\t\t\t\t\"titre\": \"Lancement du concours de recrutement des techniciens 3éme grade\",\n\t\t\t\t\t\t\t\"type\": \"Courrier Départ\",\n\t\t\t\t\t\t\t\"date\": \"20/01/2018\",\n\t\t\t\t\t\t\t\"nature\": \"Fax\"\n\t\t\t\t\t\t\t\"idEntite\": \"5\",\n\t\t\t\t\t\t\t\"nomEntite\": \"DRH\"\n\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t...\n\t\t\t\t\t\t\t]\n    }",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "gc-api/web/index.php",
+    "groupTitle": "Courrier"
+  },
+  {
     "type": "post",
     "url": "/saveCourrier/:titre/:description/:dateCourrier/:type/:nature/:adresse/:reference/:idEntite",
     "title": "Enregistrement d'un courrier",
@@ -248,6 +373,7 @@ define({ "api": [
     "groupTitle": "Courrier"
   },
   {
+<<<<<<< HEAD
     "type": "post",
     "url": "/addEntite/:nom/:type/:id_parent",
     "title": "Ajouter une entité",
@@ -562,15 +688,29 @@ define({ "api": [
     "title": "Supprimer un utilisateur",
     "name": "deleteUser",
     "group": "Utilisateurs",
+=======
+    "type": "get",
+    "url": "/supprimerCourrier/:id",
+    "title": "Supprimer un courrier à partir de son ID.",
+    "name": "supprimerCourrier",
+    "group": "Courrier",
+>>>>>>> 5f89c75685d1f556ca234e927847310aae047f26
     "parameter": {
       "fields": {
         "Parameter": [
           {
             "group": "Parameter",
+<<<<<<< HEAD
             "type": "number",
             "optional": false,
             "field": "id",
             "description": "<p>Identifiant de l'utilsateur.</p>"
+=======
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>ID du courrier.</p>"
+>>>>>>> 5f89c75685d1f556ca234e927847310aae047f26
           }
         ]
       }
@@ -583,6 +723,7 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "Objet",
+<<<<<<< HEAD
             "description": "<p>JSON avec &quot;operation&quot; : &quot;Suppression exécuté&quot;</p>"
           }
         ]
@@ -614,13 +755,20 @@ define({ "api": [
             "optional": false,
             "field": "des",
             "description": "<p>Objets Utilisateurs dans un Objet JSON</p>"
+=======
+            "description": "<p>JSON avec &quot;operation&quot; : &quot;ok&quot;.</p>"
+>>>>>>> 5f89c75685d1f556ca234e927847310aae047f26
           }
         ]
       },
       "examples": [
         {
           "title": "Success-Response:",
+<<<<<<< HEAD
           "content": "{\n  {id: 1, login: \"login\", nom: \"nom\", prenom: \"prenom\", email: \"email\", mot_passe: \"mot_passe\", role: \"role\", entite: \"entite\"};\n}",
+=======
+          "content": "{\n \t\"operation\": \"ok\",\n}",
+>>>>>>> 5f89c75685d1f556ca234e927847310aae047f26
           "type": "json"
         }
       ]
@@ -631,21 +779,31 @@ define({ "api": [
           {
             "group": "Error 4xx",
             "optional": false,
+<<<<<<< HEAD
             "field": "ListeUtilisateursVide",
             "description": "<p>'La liste des utilisateurs est vide' si aucun utilisateur n a été insérer.</p>"
+=======
+            "field": "CourrierInexistant",
+            "description": "<p>'Le courrier avec id x est inexistant !' si l'id ne correspond à aucun courrier au niveau de la table du courrier.</p>"
+>>>>>>> 5f89c75685d1f556ca234e927847310aae047f26
           }
         ]
       },
       "examples": [
         {
           "title": "Error-Response:",
+<<<<<<< HEAD
           "content": "    {\n\t\t\t\"operation\": \"ko\",\n\t\t\t\"erreur\": \"ListeUtilisateursVide\",\n\t\t\t\"message\": \"La liste des utilisateurs est vide. Aucun utilisateur n'est ajouté !\"\n    }",
+=======
+          "content": "    {\n\t\t\t\"operation\": \"ko\",\n\t\t\t\"erreur\": \"CourrierInexistant\",\n\t\t\t\"message\": \"Le courrier avec id 5 est inexistant !\"\n\t\t}",
+>>>>>>> 5f89c75685d1f556ca234e927847310aae047f26
           "type": "json"
         }
       ]
     },
     "version": "0.0.0",
     "filename": "gc-api/web/index.php",
+<<<<<<< HEAD
     "groupTitle": "Utilisateurs"
   },
   {
@@ -739,5 +897,8 @@ define({ "api": [
     "version": "0.0.0",
     "filename": "gc-api/web/index.php",
     "groupTitle": "Utilisateurs"
+=======
+    "groupTitle": "Courrier"
+>>>>>>> 5f89c75685d1f556ca234e927847310aae047f26
   }
 ] });
