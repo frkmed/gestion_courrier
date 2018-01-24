@@ -338,21 +338,13 @@ $app->post('/addUser/{login}/{nom}/{prenom}/{email}/{mot_passe}/{role}/{id_entit
  *     }
  *
  */
-$app->put('/updateUser/{id}/{login}/{nom}/{prenom}/{email}/{mot_passe}/{role}/{id_entite}', function($id,$login,$nom,$prenom,$email,$mot_passe,$role,$entite) use ($app){
 
-    $sql = "UPDATE utilisateur SET login ='?', nom ='?', prenom ='?', email='?', mot_passe='?', role ='?', id_entite =? WHERE id =?";
+$app->put('/updateUser/{id}/{login}/{nom}/{prenom}/{email}/{mot_passe}/{role}/{id_entite}', function($id,$login,$nom,$prenom,$email,$mot_passe,$role,$id_entite) use ($app){
+
+    $sql = "UPDATE utilisateur SET login =:login,  nom =:nom, prenom =:prenom, email=:email, mot_passe=:mot_passe, role =:role, id_entite =:id_entite WHERE id =:id";
     $query = $app['db']->prepare($sql);
-    $query->execute(array(
-        "id" => $id,
-        "login" => $login,
-        "nom" => $nom,
-        "prenom" => $prenom,
-        "email" => $email,
-        "mot_passe" => $mot_passe,
-        "role" => $role,
-        "id_entite" => $id_entite
-    ));      
-    
+    $data = ["login" => $login, "nom"  => $nom, "prenom"  => $prenom,"email"  => $email,"mot_passe"  => $mot_passe,"role"  => $role,"id_entite"  => $id_entite,"id"  => $id];
+    $query->execute($data);        
        $reponse = array('operation' =>'Modification reussite');
 		return  $app->json($reponse);
 });

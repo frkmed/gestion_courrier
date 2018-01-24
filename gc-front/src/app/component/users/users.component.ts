@@ -19,16 +19,13 @@ export class UsersComponent implements OnInit {
   dataSource = new MatTableDataSource<any>();
   animal: string;
   name: string;
-  user: User = new User();
-  
+  user: User = new User();  
 
   constructor(private userService: UserService,private entiteService: EntiteService, public dialog: MatDialog) { }
   selected;
   ngOnInit() {
-    this.loadUsersList();
-    
+    this.loadUsersList();   
   }
-
   @ViewChild(MatPaginator) paginator: MatPaginator;
   /**
    * Set the paginator after the view init since this component will
@@ -77,26 +74,31 @@ export class UsersComponent implements OnInit {
   templateUrl: './update-user-dialog.html'
 })
 export class UpdateUserDialog {
-  utilisateur = {
-    login: 'admin',
-    nom: 'Administrateur',
-    prenom: 'Administrateur',
-    email: 'admin@example.com',
-    role: 'admin',
-    username: 'admin',
-    password: 'admin',
-    id_entite: 1,
-    nomEntite: 'Informatique'
-  };
+  utilisateur = {};
   entites = {};
-  selected = this.utilisateur.id_entite;
-
-  constructor(public dialogRef: MatDialogRef<UpdateUserDialog>,
+  //selected = this.utilisateur.id_entite;
+  user: User = new User();
+  constructor(public dialogRef: MatDialogRef<UpdateUserDialog>,public userService: UserService,
     @Inject(MAT_DIALOG_DATA) public data: any) {
   }
 
   onClick(): void {
     //console.log(utilisateur);
+    this.dialogRef.close();
+  }
+  onUpdateClick(utilisateur): void {
+    this.user.login = utilisateur.login;
+    this.user.nom = utilisateur.nom;
+    this.user.prenom = utilisateur.prenom;
+    this.user.email = utilisateur.email;
+    this.user.password = utilisateur.mot_passe;
+    this.user.role = utilisateur.role;
+    this.user.id_entite = utilisateur.idEntite;
+    
+    this.userService.create(this.user).subscribe( data => {
+      console.log(data);
+    } )
+    console.log(utilisateur);
     this.dialogRef.close();
   }
 }
@@ -133,7 +135,6 @@ type: 'Division'
     this.userService.create(this.user).subscribe( data => {
       console.log(data);
     } )
-
     console.log(utilisateur);
     this.dialogRef.close();
   }

@@ -54,9 +54,9 @@
     <div class="col-md-6">         
       <mat-form-field>
           <mat-select  placeholder="Entite Organistionnelle" [(ngModel)]="data.id">              
-            <mat-option *ngFor="let entite of entites" value="{{data.id}}">{{ data.nom }}</mat-option>           
+            <mat-option *ngFor="let entite of entites" value="{{entite.id}}">{{ entite.nom }}</mat-option>           
           </mat-select>
-        </mat-form-field>         
+        </mat-form-field>
     </div>    
   </div>
 </div>
