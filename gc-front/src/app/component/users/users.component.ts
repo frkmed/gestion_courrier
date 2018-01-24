@@ -6,7 +6,9 @@ import { User } from '../../_models/user';
 import { MatPaginator, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ViewChild } from '@angular/core';
 import { MatSelectModule } from '@angular/material';
-
+import { Entite } from '../../_models/entite';
+import { EntiteService } from '../../_services/index';
+import { forEach } from '@angular/router/src/utils/collection';
 @Component({
   selector: 'users',
   templateUrl: './users.component.html',
@@ -18,11 +20,13 @@ export class UsersComponent implements OnInit {
   animal: string;
   name: string;
   user: User = new User();
+  
 
-  constructor(private userService: UserService, public dialog: MatDialog) { }
+  constructor(private userService: UserService,private entiteService: EntiteService, public dialog: MatDialog) { }
   selected;
   ngOnInit() {
     this.loadUsersList();
+    
   }
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -56,7 +60,6 @@ export class UsersComponent implements OnInit {
 
     dialogRef1.afterClosed().subscribe(result => {
       console.log('The dialog 1 was closed');
-
     })
 
   }
@@ -85,11 +88,7 @@ export class UpdateUserDialog {
     id_entite: 1,
     nomEntite: 'Informatique'
   };
-  entites = [
-    { id_entite: '0', nomEntite: 'Informatique' },
-    { id_entite: '1', nomEntite: 'RH' },
-    { id_entite: '2', nomEntite: 'Personnel' }
-  ];
+  entites = {};
   selected = this.utilisateur.id_entite;
 
   constructor(public dialogRef: MatDialogRef<UpdateUserDialog>,
@@ -111,19 +110,37 @@ export class UpdateUserDialog {
 })
 export class AddUserDialog {
   utilisateur = {};
-
-  entites = [
-    { idEntite: '0', nomEntite: 'Informatique' },
-    { idEntite: '1', nomEntite: 'RH' },
-    { idEntite: '2', nomEntite: 'Personnel' }
-  ];
-  constructor(public dialogRef: MatDialogRef<AddUserDialog>,
+  user: User = new User();
+  entite: Entite = new Entite();
+  entites = {
+nom : 'Ressoures',
+type: 'Division'
+  };
+  constructor(public dialogRef: MatDialogRef<AddUserDialog>,public userService: UserService,public entiteService: EntiteService,
     @Inject(MAT_DIALOG_DATA) public data: any) {
+      this.onLoad();
   }
 
   onClick(utilisateur): void {
+    this.user.login = utilisateur.login;
+    this.user.nom = utilisateur.nom;
+    this.user.prenom = utilisateur.prenom;
+    this.user.email = utilisateur.email;
+    this.user.password = utilisateur.mot_passe;
+    this.user.role = utilisateur.role;
+    this.user.id_entite = utilisateur.idEntite;
+    
+    this.userService.create(this.user).subscribe( data => {
+      console.log(data);
+    } )
+
     console.log(utilisateur);
     this.dialogRef.close();
   }
-
+  onLoad(): void {
+      this.entiteService.getAll().subscribe( data => {
+      console.log(data);      
+    })    
+    this.dialogRef.close();
+  }  
 }

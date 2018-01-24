@@ -8,7 +8,7 @@
     username : string;
     password: string;
     id_entite: string;
-    nomEntite: string; 
+    nom_entite: string; 
        
     
 }
