@@ -373,6 +373,7 @@ $app->post('/addUser/{login}/{nom}/{prenom}/{email}/{mot_passe}/{role}/{id_entit
  *     }
  *
  */
+
 $app->put('/updateUser/{id}/{login}/{nom}/{prenom}/{email}/{mot_passe}/{role}/{id_entite}', function($id,$login,$nom,$prenom,$email,$mot_passe,$role,$entite) use ($app){
 
     $sql = "UPDATE utilisateur SET login ='?', nom ='?', prenom ='?', email='?', mot_passe='?', role ='?', id_entite =? WHERE id =?";

@@ -31,7 +31,6 @@ export class UsersComponent implements OnInit, AfterViewInit {
   user: User;
   dialogRef1;
 
-
   public result: any;
 
   constructor(
