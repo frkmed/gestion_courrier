@@ -1,52 +1,63 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { UserService } from '../../_services/user.service';
+import { Component, OnInit, AfterViewInit, Inject, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { DataSource } from '@angular/cdk/collections';
-import { User } from '../../_models/user';
-import { MatPaginator, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ViewChild } from '@angular/core';
-import { MatSelectModule } from '@angular/material';
-import { Entite } from '../../_models/entite';
-import { EntiteService } from '../../_services/index';
-import { forEach } from '@angular/router/src/utils/collection';
+import {
+  MatTableDataSource,
+  MatPaginator,
+  MatSort,
+  MatSelectModule,
+  MatDialog,
+  MatDialogRef,
+  MAT_DIALOG_DATA
+} from '@angular/material';
+import { SelectionModel } from '@angular/cdk/collections';
+
+import { UserService, EntiteService } from '../../_services/index';
+import { User, Entite } from '../../_models/index';
+import { ConfirmDialogsService } from '../../_module/confirmdialog/ConfirmDialogsService';
+
+
 @Component({
-  selector: 'users',
+  selector: 'app-users',
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.css']
 })
-export class UsersComponent implements OnInit {
-  displayedColumns = ['login', 'nom', 'prenom', 'email', 'role', 'entite'];
-  dataSource = new MatTableDataSource<any>();
-  animal: string;
-  name: string;
-  user: User = new User();
-  
 
-  constructor(private userService: UserService,private entiteService: EntiteService, public dialog: MatDialog) { }
-  selected;
+export class UsersComponent implements OnInit, AfterViewInit {
+  displayedColumns = ['login', 'nom', 'prenom', 'email', 'role', 'entite', 'action'];
+  dataSource = new MatTableDataSource<User>();
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+
+  user: User;
+  dialogRef1;
+
+
+  public result: any;
+
+  constructor(
+    private dialogsService: ConfirmDialogsService,
+    private userService: UserService,
+    private entiteService: EntiteService,
+    public dialog: MatDialog
+  ) { }
+
   ngOnInit() {
     this.loadUsersList();
-    
   }
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  /**
-   * Set the paginator after the view init since this component will
-   * be able to query its view for the initialized paginator.
-   */
   ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
 
-  loadUsersList() {
-    this.userService.getAll()
-      .subscribe(
+  async loadUsersList() {
+    this.userService.getAll().subscribe(
       data => {
-        console.log("hello world !" + data);
         this.dataSource = new MatTableDataSource<User>(data);
+        this.dataSource.sort = this.sort;
+        this.dataSource.paginator = this.paginator;
       },
       error => console.log('loadUsersList Method: ' + <any>error, 'alert alert-danger')
-      );
+    );
   }
 
   applyFilter(filterValue: string) {
@@ -55,92 +66,94 @@ export class UsersComponent implements OnInit {
     this.dataSource.filter = filterValue;
   }
 
-  openDialog(): void {
-    let dialogRef1 = this.dialog.open(AddUserDialog, { width: '450px', data: { title: 'First Dialog' } });
+  addDialog(): void {
+    this.user = new User();
+    this.user.entite = new Entite();
+    this.dialogRef1 = this.dialog.open(
+      AddUserDialogComponent,
+      {
+        width: '450px',
+        data: {
+          title: 'Ajout d\'un nouveau utilisateur',
+          user: this.user
+        }
+      }
+    );
 
-    dialogRef1.afterClosed().subscribe(result => {
-      console.log('The dialog 1 was closed');
-    })
-
+    this.dialogRef1.afterClosed().subscribe(result => {
+    });
   }
 
-  updateDialog(): void {
-    let dialogRef1 = this.dialog.open(UpdateUserDialog, { width: '450px', data: { title: 'Second Dialog' } });
-    dialogRef1.afterClosed().subscribe(result => {
-      console.log('The dialog 2 was closed');
-    })
+  updateDialog(user): void {
+    this.dialogRef1 = this.dialog.open(
+      AddUserDialogComponent,
+      {
+        width: '450px',
+        data: {
+          title: 'Editer l\'utilisateur',
+          user: user
+        }
+      }
+    );
+    this.dialogRef1.afterClosed().subscribe(result => {
+    });
   }
 
+  public deleteconfirmDialog(user) {
+    this.dialogsService
+      .confirm('Confirmer la suppression', 'êtes-vous sur de vouloir supprimer cet enregistrement?')
+      .subscribe(
+      res => {
+        if (res) {
+          console.log('User deleted');
+        }
+      });
+  }
 }
+
+
 @Component({
-  selector: 'update-user-dialog',
-  templateUrl: './update-user-dialog.html'
+  selector: 'app-add-user-dialog',
+  templateUrl: './user-dialog.html'
 })
-export class UpdateUserDialog {
-  utilisateur = {
-    login: 'admin',
-    nom: 'Administrateur',
-    prenom: 'Administrateur',
-    email: 'admin@example.com',
-    role: 'admin',
-    username: 'admin',
-    password: 'admin',
-    id_entite: 1,
-    nomEntite: 'Informatique'
-  };
-  entites = {};
-  selected = this.utilisateur.id_entite;
+export class AddUserDialogComponent implements OnInit {
+  title;
+  user: User;
+  entites: Entite[];
 
-  constructor(public dialogRef: MatDialogRef<UpdateUserDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
+  constructor(
+    public dialogRef: MatDialogRef<AddUserDialogComponent>,
+    public userService: UserService,
+    public entiteService: EntiteService,
+    @Inject(MAT_DIALOG_DATA) private data: any
+  ) {
+    this.onLoad();
   }
 
-  onClick(): void {
-    //console.log(utilisateur);
+  ngOnInit() {
+    this.title = this.data ? this.data.title : '';
+    this.user = this.data ? this.data.user : '';
+  }
+
+
+  compareFn(c1: Entite, c2: Entite): boolean {
+    return c1 && c2 ? c1.id === c2.id : c1 === c2;
+  }
+
+  saveUser(): void {
+    /*this.userService.create(this.user).subscribe(data => {
+       console.log(data);
+     });*/
+
+    console.log(this.user.entite);
     this.dialogRef.close();
+  }
+  onLoad() {
+    this.entiteService.getAll().subscribe(data => {
+      this.entites = data;
+    });
   }
 }
-@Component({
-  selector: 'add-user-dialog',
-  /**template: `
-    <h1>{{data.title}}</h1>
-    <button mat-raised-button (click)="dialogRef.close()">close</button>
-  `**/
-  templateUrl: './add-user-dialog.html'
-})
-export class AddUserDialog {
-  utilisateur = {};
-  user: User = new User();
-  entite: Entite = new Entite();
-  entites = {
-nom : 'Ressoures',
-type: 'Division'
-  };
-  constructor(public dialogRef: MatDialogRef<AddUserDialog>,public userService: UserService,public entiteService: EntiteService,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
-      this.onLoad();
-  }
 
-  onClick(utilisateur): void {
-    this.user.login = utilisateur.login;
-    this.user.nom = utilisateur.nom;
-    this.user.prenom = utilisateur.prenom;
-    this.user.email = utilisateur.email;
-    this.user.password = utilisateur.mot_passe;
-    this.user.role = utilisateur.role;
-    this.user.id_entite = utilisateur.idEntite;
-    
-    this.userService.create(this.user).subscribe( data => {
-      console.log(data);
-    } )
 
-    console.log(utilisateur);
-    this.dialogRef.close();
-  }
-  onLoad(): void {
-      this.entiteService.getAll().subscribe( data => {
-      console.log(data);      
-    })    
-    this.dialogRef.close();
-  }  
-}
+

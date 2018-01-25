@@ -17,9 +17,15 @@ export class MenuComponent implements OnInit {
     },
     {
       'title': 'ADMINISTRATION',
-      'link': '/users',
+      'link': '/admin',
       'desc': 'Administration',
-    }/**,
+    },
+    {
+      'title': 'UTILISATEURS',
+      'link': '/users',
+      'desc': 'Gestion des utilisateurs',
+    },
+    /**
     {
       'title': 'ARCHIVAGE',
       'link': '/archive',
@@ -36,15 +42,10 @@ export class MenuComponent implements OnInit {
       'desc': 'Recherche courrier',
     },
     {
-      'title': 'UTILISATEURS',
-      'link': '/users',
-      'desc': 'Gestion des utilisateurs',
-    },
-    {
       'title': 'STATISTIQUES',
       'link': '/stat',
       'desc': 'Statistiques',
-    },**/
+    },*/
   ];
   selectedMenu: any;
 

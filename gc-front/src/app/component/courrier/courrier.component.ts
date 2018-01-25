@@ -1,9 +1,9 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import {CourrierService} from '../../_services/courrier.service';
-import {Observable} from 'rxjs/Observable';
-import {DataSource} from '@angular/cdk/collections';
-import {Courrier} from '../../_models/courrier';
-import {MatPaginator, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
+import { CourrierService } from '../../_services/courrier.service';
+import { Observable } from 'rxjs/Observable';
+import { DataSource } from '@angular/cdk/collections';
+import { Courrier } from '../../_models/courrier';
+import { MatPaginator, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ViewChild } from '@angular/core';
 
 @Component({
@@ -34,13 +34,13 @@ export class CourrierComponent implements OnInit {
 
   loadCourrierList() {
     this.courrierService.getAll()
-        .subscribe(
-            data => {
-                console.log("hello world !" + data);
-                this.dataSource = new MatTableDataSource<Courrier>(data);
-            },
-            error => console.log('loadCourrierList Method: ' + <any>error, 'alert alert-danger')
-        );
+      .subscribe(
+      data => {
+        console.log("hello world !" + data);
+        this.dataSource = new MatTableDataSource<Courrier>(data);
+      },
+      error => console.log('loadCourrierList Method: ' + <any>error, 'alert alert-danger')
+      );
   }
 
   applyFilter(filterValue: string) {
@@ -51,7 +51,7 @@ export class CourrierComponent implements OnInit {
 
   openAddDialog(): void {
     let dialogRef1 = this.dialog.open(AddCourrierDialog, { data: { title: 'First Dialog' } });
-  
+
     dialogRef1.afterClosed().subscribe(result => {
       console.log('The dialog 1 was closed');
     });
@@ -59,22 +59,22 @@ export class CourrierComponent implements OnInit {
 
   openUpdateDialog(): void {
     let dialogRef1 = this.dialog.open(UpdateCourrierDialog, { data: { title: 'First Dialog' } });
-  
+
     dialogRef1.afterClosed().subscribe(result => {
       console.log('The dialog 1 was closed');
     });
   }
 
-  
+
 
 }
 
 @Component({
   selector: 'add-courrier-dialog',
-  templateUrl : './add-courrier-dialog.html'
+  templateUrl: './add-courrier-dialog.html'
 })
 export class AddCourrierDialog {
-  
+
   constructor(public dialogRef: MatDialogRef<AddCourrierDialog>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
   }
@@ -87,10 +87,10 @@ export class AddCourrierDialog {
 }
 @Component({
   selector: 'update-courrier-dialog',
-  templateUrl : './update-courrier-dialog.html'
+  templateUrl: './update-courrier-dialog.html'
 })
 export class UpdateCourrierDialog {
-  
+
   constructor(public dialogRef: MatDialogRef<AddCourrierDialog>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
   }

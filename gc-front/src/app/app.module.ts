@@ -1,74 +1,76 @@
-import { BrowserModule } from "@angular/platform-browser";
-import { NgModule } from "@angular/core";
-import { FormsModule } from "@angular/forms";
-import { RouterModule, Routes } from "@angular/router";
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
+import { RouterModule, Routes } from '@angular/router';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
-import { routing } from "./app.routing";
-import { AuthGuard } from "./_guards/index";
-
-import { AppComponent } from "./app.component";
-import { LoginComponent } from "./component/login/index";
-import { HomeComponent } from "./component/home/index";
-import { MenuComponent } from "./component/menu/index";
-
-import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
-import { EnregistrementComponent } from "./component/enregistrement/index";
-import { UsersComponent, UpdateUserDialog } from "./component/users/index";
-import { AddUserDialog } from "./component/users/users.component";
-import { ArchiveComponent } from "./component/archive/index";
-import { CourrierComponent } from "./component/courrier/index";
-import { AdministrationComponent } from "./component/administration/index";
-import { StatistiquesComponent } from "./component/statistiques/index";
-import { RechercheCourrierComponent } from "./component/recherche-courrier/index";
-
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import {
   MatTableModule,
   MatButtonModule,
   MatPaginatorModule,
+  MatSortModule,
   MatFormFieldModule,
   MatInputModule,
   MatSelectModule,
   MatOptionModule,
-  MatTabsModule
+  MatTabsModule,
+  MatIconModule,
+  MatDialogModule,
+  MatCheckboxModule
 } from '@angular/material';
 
-import { UserService, CourrierService, AuthenticationService, AlertService, EntiteService } from './_services/index';
-
-
-
-
-import { AddCourrierDialog } from './component/courrier/courrier.component';
-import { UpdateCourrierDialog } from './component/courrier/courrier.component';
-
-import { MatIconModule } from '@angular/material';
-import { MatDialogModule } from '@angular/material/dialog';
+import { routing } from './app.routing';
+import { AuthGuard } from './_guards/index';
 import { JwtInterceptor, fakeBackendProvider } from './_helpers/index';
-import { AlertComponent } from './_directives/index';
-import { EntiteComponent, AddEntiteDialog, UpdateEntiteDialog } from './component/entite/index';
+
+import { AppComponent } from './app.component';
+import { LoginComponent } from './component/login/index';
+import { HomeComponent } from './component/home/index';
+import { MenuComponent } from './component/menu/index';
+import { AdministrationComponent } from './component/administration/index';
+import { StatistiquesComponent } from './component/statistiques/index';
+import { RechercheCourrierComponent } from './component/recherche-courrier/index';
+import { EnregistrementComponent } from './component/enregistrement/index';
+import { ArchiveComponent } from './component/archive/index';
+
+import { UsersComponent, AddUserDialogComponent } from './component/users/index';
+import { CourrierComponent, AddCourrierDialog, UpdateCourrierDialog } from './component/courrier/index';
+import { EntiteComponent, AddEntiteDialogComponent, UpdateEntiteDialogComponent } from './component/entite/index';
+
+import {
+  UserService,
+  CourrierService,
+  AuthenticationService,
+  EntiteService
+} from './_services/index';
+import { ConfirmDialogsModule } from './_module/confirmdialog/ConfirmDialogsModule';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    MenuComponent,
     HomeComponent,
+    MenuComponent,
     EnregistrementComponent,
     RechercheCourrierComponent,
-    UsersComponent,
     ArchiveComponent,
-    CourrierComponent,
+
     AdministrationComponent,
     StatistiquesComponent,
-    AddUserDialog,
-    UpdateUserDialog,
-    AddEntiteDialog,
-    UpdateEntiteDialog,
-    AlertComponent,
+
+    UsersComponent,
+    AddUserDialogComponent,
+
     EntiteComponent,
-    AddCourrierDialog, 
-    UpdateCourrierDialog,   
-    AlertComponent
+    AddEntiteDialogComponent,
+    UpdateEntiteDialogComponent,
+
+    CourrierComponent,
+    AddCourrierDialog,
+    UpdateCourrierDialog,
+
   ],
   imports: [
     BrowserModule,
@@ -79,39 +81,41 @@ import { EntiteComponent, AddEntiteDialog, UpdateEntiteDialog } from './componen
     MatTableModule,
     MatButtonModule,
     MatPaginatorModule,
+    MatSortModule,
     MatFormFieldModule,
     MatInputModule,
     MatDialogModule,
     MatSelectModule,
     MatOptionModule,
     MatTabsModule,
-    MatIconModule
+    MatIconModule,
+    MatCheckboxModule,
+    ConfirmDialogsModule
   ],
   providers: [
     AuthGuard,
-    AlertService,
     AuthenticationService,
     UserService,
+    EntiteService,
     CourrierService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: JwtInterceptor,
       multi: true
     },
-    EntiteService,
-
     // provider used to create fake backend
     fakeBackendProvider
   ],
- 
+
   entryComponents: [
-    AddUserDialog,
-    UpdateUserDialog,
-    AddEntiteDialog, 
-    UpdateEntiteDialog,
+    AddUserDialogComponent,
+
+    AddEntiteDialogComponent,
+    UpdateEntiteDialogComponent,
+
     AddCourrierDialog,
     UpdateCourrierDialog
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

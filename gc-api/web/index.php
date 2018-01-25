@@ -20,7 +20,7 @@ $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
             'host'      => 'localhost',
             'dbname'    => 'gc_db',
             'user'      => 'root',
-            'password'  => '',
+            'password'  => '1234',
             'charset'   => 'utf8',
         )
     ),
@@ -226,10 +226,24 @@ $app->get('/supprimerCourrier/{id}', function ($id) use ($app) {
  * @apiSuccess {String[]} des Objets Utilisateurs dans un Objet JSON
  * @apiSuccessExample Success-Response:
  *     {
- *       {id: 1, login: "login", nom: "nom", prenom: "prenom", email: "email", mot_passe: "mot_passe", role: "role", entite: "entite"};
- *     }
- @apiError ListeUtilisateursVide 'La liste des utilisateurs est vide' si aucun utilisateur n a été insérer.
- * @apiErrorExample Error-Response:
+ *       {
+ *          id: 1, 
+ *          login: "login", 
+ *          nom: "nom", 
+ *          prenom: "prenom", 
+ *          email: "email", 
+ *          mot_passe: "", 
+ *          role: "role", 
+ *          entite: {
+ *                      id:2,
+ *                      id_parent:1,
+ *                      type:"type",
+ *                      nom:"nom"
+ *                  }
+ *      };
+ *    }
+ *@apiError ListeUtilisateursVide 'La liste des utilisateurs est vide' si aucun utilisateur n a été insérer.
+ *@apiErrorExample Error-Response:
  *     {
  *			"operation": "ko",
  *			"erreur": "ListeUtilisateursVide",
@@ -242,23 +256,44 @@ $app->get('/supprimerCourrier/{id}', function ($id) use ($app) {
 
 $app->get('/listUsers/', function() use ($app){
 	//SELECT u.id,login,u.nom,prenom,email,mot_passe,role,id_entite FROM utilisateur u,entite e WHERE e.id = u.id_entite 
-    $sql = "SELECT u.id,login,u.nom,prenom,email,mot_passe,role,id_entite FROM utilisateur u,entite e WHERE e.id = u.id_entite";
-    $users = $app['db']->fetchAssoc($sql,array());
+    $sql = "
+        SELECT
+            u.id,
+            u.login,
+            u.nom,
+            u.prenom,
+            u.email,
+            u.role,
+            e.id idE ,
+            e.id_parent,
+            e.type,
+            e.nom nomE
+        FROM
+            utilisateur u
+        LEFT JOIN 
+            entite e ON e.id = u.id_entite
+        ";
+    $users = $app['db']->fetchAll($sql,array());
     if(is_null($users)){
     	$response = array('operation' => 'ko' , 'erreur' => "La liste des utilisateurs est vide. Aucun utilisateur n'est ajouté !!");
 		return $app->json($reponse);
     }
     $response = [];
-    foreach ($users as $utilisateur) {
+    foreach ($users as $u) {
         $response[] = [
-			'id' => $users['id'],
-            'login' => $users['login'],
-            'nom' => $users['nom'],
-            'prenom' => $users['prenom'],
-            'email' => $users['email'],
-            'mot_passe' => $users['mot_passe'],
-            'role' => $users['role'],
-            'id_entite' => $users['id_entite']
+			'id' => $u['id'],
+            'login' => $u['login'],
+            'nom' => $u['nom'],
+            'prenom' => $u['prenom'],
+            'email' => $u['email'],
+            'mot_passe' => '',
+            'role' => $u['role'],
+            'entite' =>[
+                'id'=>$u['idE'],
+                'id_parent'=>$u['id_parent'],
+                'type'=>$u['type'],
+                'nom'=>$u['nomE'],
+            ]
         ];
     }
     return $app->json($response);
