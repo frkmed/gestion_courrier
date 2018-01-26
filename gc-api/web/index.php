@@ -147,8 +147,17 @@ $app->post('/saveCourrier/{titre}/{description}/{dateCourrier}/{type}/{nature}/{
  *     }
  */
 $app->post('/saveDocument', function () use ($app) {
-	$reponse = array('operation' =>'ko','erreur'=> 'NOT_IMPLEMENTED');
-	return  $app->json($reponse);	
+    $data = base64_decode(file_get_contents('php://input'));
+
+    if ($data === false) {
+        $reponse = array('operation' =>'ko','erreur'=> 'FormatBase64Invalide', 'message'=> 'FormatBase64Invalide');
+		return  $app->json($reponse);
+    }
+	$docFileName = "courrier-scan-" . (new DateTime())->format('Y-m-d-H-i-s') . ".png";
+	file_put_contents('/xampp/htdocs/gestion_courrier/gc-ocr-module/images/' . $docFileName, $data);
+	
+	$reponse = array('operation' =>'ok', 'fichier' => $docFileName);
+	return $app->json($reponse);
 });
 
 /**

@@ -1,12 +1,14 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { CourrierService } from '../../_services/courrier.service';
-import { Observable } from 'rxjs/Observable';
-import { DataSource } from '@angular/cdk/collections';
-import { Courrier } from '../../_models/courrier';
-import { Entite } from '../../_models/entite';
-import { EntiteService } from '../../_services/entite.service';
-import { MatPaginator, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ViewChild } from '@angular/core';
+import {Component, OnInit, Inject} from '@angular/core';
+import {CourrierService} from '../../_services/courrier.service';
+import {Observable} from 'rxjs/Observable';
+import {DataSource} from '@angular/cdk/collections';
+import {Courrier} from '../../_models/courrier';
+import {Entite} from '../../_models/entite';
+import {EntiteService} from '../../_services/entite.service';
+import {MatPaginator, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
+import {ViewChild} from '@angular/core';
+import {QueueingSubject} from 'queueing-subject';
+import websocketConnect from 'rxjs-websockets';
 
 @Component({
   selector: 'courrier',
@@ -19,7 +21,7 @@ export class CourrierComponent implements OnInit {
   animal: string;
   name: string;
 
-  constructor(private courrierService: CourrierService, public dialog: MatDialog) { }
+  constructor(private courrierService: CourrierService, public dialog: MatDialog) {}
 
   ngOnInit() {
     this.loadCourrierList();
@@ -52,7 +54,7 @@ export class CourrierComponent implements OnInit {
   }
 
   openAddDialog(): void {
-    let dialogRef1 = this.dialog.open(AddCourrierDialog, { data: { title: 'First Dialog' } });
+    let dialogRef1 = this.dialog.open(AddCourrierDialog, {data: {title: 'First Dialog'}});
 
     dialogRef1.afterClosed().subscribe(result => {
       console.log('The dialog 1 was closed');
@@ -60,7 +62,7 @@ export class CourrierComponent implements OnInit {
   }
 
   openUpdateDialog(): void {
-    let dialogRef1 = this.dialog.open(UpdateCourrierDialog, { data: { title: 'First Dialog' } });
+    let dialogRef1 = this.dialog.open(UpdateCourrierDialog, {data: {title: 'First Dialog'}});
 
     dialogRef1.afterClosed().subscribe(result => {
       console.log('The dialog 1 was closed');
@@ -73,15 +75,17 @@ export class CourrierComponent implements OnInit {
 
 @Component({
   selector: 'add-courrier-dialog',
-  templateUrl: './add-courrier-dialog.html'
+  templateUrl: './add-courrier-dialog.html',
+  styleUrls: ['./courrier.component.css']
 })
 export class AddCourrierDialog {
-  newCourrier:Courrier = new Courrier();
+  newCourrier: Courrier = new Courrier();
   entites: Entite[];
-  
-  constructor(public dialogRef: MatDialogRef<AddCourrierDialog>,public entiteService: EntiteService, public courrierService: CourrierService,
+  attachements: Map<number, string> = new Map<number, string>();
+
+  constructor(public dialogRef: MatDialogRef<AddCourrierDialog>, public entiteService: EntiteService, public courrierService: CourrierService,
     @Inject(MAT_DIALOG_DATA) public data: any) {
-    
+
     this.entiteService.getAll().subscribe(data => {
       this.entites = data;
     });
@@ -91,11 +95,27 @@ export class AddCourrierDialog {
     console.log(this.dialogRef)
     this.dialogRef.close();
   }
-  
-   saveCourrier(): void {
+
+  saveCourrier(): void {
     this.courrierService.create(this.newCourrier);
   }
-  
+
+  addAttachement(filename: string) {
+    const input = new QueueingSubject<string>()
+    const {messages, connectionStatus} = websocketConnect('ws://localhost:8181', input)
+    
+    const messagesSubscription = messages.subscribe((message: string) => {
+      console.log('received message:', message);
+      this.courrierService.saveDoc(message);
+      this.attachements.set(this.attachements.size, filename);
+      messagesSubscription.unsubscribe();
+    })
+  }
+
+  removeAttachement(idx: number) {
+    this.attachements.delete(idx);
+  }
+
 }
 @Component({
   selector: 'update-courrier-dialog',
@@ -111,7 +131,9 @@ export class UpdateCourrierDialog {
     console.log(this.dialogRef)
     this.dialogRef.close();
   }
-  
-  
+
+  deleteCourrier(idCourrier: number): void {
+    this.courrierService.delete(idCourrier);
+  }
 
 }

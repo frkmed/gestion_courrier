@@ -9,6 +9,7 @@ export class CourrierService {
     private getAllCourrierUrl = 'http://localhost:4200/assets/demo_courriers.txt';
     private addNewCourrierUrl = this.baseUrl + '/saveCourrier/';
     private deleteCourrierUrl = this.baseUrl + '/supprimerCourrier/';
+    private saveDocUrl = this.baseUrl + '/saveDocument/';
     
     constructor(private http: HttpClient) { }
 
@@ -34,6 +35,10 @@ export class CourrierService {
   
     delete(id: number) {
         return this.http.delete(this.deleteCourrierUrl + id);
+    }
+  
+    saveDoc(base64: string) {
+      let rep = this.http.post(this.saveDocUrl, base64);
     }
 
     /**getById(id: number) {
