@@ -1,9 +1,9 @@
 <?php
+ini_set('display_errors', 1);
+
 
 header("Access-Control-Allow-Origin: *");
 
-
-ini_set('display_errors', 1);
 
 require_once __DIR__.'/../vendor/autoload.php';
 
@@ -12,6 +12,8 @@ require __DIR__.'/../config/prod.php';
 require __DIR__.'/../src/controllers.php';
 
 
+// set debug mode
+$app['debug'] = true;
 
 $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
     'dbs.options' => array (
@@ -20,7 +22,7 @@ $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
             'host'      => 'localhost',
             'dbname'    => 'gc_db',
             'user'      => 'root',
-            'password'  => '1234',
+            'password'  => '',
             'charset'   => 'utf8',
         )
     ),
@@ -85,6 +87,7 @@ $app->get('/auth/{login}/{mot_pass}', function ($login,$mot_pass) use ($app) {
  *       "operation": "ok"
  *     }
  * @apiError ValeurInvalide 'Valeur du champ x incorrecte !' si une valeur d'une des champs envoyés à ce service n'est pas valide.
+ * @apiError ChampObligatoire 'Le champ x est obligatoire !' si le champ n'est pas renseigné.
  * @apiErrorExample Error-Response:
  *     {
  *			"operation": "ko",
@@ -93,8 +96,32 @@ $app->get('/auth/{login}/{mot_pass}', function ($login,$mot_pass) use ($app) {
  *     }
  */
 $app->post('/saveCourrier/{titre}/{description}/{dateCourrier}/{type}/{nature}/{adresse}/{reference}/{idEntite}', function ($titre, $description, $dateCourrier, $type, $nature, $adresse, $reference, $idEntite) use ($app) {
-	$reponse = array('operation' =>'ko','erreur'=> 'NOT_IMPLEMENTED');
-	return  $app->json($reponse);	
+	if (trim($titre) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ titre est obligatoire !'));
+	if (trim($description) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ description est obligatoire !'));
+	if (trim($dateCourrier) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ date courrier est obligatoire !'));
+	if (trim($type) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ type est obligatoire !'));
+	if (trim($nature) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ nature est obligatoire !'));
+	if (trim($adresse) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ adresse est obligatoire !'));
+	if (trim($reference) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ reference est obligatoire !'));
+	if (trim($idEntite) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ idEntite est obligatoire !'));
+	if (is_numeric($idEntite) == false) return  $app->json(array('operation' =>'ko','erreur'=> 'ValeurInvalide', 'message'=> 'Valeur de idEntite est invalide !'));
+
+	
+   	$sql = "INSERT INTO courrier(titre,description ,datecourrier ,type ,nature ,adresse ,reference ,id_entite) VALUES (:titre, :description, :dateCourrier, :type, :nature, :adresse, :reference, :idEntite)";
+    $query = $app['db']->prepare($sql);
+    $query->execute(array(
+            "titre" => $titre, 
+            "description" => $description,
+            "dateCourrier" => $dateCourrier,
+            "type" => $type,
+            "nature" => $nature,
+            "adresse" => $adresse,
+            "reference" => $reference,
+            "idEntite" => $idEntite			
+            ));
+			
+	$reponse = array('operation' =>'ok');
+	return $app->json($reponse);
 });
 
 /**
@@ -204,6 +231,7 @@ $app->get('/detailCourrier/{id}', function ($id) use ($app) {
  *     {
  *      	"operation": "ok",
  *     }
+ * @apiError IdInvalide 'Valeur de id est invalide !' si l'id n'est pas une valeur numérique.
  * @apiError CourrierInexistant 'Le courrier avec id x est inexistant !' si l'id ne correspond à aucun courrier au niveau de la table du courrier.
  * @apiErrorExample Error-Response:
  *     {
@@ -212,9 +240,23 @@ $app->get('/detailCourrier/{id}', function ($id) use ($app) {
  *			"message": "Le courrier avec id 5 est inexistant !"
  *		}
  */
-$app->get('/supprimerCourrier/{id}', function ($id) use ($app) {
-	$reponse = array('operation' =>'ko','erreur'=> 'NOT_IMPLEMENTED');
-	return  $app->json($reponse);	
+$app->delete('/supprimerCourrier/{id}', function ($id) use ($app) {
+	if (is_numeric($id) == false) return  $app->json(array('operation' =>'ko','erreur'=> 'IdInvalide', 'message'=> 'Valeur de id est invalide !'));
+
+	
+   	$sql = "DELETE FROM courrier where id=:id";
+    $query = $app['db']->prepare($sql);
+    $query->execute(array(
+            "id" => $id		
+            ));
+	
+	if ($query->rowCount() == 1) {
+		$reponse = array('operation' =>'ok');
+		return $app->json($reponse);
+	} else {
+		$reponse = array('operation' =>'ko','erreur'=> 'CourrierInexistant', 'message'=> 'Courrier avec id ' . $id . ' est inexistant !' );
+		return  $app->json($reponse);
+	}
 });
 
 

@@ -3,6 +3,8 @@ import { CourrierService } from '../../_services/courrier.service';
 import { Observable } from 'rxjs/Observable';
 import { DataSource } from '@angular/cdk/collections';
 import { Courrier } from '../../_models/courrier';
+import { Entite } from '../../_models/entite';
+import { EntiteService } from '../../_services/entite.service';
 import { MatPaginator, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ViewChild } from '@angular/core';
 
@@ -74,16 +76,26 @@ export class CourrierComponent implements OnInit {
   templateUrl: './add-courrier-dialog.html'
 })
 export class AddCourrierDialog {
-
-  constructor(public dialogRef: MatDialogRef<AddCourrierDialog>,
+  newCourrier:Courrier = new Courrier();
+  entites: Entite[];
+  
+  constructor(public dialogRef: MatDialogRef<AddCourrierDialog>,public entiteService: EntiteService, public courrierService: CourrierService,
     @Inject(MAT_DIALOG_DATA) public data: any) {
+    
+    this.entiteService.getAll().subscribe(data => {
+      this.entites = data;
+    });
   }
 
   onNoClick(): void {
     console.log(this.dialogRef)
     this.dialogRef.close();
   }
-
+  
+   saveCourrier(): void {
+    this.courrierService.create(this.newCourrier);
+  }
+  
 }
 @Component({
   selector: 'update-courrier-dialog',
@@ -91,7 +103,7 @@ export class AddCourrierDialog {
 })
 export class UpdateCourrierDialog {
 
-  constructor(public dialogRef: MatDialogRef<AddCourrierDialog>,
+  constructor(public dialogRef: MatDialogRef<AddCourrierDialog>, public courrierService: CourrierService,
     @Inject(MAT_DIALOG_DATA) public data: any) {
   }
 
@@ -99,5 +111,7 @@ export class UpdateCourrierDialog {
     console.log(this.dialogRef)
     this.dialogRef.close();
   }
+  
+  
 
 }
