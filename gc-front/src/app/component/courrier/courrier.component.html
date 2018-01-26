@@ -1,3 +1,53 @@
-<p>
-  courrier works!
-</p>
+
+            <div class="row">
+                <div class="col-md-6 text-left">
+                    <button mat-button (click)="openAddDialog()">Enregistrer un courrier</button>
+                </div>
+
+                <div class="col-md-6 text-right">
+                    <mat-form-field class="example-full-width">
+                        <input matInput placeholder="Rechercher">
+                        <mat-icon matSuffix>search</mat-icon>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div>
+                            <div class="example-header">
+                                    <mat-form-field>
+                                        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+                                    </mat-form-field>
+                                </div>
+                        <mat-table [dataSource]="dataSource">
+                            <ng-container matColumnDef="reference">
+                                <mat-header-cell *matHeaderCellDef>Référence</mat-header-cell>
+                                <mat-cell *matCellDef="let courrier">
+                                    <button mat-button (click)="openUpdateDialog()">{{courrier.reference}}</button>
+                                </mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="titre">
+                                <mat-header-cell *matHeaderCellDef>Titre</mat-header-cell>
+                                <mat-cell *matCellDef="let courrier">{{courrier.titre}}</mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="type">
+                                <mat-header-cell *matHeaderCellDef>Type</mat-header-cell>
+                                <mat-cell *matCellDef="let courrier">{{courrier.type}}</mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="dateCourrier">
+                                    <mat-header-cell *matHeaderCellDef>Date</mat-header-cell>
+                                    <mat-cell *matCellDef="let courrier">{{courrier.dateCourrier}}</mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="nature">
+                                <mat-header-cell *matHeaderCellDef>Nature</mat-header-cell>
+                                <mat-cell *matCellDef="let courrier">{{courrier.nature}}</mat-cell>
+                            </ng-container>
+                            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                            <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+                        </mat-table>
+                        <mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]">
+                        </mat-paginator>
+                    </div>
+                </div>
+            </div>
+ 
