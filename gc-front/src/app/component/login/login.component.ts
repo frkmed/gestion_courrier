@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
     this.user.nom = 'admin';
     this.user.prenom = 'admin';
     this.user.login = 'admin';
-    this.user.password = 'admin';
+    this.user.mot_passe = 'admin';
     localStorage.setItem('currentUser', JSON.stringify(this.user));
 
     // get return url from route parameters or default to '/'

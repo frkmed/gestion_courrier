@@ -7,7 +7,7 @@ export class User {
     prenom: string;
     email: string;
     role: string;
-    password: string;
+    mot_passe: string;
     entite: Entite;
 }
 

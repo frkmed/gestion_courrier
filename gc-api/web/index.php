@@ -1,7 +1,16 @@
 <?php
-
 header("Access-Control-Allow-Origin: *");
+header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, DELETE, PUT');
+// Access-Control headers are received during OPTIONS requests
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
+        header("Access-Control-Allow-Methods: GET, POST,OPTIONS");
 
+    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
+        header("Access-Control-Allow-Headers:        {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
+
+    exit(0);
+}
 
 ini_set('display_errors', 1);
 
@@ -11,7 +20,17 @@ $app = require __DIR__.'/../src/app.php';
 require __DIR__.'/../config/prod.php';
 require __DIR__.'/../src/controllers.php';
 
+use Silex\Application, Symfony\Component\HttpFoundation\Request;
 
+$app->before(function(Request $request, Application $app) {
+    if (($request->isMethod('POST') || $request->isMethod('OPTIONS') || $request->isMethod('PUT')) && strpos($request->headers->get('Content-Type'), 'application/json') === 0) {
+        $request->request->set('data', json_decode($request->getContent(), true) ?: []);
+    }
+});
+
+$app->register(new Silex\Provider\MonologServiceProvider(), array(
+    'monolog.logfile' => __DIR__.'/development.log',
+));
 
 $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
     'dbs.options' => array (
@@ -26,6 +45,10 @@ $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
     ),
 ));
 
+function getDataFromRequest(Request $request)
+{
+    return $request->request->get('data');
+}
 
 /**
  * @api {get} /auth/:login/:mot_pass Authentification d'un utilisateur
@@ -64,6 +87,204 @@ $app->get('/auth/{login}/{mot_pass}', function ($login,$mot_pass) use ($app) {
     $reponse = array('operation' =>'ok');
 	return  $app->json($reponse);
 });
+
+/**
+ * @api {get} /listUsers Affichage de la liste des utilisateurs
+ * @apiName listUsers
+ * @apiGroup Utilisateurs
+ * 
+ * @apiSuccess {String[]} des Objets Utilisateurs dans un Objet JSON
+ * @apiSuccessExample Success-Response:
+ *     {
+ *       {
+ *          id: 1, 
+ *          login: "login", 
+ *          nom: "nom", 
+ *          prenom: "prenom", 
+ *          email: "email", 
+ *          mot_passe: "", 
+ *          role: "role", 
+ *          entite: {
+ *                      id:2,
+ *                      id_parent:1,
+ *                      type:"type",
+ *                      nom:"nom"
+ *                  }
+ *      };
+ *    }
+ *@apiError ListeUtilisateursVide 'La liste des utilisateurs est vide' si aucun utilisateur n a été insérer.
+ *@apiErrorExample Error-Response:
+ *     {
+ *			"operation": "ko",
+ *			"erreur": "ListeUtilisateursVide",
+ *			"message": "La liste des utilisateurs est vide. Aucun utilisateur n'est ajouté !"
+ *     }
+ */
+
+
+///////////////////////Test valide///////////////////////////////////
+
+$app->get('/listUsers/', function() use ($app){
+    $sql = "
+        SELECT
+            u.id,
+            u.login,
+            u.nom,
+            u.prenom,
+            u.email,
+            u.role,
+            e.id idE ,
+            e.id_parent,
+            e.type,
+            e.nom nomE
+        FROM
+            utilisateur u
+        LEFT JOIN 
+            entite e ON e.id = u.id_entite
+        ";
+    $users = $app['db']->fetchAll($sql,array());
+    if(is_null($users)){
+    	$response = array('operation' => 'ko' , 'erreur' => "La liste des utilisateurs est vide. Aucun utilisateur n'est ajouté !!");
+		return $app->json($reponse);
+    }
+    $response = [];
+    foreach ($users as $u) {
+        $response[] = [
+			'id' => $u['id'],
+            'login' => $u['login'],
+            'nom' => $u['nom'],
+            'prenom' => $u['prenom'],
+            'email' => $u['email'],
+            'mot_passe' => '',
+            'role' => $u['role'],
+            'entite' =>[
+                'id'=>$u['idE'],
+                'id_parent'=>$u['id_parent'],
+                'type'=>$u['type'],
+                'nom'=>$u['nomE'],
+            ]
+        ];
+    }
+    return $app->json($response);
+    });
+
+/**
+ * @api {post} /addUser/:login/:nom/:prenom/:email/:mot_passe/:role/:id_entite Ajouter un utilisateur
+ * @apiName addUser
+ * @apiGroup Utilisateurs
+ * 
+ * @apiParam {String} login Login de l'utilsateur.
+ * @apiParam {String} nom Nom de l'utilisateur.
+ * @apiParam {String} prenom Prenom de l'utilisateur.
+ * @apiParam {String} email Email de l'utilisateur.
+ * @apiParam {String} mot_passe Mot de passe de l'utilisateur.
+ * @apiParam {String} role Role de l'utilisateur.
+ * @apiParam {number} id_entite Identifiant de l'entité.
+ *
+ * @apiSuccess {String} Objet JSON avec "operation" : "Ajout réussi"
+ * @apiSuccessExample Success-Response:
+ *     {
+ *       "operation": "Ajout réussi"
+ *     }
+ * @apiError UtilisateurExiste 'L Utilisateur .$login existe déjà' si les données saisies concerne un utilisateur existant.
+ * @apiErrorExample Error-Response:
+ *     {
+ *			"operation": "ko",
+ *			"erreur": "UtilisateurExiste",
+ *			"message": "L Utilisateur .$login existe déjà"
+ *     }
+ */
+
+///////////////////////Test valide///////////////////////////////////
+
+$app->post('/addUser/', function(Request $request) use ($app){
+    $user=getDataFromRequest($request);
+    
+   $app['db']->insert('utilisateur', 
+                                array(
+                                    'login' => $user['login'],
+                                    'mot_passe'=> $user['mot_passe'],
+                                    'nom'=> $user['nom'],
+                                    'prenom'=> $user['prenom'],
+                                    'email'=> $user['email'],
+                                    'role'=> $user['role'],
+                                    'id_entite'=> $user['entite']['id']
+                                    )
+    );
+
+    $user['id']=$app['db']->lastInsertId();
+
+    $reponse = array('operation' =>'Ajout reussi.');
+    return  $app->json($user);     
+    /*$reponse = array('operation' => 'ko' , 'erreur' => "Utilisateur " .$login. " existant!!");
+    return $app->json($reponse);  */                         
+});
+
+
+/**
+ * @api {put} /updateUser/:id/:login/:nom/:prenom/:email/:mot_passe/:role/:id_entite Modifier un utilisateur
+ * @apiName updateUser
+ * @apiGroup Utilisateurs
+ * 
+ * @apiParam {number} id Identifiant de l'utilsateur.
+ * @apiParam {String} login Login de l'utilsateur.
+ * @apiParam {String} nom Nom de l'utilisateur.
+ * @apiParam {String} prenom Prenom de l'utilisateur.
+ * @apiParam {String} email Email de l'utilisateur.
+ * @apiParam {String} mot_passe Mot de passe de l'utilisateur.
+ * @apiParam {String} role Role de l'utilisateur.
+ * @apiParam {number} id_entite Identifiant de l'entité.
+ * 
+ * @apiSuccess {String} Objet JSON avec "operation" : "Modification réussite"
+ * @apiSuccessExample Success-Response:
+ *     {
+ *       "operation": "Modification réussite."
+ *     }
+ *
+ */
+
+$app->post('/updateUser/', function(Request $request) use ($app){
+        $user=getDataFromRequest($request);
+        $app['db']->update('utilisateur', 
+        array(
+            'login' => $user['login'],
+            'mot_passe'=> $user['mot_passe'],
+            'nom'=> $user['nom'],
+            'prenom'=> $user['prenom'],
+            'email'=> $user['email'],
+            'role'=> $user['role'],
+            'id_entite'=> $user['entite']['id']
+        ),
+        array('id' => $user['id'])
+        );
+       $reponse = array('operation' =>'Modification reussite');
+		return  $app->json($reponse);
+});
+
+/**
+ * @api {delete} /deleteUser/:id Supprimer un utilisateur
+ * @apiName deleteUser
+ * @apiGroup Utilisateurs
+ * 
+ * @apiParam {number} id Identifiant de l'utilsateur.
+ * 
+ * @apiSuccess {String} Objet JSON avec "operation" : "Suppression exécuté"
+ * @apiSuccessExample Success-Response:
+ *     {
+ *       "operation": "Suppression exécuté."
+ *     }
+ * 
+ */
+
+$app->post('/deleteUser/', function(Request $request) use ($app){
+    $user=getDataFromRequest($request);
+    print_r($user);
+    $app['db']->delete("utilisateur", array("id" => $user['id']));
+    $reponse = array('operation' =>'Suppression exécuté');
+   
+    return  $app->json($reponse);
+});
+
 
 /**
  * @api {post} /saveCourrier/:titre/:description/:dateCourrier/:type/:nature/:adresse/:reference/:idEntite Enregistrement d'un courrier
@@ -217,209 +438,6 @@ $app->get('/supprimerCourrier/{id}', function ($id) use ($app) {
 	return  $app->json($reponse);	
 });
 
-
-/**
- * @api {get} /listUsers Affichage de la liste des utilisateurs
- * @apiName listUsers
- * @apiGroup Utilisateurs
- * 
- * @apiSuccess {String[]} des Objets Utilisateurs dans un Objet JSON
- * @apiSuccessExample Success-Response:
- *     {
- *       {
- *          id: 1, 
- *          login: "login", 
- *          nom: "nom", 
- *          prenom: "prenom", 
- *          email: "email", 
- *          mot_passe: "", 
- *          role: "role", 
- *          entite: {
- *                      id:2,
- *                      id_parent:1,
- *                      type:"type",
- *                      nom:"nom"
- *                  }
- *      };
- *    }
- *@apiError ListeUtilisateursVide 'La liste des utilisateurs est vide' si aucun utilisateur n a été insérer.
- *@apiErrorExample Error-Response:
- *     {
- *			"operation": "ko",
- *			"erreur": "ListeUtilisateursVide",
- *			"message": "La liste des utilisateurs est vide. Aucun utilisateur n'est ajouté !"
- *     }
- */
-
-
-///////////////////////Test valide///////////////////////////////////
-
-$app->get('/listUsers/', function() use ($app){
-	//SELECT u.id,login,u.nom,prenom,email,mot_passe,role,id_entite FROM utilisateur u,entite e WHERE e.id = u.id_entite 
-    $sql = "
-        SELECT
-            u.id,
-            u.login,
-            u.nom,
-            u.prenom,
-            u.email,
-            u.role,
-            e.id idE ,
-            e.id_parent,
-            e.type,
-            e.nom nomE
-        FROM
-            utilisateur u
-        LEFT JOIN 
-            entite e ON e.id = u.id_entite
-        ";
-    $users = $app['db']->fetchAll($sql,array());
-    if(is_null($users)){
-    	$response = array('operation' => 'ko' , 'erreur' => "La liste des utilisateurs est vide. Aucun utilisateur n'est ajouté !!");
-		return $app->json($reponse);
-    }
-    $response = [];
-    foreach ($users as $u) {
-        $response[] = [
-			'id' => $u['id'],
-            'login' => $u['login'],
-            'nom' => $u['nom'],
-            'prenom' => $u['prenom'],
-            'email' => $u['email'],
-            'mot_passe' => '',
-            'role' => $u['role'],
-            'entite' =>[
-                'id'=>$u['idE'],
-                'id_parent'=>$u['id_parent'],
-                'type'=>$u['type'],
-                'nom'=>$u['nomE'],
-            ]
-        ];
-    }
-    return $app->json($response);
-    });
-
-/**
- * @api {post} /addUser/:login/:nom/:prenom/:email/:mot_passe/:role/:id_entite Ajouter un utilisateur
- * @apiName addUser
- * @apiGroup Utilisateurs
- * 
- * @apiParam {String} login Login de l'utilsateur.
- * @apiParam {String} nom Nom de l'utilisateur.
- * @apiParam {String} prenom Prenom de l'utilisateur.
- * @apiParam {String} email Email de l'utilisateur.
- * @apiParam {String} mot_passe Mot de passe de l'utilisateur.
- * @apiParam {String} role Role de l'utilisateur.
- * @apiParam {number} id_entite Identifiant de l'entité.
- *
- * @apiSuccess {String} Objet JSON avec "operation" : "Ajout réussi"
- * @apiSuccessExample Success-Response:
- *     {
- *       "operation": "Ajout réussi"
- *     }
- * @apiError UtilisateurExiste 'L Utilisateur .$login existe déjà' si les données saisies concerne un utilisateur existant.
- * @apiErrorExample Error-Response:
- *     {
- *			"operation": "ko",
- *			"erreur": "UtilisateurExiste",
- *			"message": "L Utilisateur .$login existe déjà"
- *     }
- */
-
-///////////////////////Test valide///////////////////////////////////
-
-$app->post('/addUser/{login}/{nom}/{prenom}/{email}/{mot_passe}/{role}/{id_entite}', function($login,$nom,$prenom,$email,$mot_passe,$role,$id_entite) use ($app){
-   	$sql = "INSERT INTO utilisateur(login,nom,prenom,email,mot_passe,role,id_entite) VALUES (:login,:nom,:prenom,:email,:mot_passe,:role,:id_entite)";
-    $query = $app['db']->prepare($sql);
-    $sql2 = "SELECT login,nom,prenom,email,role FROM utilisateur WHERE login=?";
-    	$users = $app['db']->fetchAssoc($sql2,array($login));
-    	if(empty($users)){    	
-       	$query->execute(array(
-            "login" => $login, 
-            "nom" => $nom,
-            "prenom" => $prenom,
-            "email" => $email,
-            "mot_passe" => $mot_passe,
-            "role" => $role,
-            "id_entite" => $id_entite
-            ));        
-        $reponse = array('operation' =>'Ajout reussi.');
-		return  $app->json($reponse);
-    	}else{
-		$reponse = array('operation' => 'ko' , 'erreur' => "Utilisateur " .$login. " existant!!");
-		return $app->json($reponse);		
-		}	
-});
-
-
-/**
- * @api {put} /updateUser/:id/:login/:nom/:prenom/:email/:mot_passe/:role/:id_entite Modifier un utilisateur
- * @apiName updateUser
- * @apiGroup Utilisateurs
- * 
- * @apiParam {number} id Identifiant de l'utilsateur.
- * @apiParam {String} login Login de l'utilsateur.
- * @apiParam {String} nom Nom de l'utilisateur.
- * @apiParam {String} prenom Prenom de l'utilisateur.
- * @apiParam {String} email Email de l'utilisateur.
- * @apiParam {String} mot_passe Mot de passe de l'utilisateur.
- * @apiParam {String} role Role de l'utilisateur.
- * @apiParam {number} id_entite Identifiant de l'entité.
- * 
- * @apiSuccess {String} Objet JSON avec "operation" : "Modification réussite"
- * @apiSuccessExample Success-Response:
- *     {
- *       "operation": "Modification réussite."
- *     }
- *
- */
-
-$app->put('/updateUser/{id}/{login}/{nom}/{prenom}/{email}/{mot_passe}/{role}/{id_entite}', function($id,$login,$nom,$prenom,$email,$mot_passe,$role,$entite) use ($app){
-
-    $sql = "UPDATE utilisateur SET login ='?', nom ='?', prenom ='?', email='?', mot_passe='?', role ='?', id_entite =? WHERE id =?";
-    $query = $app['db']->prepare($sql);
-    $query->execute(array(
-        "id" => $id,
-        "login" => $login,
-        "nom" => $nom,
-        "prenom" => $prenom,
-        "email" => $email,
-        "mot_passe" => $mot_passe,
-        "role" => $role,
-        "id_entite" => $id_entite
-    ));      
-    
-       $reponse = array('operation' =>'Modification reussite');
-		return  $app->json($reponse);
-});
-
-/**
- * @api {delete} /deleteUser/:id Supprimer un utilisateur
- * @apiName deleteUser
- * @apiGroup Utilisateurs
- * 
- * @apiParam {number} id Identifiant de l'utilsateur.
- * 
- * @apiSuccess {String} Objet JSON avec "operation" : "Suppression exécuté"
- * @apiSuccessExample Success-Response:
- *     {
- *       "operation": "Suppression exécuté."
- *     }
- * 
- */
-
-$app->delete('/deleteUser/{id}', function($id) use ($app){
-    $sql = "DELETE FROM utilisateur WHERE id = $id AND login != 'admin'";
-    $query = $app['db']->prepare($sql);
-   
-        $query->execute();
-        $reponse = array('operation' =>'Suppression exécuté');
-   
-    return  $app->json($reponse);
-});
-
-
-
 /**
  * @api {get} /listEntites/ Affichage de la liste des entités
  * @apiName listEntites
@@ -430,7 +448,7 @@ $app->delete('/deleteUser/{id}', function($id) use ($app){
  *     {
  *       {nom: "nom", type: "type"};
  *     }
- @apiError ListeEntitésVide 'La liste des entités est vide' si aucune entité n a été insérer.
+ * @apiError ListeEntitésVide 'La liste des entités est vide' si aucune entité n a été insérer.
  * @apiErrorExample Error-Response:
  *     {
  *			"operation": "ko",
@@ -441,22 +459,21 @@ $app->delete('/deleteUser/{id}', function($id) use ($app){
 
 $app->get('/listEntites/', function() use ($app){
     $sql = "SELECT id,nom,type FROM entite";
-    $entites = $app['db']->fetchAssoc($sql,array());
+    $entites = $app['db']->fetchAll($sql,array());
     if(is_null($entites)){
-    	$response = array('operation' => 'ko' , 'erreur' => "La liste des utilisateurs est vide. Aucun utilisateur n'est ajouté !!");
-		return $app->json($reponse);
+        $response = array('operation' => 'ko' , 'erreur' => "La liste des entities est vide. Aucun entite n'est ajouté !!");
+        return $app->json($reponse);
     }
     $response = [];
-    foreach ($entites as $entite) {
-        $response[] = [   
-        	'id' => $entites['id'],         
-            'nom' => $entites['nom'],
-            'type' => $entites['type']          
+    foreach ($entites as $u) {
+        $response[] = [
+            'id' => $u['id'],
+            'nom' => $u['nom'],
+            'type' => $u['type'],
         ];
     }
     return $app->json($response);
-    });
-
+});
 
 /**
  * @api {post} /addEntite/:nom/:type/:id_parent Ajouter une entité

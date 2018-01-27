@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpModule } from '@angular/http';
 
 import {
   MatTableModule,
@@ -17,7 +18,8 @@ import {
   MatTabsModule,
   MatIconModule,
   MatDialogModule,
-  MatCheckboxModule
+  MatCheckboxModule,
+  MatSnackBarModule
 } from '@angular/material';
 
 import { routing } from './app.routing';
@@ -45,6 +47,7 @@ import {
   EntiteService
 } from './_services/index';
 import { ConfirmDialogsModule } from './_module/confirmdialog/ConfirmDialogsModule';
+
 
 
 @NgModule({
@@ -76,6 +79,7 @@ import { ConfirmDialogsModule } from './_module/confirmdialog/ConfirmDialogsModu
     BrowserModule,
     FormsModule,
     HttpClientModule,
+    HttpModule,
     routing,
     BrowserAnimationsModule,
     MatTableModule,
@@ -90,7 +94,8 @@ import { ConfirmDialogsModule } from './_module/confirmdialog/ConfirmDialogsModu
     MatTabsModule,
     MatIconModule,
     MatCheckboxModule,
-    ConfirmDialogsModule
+    ConfirmDialogsModule,
+    MatSnackBarModule
   ],
   providers: [
     AuthGuard,
