@@ -1,0 +1,11 @@
+<h2 mat-dialog-title>
+    {{ title }}</h2>
+<hr>
+<mat-dialog-content>
+    <strong>{{message}}</strong>
+</mat-dialog-content>
+<hr>
+<mat-dialog-actions>
+    <button mat-raised-button (click)="dialogRef.close(true)" color="warn">CONFIRMER</button>&nbsp;
+    <button mat-raised-button (click)="dialogRef.close()">ANNULER</button>
+</mat-dialog-actions>

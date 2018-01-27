@@ -1,4 +1,4 @@
-<h1 mat-dialog-title>Détail</h1>
+<h1 mat-dialog-title>D&eacute;tail</h1>
 <div mat-dialog-content>
   <div class="row">
       <div class="col-md-12">
@@ -47,12 +47,12 @@
           <div class="row">
               <div class="col-md-6">
                 <mat-form-field style="width:100%">
-                    <input matInput placeholder="Référence" [(ngModel)]="data.animal">
+                    <input matInput placeholder="R&eacute;f&eacute;rence" [(ngModel)]="data.animal">
                   </mat-form-field>
                 </div>
                 <div class="col-md-6">
                     <mat-form-field>
-                        <mat-select placeholder="Entité">
+                        <mat-select placeholder="Entit&eacute;">
                             <mat-option>DRH</mat-option>
                             <mat-option value="option1">DRH/DPRC</mat-option>
                             <mat-option value="option2">DRH/DRPC/SAC</mat-option>
@@ -64,7 +64,7 @@
             </div>    
 </div>
 <div mat-dialog-actions>
-    <button class="col-lg-2"  mat-button (click)="onClick()" mat-raised-button color="warn">Supprimer</button>
+    <button class="col-lg-2"  mat-button (click)="deleteCourrier(4)" mat-raised-button color="warn">Supprimer</button>
     <button class="col-md-2"  mat-button (click)="onClick()" mat-raised-button color="primary" >Modifier</button>
     <button  class="col-md-2 ml-auto" mat-raised-button  mat-button [mat-dialog-close]="data.animal" cdkFocusInitial>Fermer</button>
 </div>

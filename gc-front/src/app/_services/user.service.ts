@@ -1,24 +1,35 @@
 ﻿import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {Observable} from 'rxjs/Observable';
+import { Observable } from 'rxjs/Observable';
 import { User } from '../_models/index';
 
 @Injectable()
 export class UserService {
     private serviceUrl = 'http://localhost:4200/assets/demo_users.txt';
+    private apiUrl = 'http://localhost:9090/gestion_courrier/gc-api/web/index.php/';
 
     constructor(private http: HttpClient) { }
 
-    getAll() : Observable<User[]> {
+    getAll(): Observable<User[]> {
         return this.http.get<User[]>(this.serviceUrl);
     }
-    
+
     getById(id: number) {
         return this.http.get('/api/users/' + id);
     }
 
     create(user: User) {
-        return this.http.post('http://localhost:9090/gestion_courrier/gc-api/web/index.php/addUser/' + user.login +'/'+ user.nom +'/'+ user.prenom +'/'+ user.email +'/' + user.password + '/' + user.role + '/' + user.id_entite,user);
+        return this.http.post(
+            this.apiUrl +
+            'addUser/' +
+            user.login + '/' +
+            user.nom + '/' +
+            user.prenom + '/' +
+            user.email + '/' +
+            user.password + '/' +
+            user.role + '/' ,
+            user
+        );
     }
 
     update(user: User) {
@@ -28,5 +39,4 @@ export class UserService {
     delete(id: number) {
         return this.http.delete('/api/users/' + id);
     }
-    
 }

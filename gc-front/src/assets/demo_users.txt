@@ -6,38 +6,234 @@
     "prenom": "admin",
     "email": "admin@gmail.com",
     "role": "Administrateur",
-    "id_entite": "1",
-     "nomEntite": "Informatique"
+    "entite":{
+      "id": 1,
+      "id_parent": 1,    
+      "nom": "Informatique",
+      "type": "Direction"    
+     }
   },
   {
     "id": 2,
+    "login": "eeee",    
+    "nom": "66",
+    "prenom": "Ahmed",
+    "email": "youssef@gmail.com",
+    "role": "Agent Secrétairiat",
+   "entite":{
+      "id": 2,
+      "id_parent": 2,    
+       "nom": "Exploitation Informatique",
+       "type": "Division"    
+     }
+  },
+  {
+    "id": 3,
     "login": "youssef",    
     "nom": "Youssef",
     "prenom": "Ahmed",
     "email": "youssef@gmail.com",
     "role": "Agent Secrétairiat",
-    "id_entite": "1",
-    "nomEntite": "Informatique"
+   "entite":{
+      "id": 2,
+      "id_parent": 2,    
+       "nom": "Exploitation Informatique",
+       "type": "Division"    
+     }
   },
   {
-    "id": 1,
-    "login": "youssef",    
-    "nom": "Youssef",
-    "prenom": "Ahmed",
-    "email": "youssef@gmail.com",
-    "role": "Agent Secrétairiat",
-    "id_entite": "2",
-    "nomEntite": "RH"
-  },
-  {
-    "id": 1,
+    "id": 4,
     "login": "youssef",    
     "nom": "Youssef",
     "prenom": "Ahmed",
     "email": "youssef@gmail.com",
     "role": "Responsable",
-    "id_entite": "2",
-     "nomEntite": "RH"
+   "entite":{
+      "id": 2,
+      "id_parent": 2,    
+       "nom": "Exploitation Informatique",
+       "type": "Division"    
+     }
   }
+  ,
+  {
+    "id": 4,
+    "login": "youssef",    
+    "nom": "Youssef",
+    "prenom": "Ahmed",
+    "email": "youssef@gmail.com",
+    "role": "Responsable",
+    "entite":{
+      "id": 2,
+      "id_parent": 2,    
+       "nom": "Exploitation Informatique",
+       "type": "Division"    
+     }
+  }
+  ,
+  {
+    "id": 4,
+    "login": "youssef",    
+    "nom": "Youssef",
+    "prenom": "Ahmed",
+    "email": "youssef@gmail.com",
+    "role": "Responsable",
+    "entite":{
+      "id": 2,
+      "id_parent": 2,    
+       "nom": "Exploitation Informatique",
+       "type": "Division"    
+     }
+  }
+  ,
+  {
+    "id": 4,
+    "login": "youssef",    
+    "nom": "Youssef",
+    "prenom": "Ahmed",
+    "email": "youssef@gmail.com",
+    "entite":{
+      "id": 2,
+      "id_parent": 2,    
+       "nom": "Exploitation Informatique",
+       "type": "Division"    
+     }
+  }
+  ,
+  {
+    "id": 4,
+    "login": "youssef",    
+    "nom": "Youssef",
+    "prenom": "Ahmed",
+    "email": "youssef@gmail.com",
+    "role": "Responsable",
+    "entite":{
+      "id": 2,
+      "id_parent": 2,    
+       "nom": "Exploitation Informatique",
+       "type": "Division"    
+     }
+  }
+  ,
+  {
+    "id": 4,
+    "login": "youssef",    
+    "nom": "Youssef",
+    "prenom": "Ahmed",
+    "email": "youssef@gmail.com",
+    "role": "Responsable",
+   "entite":{
+      "id": 2,
+      "id_parent": 2,    
+       "nom": "Exploitation Informatique",
+       "type": "Division"    
+     }
+  }
+  ,
+  {
+    "id": 4,
+    "login": "youssef",    
+    "nom": "Youssef",
+    "prenom": "Ahmed",
+    "email": "youssef@gmail.com",
+    "role": "Responsable",
+   "entite":{
+      "id": 2,
+      "id_parent": 2,    
+       "nom": "Exploitation Informatique",
+       "type": "Division"    
+     }
+  }
+  ,
+  {
+    "id": 4,
+    "login": "youssef",    
+    "nom": "Youssef",
+    "prenom": "Ahmed",
+    "email": "youssef@gmail.com",
+    "role": "Responsable",
+   "entite":{
+      "id": 2,
+      "id_parent": 2,    
+       "nom": "Exploitation Informatique",
+       "type": "Division"    
+     }
+  }
+  ,
+  {
+    "id": 4,
+    "login": "youssef",    
+    "nom": "Youssef",
+    "prenom": "Ahmed",
+    "email": "youssef@gmail.com",
+    "role": "Responsable",
+   "entite":{
+      "id": 2,
+      "id_parent": 2,    
+       "nom": "Exploitation Informatique",
+       "type": "Division"    
+     }
+  }
+  ,
+  {
+    "id": 4,
+    "login": "youssef",    
+    "nom": "Youssef",
+    "prenom": "Ahmed",
+    "email": "youssef@gmail.com",
+    "role": "Responsable",
+    "entite":{
+      "id": 2,
+      "id_parent": 2,    
+       "nom": "Exploitation Informatique",
+       "type": "Division"    
+     }
+  }
+  ,
+  {
+    "id": 4,
+    "login": "youssef",    
+    "nom": "Youssef",
+    "prenom": "Ahmed",
+    "email": "youssef@gmail.com",
+    "role": "Responsable",
+   "entite":{
+      "id": 2,
+      "id_parent": 2,    
+       "nom": "Exploitation Informatique",
+       "type": "Division"    
+     }
+  }
+  ,
+  {
+    "id": 4,
+    "login": "youssef",    
+    "nom": "Youssef",
+    "prenom": "Ahmed",
+    "email": "youssef@gmail.com",
+    "role": "Responsable",
+   "entite":{
+      "id": 2,
+      "id_parent": 2,    
+       "nom": "Exploitation Informatique",
+       "type": "Division"    
+     }
+  }
+  ,
+  {
+    "id": 4,
+    "login": "youssef",    
+    "nom": "Youssef",
+    "prenom": "Ahmed",
+    "email": "youssef@gmail.com",
+    "role": "Responsable",
+    "entite":{
+      "id": 2,
+      "id_parent": 2,    
+       "nom": "Exploitation Informatique",
+       "type": "Division"    
+     }
+  }
+  
   
 ]

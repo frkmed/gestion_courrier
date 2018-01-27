@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { AlertService, AuthenticationService } from '../../_services/index';
+
 import { User } from '../../_models/index';
+import { AuthenticationService } from '../../_services/index';
 
 @Component({
   selector: 'app-login',
@@ -18,33 +19,31 @@ export class LoginComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private authenticationService: AuthenticationService,
-    private alertService: AlertService) {
+    private authenticationService: AuthenticationService) {
   }
 
   ngOnInit() {
     // reset login status
     this.authenticationService.logout();
-    /*this.user.id = 2;
-    this.user.firstName = 'admin';
-    this.user.lastName = 'admin';
-    this.user.username = 'admin';
+    this.user.id = 2;
+    this.user.nom = 'admin';
+    this.user.prenom = 'admin';
+    this.user.login = 'admin';
     this.user.password = 'admin';
     localStorage.setItem('currentUser', JSON.stringify(this.user));
-*/
+
     // get return url from route parameters or default to '/'
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
   login() {
     this.loading = true;
-    this.authenticationService.login(this.model.username, this.model.password)
+    this.authenticationService.login(this.model.login, this.model.password)
       .subscribe(
       data => {
         this.router.navigate([this.returnUrl]);
       },
       error => {
-        this.alertService.error(error);
         this.loading = false;
       });
   }

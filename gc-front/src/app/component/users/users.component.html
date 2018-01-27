@@ -1,49 +1,52 @@
 <div class="row">
-    <div class="col-md-12 text-left">
-        <button mat-button (click)="openDialog()">Ajouter un nouveau utilisateur</button>
-    </div>
-</div>
-<div class="row">
     <div class="col-md-12">
-        <div>
-                <div class="example-header">
-                        <mat-form-field>
-                            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
-                        </mat-form-field>
-                    </div>
-            <mat-table [dataSource]="dataSource">
-                <ng-container matColumnDef="login">
-                    <mat-header-cell *matHeaderCellDef>Nom d'utilisateur</mat-header-cell>
-                    <mat-cell *matCellDef="let user">
-                        <button mat-button (click)="updateDialog()">{{user.login}}</button>
-                    </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="nom">
-                    <mat-header-cell *matHeaderCellDef>Nom</mat-header-cell>
-                    <mat-cell *matCellDef="let user">{{user.nom}}</mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="prenom">
-                    <mat-header-cell *matHeaderCellDef>Prénom</mat-header-cell>
-                    <mat-cell *matCellDef="let user">{{user.prenom}}</mat-cell>
-                </ng-container>
-               
-                <ng-container matColumnDef="email">
-                        <mat-header-cell *matHeaderCellDef>E-mail</mat-header-cell>
-                        <mat-cell *matCellDef="let user">{{user.email}}</mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="role">
-                    <mat-header-cell *matHeaderCellDef>Rôle</mat-header-cell>
-                    <mat-cell *matCellDef="let user">{{user.role}}</mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="entite">
-                        <mat-header-cell *matHeaderCellDef>Entité</mat-header-cell>
-                        <mat-cell *matCellDef="let user">{{user.nomEntite}}</mat-cell>
-                    </ng-container>
-                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
-            </mat-table>
-            <mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]">
-            </mat-paginator>
-        </div>
+        <mat-form-field>
+            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+        </mat-form-field>
+        <button mat-fab color="warn" (click)="addDialog()">
+            <mat-icon>add</mat-icon>
+        </button>
+        <mat-table [dataSource]="dataSource" matSort>
+            <ng-container matColumnDef="login">
+                <mat-header-cell style="margin-left:40px;" *matHeaderCellDef mat-sort-header>Nom d'utilisateur</mat-header-cell>
+                <mat-cell style="margin-left:40px;" *matCellDef="let user">{{user.login}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="nom">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Nom</mat-header-cell>
+                <mat-cell *matCellDef="let user">{{user.nom}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="prenom">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Prénom</mat-header-cell>
+                <mat-cell *matCellDef="let user">{{user.prenom}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="email">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>E-mail</mat-header-cell>
+                <mat-cell *matCellDef="let user">{{user.email}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="role">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Rôle</mat-header-cell>
+                <mat-cell *matCellDef="let user">{{user.role}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="entite">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Entité</mat-header-cell>
+                <mat-cell *matCellDef="let user">{{user.entite.nom}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="action">
+                <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
+                <mat-cell *matCellDef="let user">
+                    <button mat-icon-button color="basic" (click)="updateDialog(user)">
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button color="warn" (click)="deleteconfirmDialog(user)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </mat-cell>
+            </ng-container>
+            <mat-header-row class="bg-warning" *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+        <mat-paginator #paginator [pageIndex]="0" [pageSize]="5" [pageSizeOptions]="[5, 10, 20]">
+        </mat-paginator>
     </div>
 </div>

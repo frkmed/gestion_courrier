@@ -1,0 +1,8 @@
+C:\Users\User\Documents\twain_scan_src\twain-cs-master\twaincs\source\twaincstool\source\bin\AnyCPU\Debug\TWAINCSToolkit.dll.config
+C:\Users\User\Documents\twain_scan_src\twain-cs-master\twaincs\source\twaincstool\source\bin\AnyCPU\Debug\TWAINCSToolkit.dll
+C:\Users\User\Documents\twain_scan_src\twain-cs-master\twaincs\source\twaincstool\source\bin\AnyCPU\Debug\TWAINCSToolkit.pdb
+C:\Users\User\Documents\twain_scan_src\twain-cs-master\twaincs\source\twaincstool\source\bin\AnyCPU\Debug\TWAIN.dll
+C:\Users\User\Documents\twain_scan_src\twain-cs-master\twaincs\source\twaincstool\source\bin\AnyCPU\Debug\TWAIN.pdb
+C:\Users\User\Documents\twain_scan_src\twain-cs-master\twaincs\source\twaincstool\source\obj\Debug\twaincstool.csprojResolveAssemblyReference.cache
+C:\Users\User\Documents\twain_scan_src\twain-cs-master\twaincs\source\twaincstool\source\obj\Debug\TWAINCSToolkit.dll
+C:\Users\User\Documents\twain_scan_src\twain-cs-master\twaincs\source\twaincstool\source\obj\Debug\TWAINCSToolkit.pdb

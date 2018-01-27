@@ -1,16 +1,17 @@
 ﻿import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {Observable} from 'rxjs/Observable';
+import { Observable } from 'rxjs/Observable';
 import { Entite } from '../_models/index';
 
 @Injectable()
 export class EntiteService {
-    private serviceUrl = 'http://localhost:9090/gestion_courrier/gc-api/web/index.php/listEntites/';
+    private serviceUrl = 'http://localhost:4200/assets/demo_entite.txt';
+    private apiUrl = 'http://localhost:9090/gestion_courrier/gc-api/web/index.php/listEntites/';
 
     constructor(private http: HttpClient) { }
 
-    getAll() : Observable<Entite[]> {
-        return this.http.get<Entite[]>(this.serviceUrl);       
+    getAll(): Observable<Entite[]> {
+        return this.http.get<Entite[]>(this.serviceUrl);
     }
 
     /**getById(id: number) {
