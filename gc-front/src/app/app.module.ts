@@ -17,7 +17,9 @@ import {
   MatTabsModule,
   MatIconModule,
   MatDialogModule,
-  MatCheckboxModule
+  MatCheckboxModule,
+  MatDatepickerModule,
+MatNativeDateModule
 } from '@angular/material';
 
 import { routing } from './app.routing';
@@ -45,6 +47,7 @@ import {
   EntiteService
 } from './_services/index';
 import { ConfirmDialogsModule } from './_module/confirmdialog/ConfirmDialogsModule';
+import { DatePipe } from "@angular/common";
 
 
 @NgModule({
@@ -90,9 +93,12 @@ import { ConfirmDialogsModule } from './_module/confirmdialog/ConfirmDialogsModu
     MatTabsModule,
     MatIconModule,
     MatCheckboxModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     ConfirmDialogsModule
   ],
   providers: [
+    DatePipe,
     AuthGuard,
     AuthenticationService,
     UserService,

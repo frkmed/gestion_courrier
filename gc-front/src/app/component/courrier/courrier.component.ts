@@ -4,6 +4,8 @@ import {Observable} from 'rxjs/Observable';
 import {DataSource} from '@angular/cdk/collections';
 import {Courrier} from '../../_models/courrier';
 import {Entite} from '../../_models/entite';
+import { SaveDocumentResponse } from "../../_responses";
+import { GenericResponse } from "../../_responses/genericresponse";
 import {EntiteService} from '../../_services/entite.service';
 import {MatPaginator, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 import {ViewChild} from '@angular/core';
@@ -18,8 +20,6 @@ import websocketConnect from 'rxjs-websockets';
 export class CourrierComponent implements OnInit {
   displayedColumns = ['reference', 'titre', 'type', 'dateCourrier', 'nature'];
   dataSource = new MatTableDataSource<any>();
-  animal: string;
-  name: string;
 
   constructor(private courrierService: CourrierService, public dialog: MatDialog) {}
 
@@ -97,7 +97,7 @@ export class AddCourrierDialog {
   }
 
   saveCourrier(): void {
-    this.courrierService.create(this.newCourrier);
+    this.courrierService.create(this.newCourrier, this.attachements);
   }
 
   addAttachement(filename: string) {
@@ -105,9 +105,11 @@ export class AddCourrierDialog {
     const {messages, connectionStatus} = websocketConnect('ws://localhost:8181', input)
     
     const messagesSubscription = messages.subscribe((message: string) => {
-      console.log('received message:', message);
-      this.courrierService.saveDoc(message);
-      this.attachements.set(this.attachements.size, filename);
+      
+      this.courrierService.saveDoc(message).subscribe((res:SaveDocumentResponse) => {
+        this.attachements.set(this.attachements.size, res.fichier);
+      });
+      
       messagesSubscription.unsubscribe();
     })
   }
