@@ -186,8 +186,33 @@ $app->post('/saveDocument', function () use ($app) {
  *     }
  */
 $app->get('/rechercherCourrier/{query}', function ($query) use ($app) {
-	$reponse = array('operation' =>'ko','erreur'=> 'NOT_IMPLEMENTED');
-	return  $app->json($reponse);	
+	$solrResponse = file_get_contents('http://localhost:8983/solr/courrier-data/select?q=' . $query);
+	$solrJson = json_decode($solrResponse);
+	
+	$docs = $solrJson->{'response'}->{'docs'};
+	$idCourrierArray = array();
+	foreach ($docs as $doc) {
+		if (!in_array($doc->{'id_courrier'}[0], $idCourrierArray)) {
+			array_push($idCourrierArray, $doc->{'id_courrier'}[0]);
+		}
+	}
+	
+	if (count($idCourrierArray) > 0) {
+		$sql = "SELECT * FROM courrier WHERE id in (";
+		$sep = "";
+		foreach ($idCourrierArray as $e) {
+			$sql .= $sep . $e;
+			$sep = ',';
+		}
+		$sql .= ")";
+		$results = $app['db']->fetchAll($sql, array());
+		$reponse = array('operation' =>'ok','resultat'=> $results);
+		return  $app->json($reponse);
+	} else {
+		$reponse = array('operation' =>'ok','resultat'=> array());
+		return  $app->json($reponse);
+	}
+
 });
 
 /**

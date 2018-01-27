@@ -6,7 +6,7 @@
 
                 <div class="col-md-6 text-right">
                     <mat-form-field class="example-full-width">
-                        <input matInput placeholder="Rechercher">
+                        <input matInput placeholder="Rechercher" [(ngModel)]="query" (keyup.enter)="rechercherCourrier()">
                         <mat-icon matSuffix>search</mat-icon>
                     </mat-form-field>
                 </div>
@@ -21,7 +21,7 @@
                                 </div>
                         <mat-table [dataSource]="dataSource">
                             <ng-container matColumnDef="reference">
-                                <mat-header-cell *matHeaderCellDef>Référence</mat-header-cell>
+                                <mat-header-cell *matHeaderCellDef>R&eacute;f&eacute;rence</mat-header-cell>
                                 <mat-cell *matCellDef="let courrier">
                                     <button mat-button (click)="openUpdateDialog()">{{courrier.reference}}</button>
                                 </mat-cell>

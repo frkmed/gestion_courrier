@@ -2,21 +2,22 @@
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import {Courrier} from '../_models/index';
-import { GenericResponse, SaveDocumentResponse } from "../_responses";
+import { GenericResponse, SaveDocumentResponse, RechercherCourrierResponse } from "../_responses";
 import { DatePipe } from "@angular/common";
 
 @Injectable()
 export class CourrierService {
   private baseUrl = 'http://localhost/gestion_courrier/gc-api/web/index.php';
-  private getAllCourrierUrl = 'http://localhost:4200/assets/demo_courriers.txt';
   private addNewCourrierUrl = this.baseUrl + '/saveCourrier/';
   private deleteCourrierUrl = this.baseUrl + '/supprimerCourrier/';
   private saveDocUrl = this.baseUrl + '/saveDocument';
-
+  private rechercherCourrierUrl = this.baseUrl + '/rechercherCourrier/';
+  private getAllCourrierUrl = this.rechercherCourrierUrl + '*:*';
+  
   constructor(private http: HttpClient, private datePipe: DatePipe) {}
 
-  getAll(): Observable<Courrier[]> {
-    return this.http.get<Courrier[]>(this.getAllCourrierUrl);
+  getAll(): Observable<RechercherCourrierResponse> {
+    return this.http.get<RechercherCourrierResponse>(this.getAllCourrierUrl);
   }
 
   create(courrier: Courrier, docs: Map<number, string>) {
@@ -46,6 +47,11 @@ export class CourrierService {
     console.log('saving doc');
     var headers = new Headers();
     return this.http.post<SaveDocumentResponse>(this.saveDocUrl, base64);
+  }
+  
+  rechercherCourrier(query: string) : Observable<RechercherCourrierResponse> {
+    if (query.trim() === '') query="*:*";
+    return this.http.get<RechercherCourrierResponse>(this.rechercherCourrierUrl + encodeURIComponent(query));
   }
 
 

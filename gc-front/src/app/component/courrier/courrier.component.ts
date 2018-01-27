@@ -20,6 +20,7 @@ import websocketConnect from 'rxjs-websockets';
 export class CourrierComponent implements OnInit {
   displayedColumns = ['reference', 'titre', 'type', 'dateCourrier', 'nature'];
   dataSource = new MatTableDataSource<any>();
+  query:string = "";
 
   constructor(private courrierService: CourrierService, public dialog: MatDialog) {}
 
@@ -40,10 +41,20 @@ export class CourrierComponent implements OnInit {
     this.courrierService.getAll()
       .subscribe(
       data => {
-        console.log("hello world !" + data);
-        this.dataSource = new MatTableDataSource<Courrier>(data);
+        this.dataSource = new MatTableDataSource<Courrier>(data.resultat);
       },
       error => console.log('loadCourrierList Method: ' + <any>error, 'alert alert-danger')
+      );
+  }
+  
+  
+  rechercherCourrier() {
+    this.courrierService.rechercherCourrier(this.query)
+      .subscribe(
+      data => {
+        this.dataSource = new MatTableDataSource<Courrier>(data.resultat);
+      },
+      error => console.log('rechercherCourrier Method: ' + <any>error, 'alert alert-danger')
       );
   }
 

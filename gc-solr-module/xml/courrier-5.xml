@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<add>
+<doc>
+	<field name="id_courrier">5</field>
+	<field name="titre">glom</field>
+	<field name="description">test</field>
+	<field name="datecourrier">0000-00-00</field>
+	<field name="type">Courrier Arrivée</field>
+	<field name="nature">Fax</field>
+	<field name="adresse">hay el kiss</field>
+	<field name="reference">10mm</field>
+	<field name="entite">SERVICE Y</field>
+</doc>
+</add>
