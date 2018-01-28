@@ -11,8 +11,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
     exit(0);
 }
-
 ini_set('display_errors', 1);
+
 
 require_once __DIR__.'/../vendor/autoload.php';
 
@@ -31,6 +31,9 @@ $app->before(function(Request $request, Application $app) {
 $app->register(new Silex\Provider\MonologServiceProvider(), array(
     'monolog.logfile' => __DIR__.'/development.log',
 ));
+// set debug mode
+$app['debug'] = true;
+
 
 $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
     'dbs.options' => array (
@@ -39,7 +42,7 @@ $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
             'host'      => 'localhost',
             'dbname'    => 'gc_db',
             'user'      => 'root',
-            'password'  => '1234',
+            'password'  => '',
             'charset'   => 'utf8',
         )
     ),
@@ -87,6 +90,234 @@ $app->get('/auth/{login}/{mot_pass}', function ($login,$mot_pass) use ($app) {
     $reponse = array('operation' =>'ok');
 	return  $app->json($reponse);
 });
+
+/**
+
+ * @api {post} /saveCourrier/:titre/:description/:dateCourrier/:type/:nature/:adresse/:reference/:idEntite Enregistrement d'un courrier
+ * @apiName saveCourrier
+ * @apiGroup Courrier
+ *
+ * @apiParam {String} titre Titre (Objet) du courrier.
+ * @apiParam {String} description Un texte descriptif du courrier, une sorte de résumé du contenu du courrier.
+ * @apiParam {Date} dateCourrier Date du courrier. si le courrier est un courrier arrivée, il s'agit de la date de réception du courrier. si le courrier est un courrier départ, il s'agit de la date d'envoi. Le format utilisé est "JJ/MM/AAAA".
+ * @apiParam {String} type Type du courrier. Ne peut prendre que une des deux valeurs suivantes : 'Courrier Arrivée' / 'Courrier Départ'.
+ * @apiParam {String} nature Nature du courrier. peut prendre une des valeurs suivantes : 'Lettre' / 'Fax' / 'E-mail' / 'Colis' / 'Autre'.
+ * @apiParam {String} reference Référence du courrier. c'est une référence unique associé au courrier en vue de l'identifier.
+ * @apiParam {String} idEntite ID de l'entite concerné par le courrier. Si le courrier est un courrier arrivée, c'est l'id de l'entité destinataire. Si le courrier est un courrier départ, c'est l'id de l'entité source. 
+
+ *
+ * @apiSuccess {String} Objet JSON avec "operation" : "ok".
+ * @apiSuccessExample Success-Response:
+ *     {
+ *       "operation": "ok"
+ *     }
+ * @apiError ValeurInvalide 'Valeur du champ x incorrecte !' si une valeur d'une des champs envoyés à ce service n'est pas valide.
+ * @apiError ChampObligatoire 'Le champ x est obligatoire !' si le champ n'est pas renseigné.
+ * @apiErrorExample Error-Response:
+ *     {
+ *			"operation": "ko",
+ *			"erreur": "ValeurInvalide",
+ *			"message": "Valeur du champ x incorrecte !"
+ *     }
+ */
+$app->post('/saveCourrier/{titre}/{description}/{dateCourrier}/{type}/{nature}/{adresse}/{reference}/{idEntite}', function ($titre, $description, $dateCourrier, $type, $nature, $adresse, $reference, $idEntite) use ($app) {
+	if (trim($titre) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ titre est obligatoire !'));
+	if (trim($description) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ description est obligatoire !'));
+	if (trim($dateCourrier) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ date courrier est obligatoire !'));
+	if (trim($type) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ type est obligatoire !'));
+	if (trim($nature) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ nature est obligatoire !'));
+	if (trim($adresse) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ adresse est obligatoire !'));
+	if (trim($reference) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ reference est obligatoire !'));
+	if (trim($idEntite) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ idEntite est obligatoire !'));
+	if (is_numeric($idEntite) == false) return  $app->json(array('operation' =>'ko','erreur'=> 'ValeurInvalide', 'message'=> 'Valeur de idEntite est invalide !'));
+
+	
+   	$sql = "INSERT INTO courrier(titre,description ,datecourrier ,type ,nature ,adresse ,reference ,id_entite) VALUES (:titre, :description, :dateCourrier, :type, :nature, :adresse, :reference, :idEntite)";
+    $query = $app['db']->prepare($sql);
+    $query->execute(array(
+            "titre" => $titre, 
+            "description" => $description,
+            "dateCourrier" => $dateCourrier,
+            "type" => $type,
+            "nature" => $nature,
+            "adresse" => $adresse,
+            "reference" => $reference,
+            "idEntite" => $idEntite			
+            ));
+			
+	$reponse = array('operation' =>'ok');
+	return $app->json($reponse);
+});
+
+/**
+ * @api {post} /saveDocument Enregistrement d'un document scanné sur le serveur
+ * @apiName saveDocument
+ * @apiGroup Courrier
+ *
+ * @apiParam {Base64String} body Le contenu du document scanné, encodé dans le format Base64.
+ *
+ * @apiSuccess {String} Objet JSON avec "operation" : "ok".
+ * @apiSuccess {String} fichier le nom du fichier sur le serveur du document scanné.
+ * @apiSuccessExample Success-Response:
+ *     {
+ *      	"operation": "ok",
+ *			"fichier" : "courrier-scan-2018-01-01-13-28-00.tiff"
+ *     }
+ * @apiError FormatBase64Invalide 'Format Base64 invalide du document !' si le contenu envoyé du document ne respecte pas le format Base64.
+ * @apiErrorExample Error-Response:
+ *     {
+ *			"operation": "ko",
+ *			"erreur": "ValeurInvalide",
+ *			"message": "Format Base64 invalide du document !"
+ *     }
+ */
+$app->post('/saveDocument', function () use ($app) {
+    $data = base64_decode(file_get_contents('php://input'));
+
+    if ($data === false) {
+        $reponse = array('operation' =>'ko','erreur'=> 'FormatBase64Invalide', 'message'=> 'FormatBase64Invalide');
+		return  $app->json($reponse);
+    }
+	$docFileName = "courrier-scan-" . (new DateTime())->format('Y-m-d-H-i-s') . ".png";
+	file_put_contents('/xampp/htdocs/gestion_courrier/gc-ocr-module/images/' . $docFileName, $data);
+	
+	$reponse = array('operation' =>'ok', 'fichier' => $docFileName);
+	return $app->json($reponse);
+});
+
+/**
+ * @api {get} /rechercherCourrier/:query Recherche d'un courrier par mots clés
+ * @apiName rechercherCourrier
+ * @apiGroup Courrier
+ *
+ * @apiParam {String} query Mot clés à chercher dans le courrier stocké dans la base de données
+ *
+ * @apiSuccess {String} Objet JSON avec "operation" : "ok".
+ * @apiSuccess {Array} resultat Un tableau JSON de resultat, dont chaque élément du tableau est un courrier qui correspond au mot(s) clé(s) utilisés dans la recherche.
+ * @apiSuccessExample Success-Response:
+ *     {
+ *      	"operation": "ok",
+ *			"resultat" : [{
+ *							"reference" : "FAX/23/2018",
+ *							"titre": "Lancement du concours de recrutement des techniciens 3éme grade",
+ *							"type": "Courrier Départ",
+ *							"date": "20/01/2018",
+ *							"nature": "Fax"
+ *							"idEntite": "5",
+ *							"nomEntite": "DRH"
+ *							},
+ *							...
+ *							]
+ *     }
+ */
+$app->get('/rechercherCourrier/{query}', function ($query) use ($app) {
+	$solrResponse = file_get_contents('http://localhost:8983/solr/courrier-data/select?q=' . $query);
+	$solrJson = json_decode($solrResponse);
+	
+	$docs = $solrJson->{'response'}->{'docs'};
+	$idCourrierArray = array();
+	foreach ($docs as $doc) {
+		if (!in_array($doc->{'id_courrier'}[0], $idCourrierArray)) {
+			array_push($idCourrierArray, $doc->{'id_courrier'}[0]);
+		}
+	}
+	
+	if (count($idCourrierArray) > 0) {
+		$sql = "SELECT * FROM courrier WHERE id in (";
+		$sep = "";
+		foreach ($idCourrierArray as $e) {
+			$sql .= $sep . $e;
+			$sep = ',';
+		}
+		$sql .= ")";
+		$results = $app['db']->fetchAll($sql, array());
+		$reponse = array('operation' =>'ok','resultat'=> $results);
+		return  $app->json($reponse);
+	} else {
+		$reponse = array('operation' =>'ok','resultat'=> array());
+		return  $app->json($reponse);
+	}
+
+});
+
+/**
+ * @api {get} /detailCourrier/:id Lire le détail d'un courrier à partir de son ID.
+ * @apiName detailCourrier
+ * @apiGroup Courrier
+ *
+ * @apiParam {Number} id ID du courrier.
+ *
+ * @apiSuccess {String} Objet JSON avec "operation" : "ok".
+ * @apiSuccess {Objet} courrier Un objet JSON contenant toute les informations du courrier
+ * @apiSuccessExample Success-Response:
+ *     {
+ *      	"operation": "ok",
+ *			"courrier" : {
+ *							"reference" : "FAX/23/2018",
+ *							"titre": "Lancement du concours de recrutement des techniciens 3éme grade",
+ *							"description": "La direction des ressources humaines lance un concours au profit des techniciens spécialisés ...",
+ *							"type": "Courrier Départ",
+ *							"adresse": "SNTL , Direction des ressources humaines Hay EL KAMRA, RABAT",
+ *							"date": "20/01/2018",
+ *							"nature": "Fax"
+ *							"idEntite": "5",
+ *							"nomEntite": "DRH"
+ *							}
+ *     }
+ * @apiError IdInvalide 'Id invalide !' si l'id n'est pas une valeur numérique.
+ * @apiError CourrierInexistant 'Le courrier avec id x est inexistant !' si l'id ne correspond à aucun courrier au niveau de la table du courrier.
+ * @apiErrorExample Error-Response:
+ *     {
+ *			"operation": "ko",
+ *			"erreur": "CourrierInexistant",
+ *			"message": "Le courrier avec id 5 est inexistant !"
+ *		}
+ */
+$app->get('/detailCourrier/{id}', function ($id) use ($app) {
+	$reponse = array('operation' =>'ko','erreur'=> 'NOT_IMPLEMENTED');
+	return  $app->json($reponse);	
+});
+
+/**
+ * @api {get} /supprimerCourrier/:id Supprimer un courrier à partir de son ID.
+ * @apiName supprimerCourrier
+ * @apiGroup Courrier
+ *
+ * @apiParam {Number} id ID du courrier.
+ *
+ * @apiSuccess {String} Objet JSON avec "operation" : "ok".
+ * @apiSuccessExample Success-Response:
+ *     {
+ *      	"operation": "ok",
+ *     }
+ * @apiError IdInvalide 'Valeur de id est invalide !' si l'id n'est pas une valeur numérique.
+ * @apiError CourrierInexistant 'Le courrier avec id x est inexistant !' si l'id ne correspond à aucun courrier au niveau de la table du courrier.
+ * @apiErrorExample Error-Response:
+ *     {
+ *			"operation": "ko",
+ *			"erreur": "CourrierInexistant",
+ *			"message": "Le courrier avec id 5 est inexistant !"
+ *		}
+ */
+$app->delete('/supprimerCourrier/{id}', function ($id) use ($app) {
+	if (is_numeric($id) == false) return  $app->json(array('operation' =>'ko','erreur'=> 'IdInvalide', 'message'=> 'Valeur de id est invalide !'));
+
+	
+   	$sql = "DELETE FROM courrier where id=:id";
+    $query = $app['db']->prepare($sql);
+    $query->execute(array(
+            "id" => $id		
+            ));
+	
+	if ($query->rowCount() == 1) {
+		$reponse = array('operation' =>'ok');
+		return $app->json($reponse);
+	} else {
+		$reponse = array('operation' =>'ko','erreur'=> 'CourrierInexistant', 'message'=> 'Courrier avec id ' . $id . ' est inexistant !' );
+		return  $app->json($reponse);
+	}
+});
+
 
 /**
  * @api {get} /listUsers Affichage de la liste des utilisateurs

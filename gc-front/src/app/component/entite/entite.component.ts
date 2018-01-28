@@ -40,18 +40,14 @@ export class EntiteComponent implements OnInit, AfterViewInit {
     this.dataSource.paginator = this.paginator;
   }
 
-  loadEntitesList() {
-    this.entiteService.getAll().subscribe(
+  async loadEntitesList() {
+    await this.entiteService.getEntites().then(
       data => {
         this.dataSource = new MatTableDataSource<Entite>(data);
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
       },
-      error =>
-        console.log(
-          'loadEntitesList Method: ' + <any>error,
-          'alert alert-danger'
-        )
+      error => console.log('loadUsersList Method: ' + <any>error, 'alert alert-danger')
     );
   }
 

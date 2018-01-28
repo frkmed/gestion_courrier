@@ -22,5 +22,6 @@ gc-scan-module/Fleck/bin/*
 gc-scan-module/Fleck/obj/*
 gc-scan-module/twaincsscan/source/bin/*
 gc-scan-module/twaincsscan/source/obj/*
+gc-ocr-module/node_modules/*
 
 /.project

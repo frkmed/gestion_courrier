@@ -19,7 +19,9 @@ import {
   MatIconModule,
   MatDialogModule,
   MatCheckboxModule,
-  MatSnackBarModule
+  MatSnackBarModule,
+  MatDatepickerModule,
+  MatNativeDateModule
 } from '@angular/material';
 
 import { routing } from './app.routing';
@@ -33,7 +35,6 @@ import { MenuComponent } from './component/menu/index';
 import { AdministrationComponent } from './component/administration/index';
 import { StatistiquesComponent } from './component/statistiques/index';
 import { RechercheCourrierComponent } from './component/recherche-courrier/index';
-import { EnregistrementComponent } from './component/enregistrement/index';
 import { ArchiveComponent } from './component/archive/index';
 
 import { UsersComponent, AddUserDialogComponent } from './component/users/index';
@@ -47,6 +48,7 @@ import {
   EntiteService
 } from './_services/index';
 import { ConfirmDialogsModule } from './_module/confirmdialog/ConfirmDialogsModule';
+import { DatePipe } from "@angular/common";
 
 
 
@@ -56,7 +58,6 @@ import { ConfirmDialogsModule } from './_module/confirmdialog/ConfirmDialogsModu
     LoginComponent,
     HomeComponent,
     MenuComponent,
-    EnregistrementComponent,
     RechercheCourrierComponent,
     ArchiveComponent,
 
@@ -94,10 +95,16 @@ import { ConfirmDialogsModule } from './_module/confirmdialog/ConfirmDialogsModu
     MatTabsModule,
     MatIconModule,
     MatCheckboxModule,
+
     ConfirmDialogsModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    ConfirmDialogsModule
+
   ],
   providers: [
+    DatePipe,
     AuthGuard,
     AuthenticationService,
     UserService,
