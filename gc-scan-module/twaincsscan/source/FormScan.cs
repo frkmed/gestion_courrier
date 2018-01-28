@@ -287,7 +287,7 @@ namespace TWAINCSScan
             a_graphics.DrawImage(a_bitmap, new Rectangle(((int)a_bitmapGraphic.Width - iWidth) / 2, ((int)a_bitmapGraphic.Height - iHeight) / 2, iWidth, iHeight));
             a_picturebox.Image = a_bitmapGraphic;
             a_picturebox.Update();
-            courrierScan = a_bitmapGraphic;
+            courrierScan = a_bitmap;
         }
 
         /// <summary>

@@ -32,7 +32,7 @@ $app->register(new Silex\Provider\MonologServiceProvider(), array(
 $app['debug'] = true;
 
 
-use Silex\Application, Symfony\Component\HttpFoundation\Request;
+
 
 $app->before(function(Request $request, Application $app) {
     if (($request->isMethod('POST') || $request->isMethod('OPTIONS') || $request->isMethod('PUT')) && strpos($request->headers->get('Content-Type'), 'application/json') === 0) {
