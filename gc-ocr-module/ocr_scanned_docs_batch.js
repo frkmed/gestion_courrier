@@ -14,7 +14,7 @@ var db_user = "root";
 var db_password = "";
 
 //launch ocr_scan every 10s
-setInterval(ocr_scan, 10000);
+ocr_scan();
 
 //function that scan images present of "images/" folder, ocr them and update database
 function ocr_scan() {

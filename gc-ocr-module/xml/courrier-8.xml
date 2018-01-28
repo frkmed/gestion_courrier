@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<add>
+<doc>
+	<field name="id_courrier">8</field>
+	<field name="titre">Test</field>
+	<field name="description">Test</field>
+	<field name="datecourrier">2018-01-17</field>
+	<field name="type">Courrier Arrivée</field>
+	<field name="nature">Lettre</field>
+	<field name="adresse">Test</field>
+	<field name="reference">R1</field>
+	<field name="entite">DIRECTION X</field>
+</doc>
+</add>
