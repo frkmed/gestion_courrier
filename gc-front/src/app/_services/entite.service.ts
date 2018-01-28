@@ -1,21 +1,21 @@
-﻿import { Injectable } from '@angular/core';
+﻿import { Injectable } from "@angular/core";
 import 'rxjs/add/operator/toPromise';
-import { Headers, Http } from '@angular/http';
+import { Headers, Http } from "@angular/http";
 
 import { Entite } from '../_models/index';
+import { SaveEntiteResponse } from "../_responses/saveentiteresponse";
 
 @Injectable()
 export class EntiteService {
     private headers = new Headers({ 'Content-Type': 'application/json' });
     private serviceUrl = 'http://localhost:4200/assets/demo_users.txt';
-    private apiUrl = 'http://localhost/gestion_courrier/gc-api/web/index.php/';
-
+    private apiUrl = 'http://localhost:9090/gestion_courrier/gc-api/web/index.php/';
 
     constructor(private http: Http) { }
 
     /**
      * Return all entites
-     * @returns {Promise<User[]>}
+     * @returns {Promise<Entite[]>}
      */
     getEntites(): Promise<Entite[]> {
         return this.http.get(`${this.apiUrl}listEntites`)
@@ -27,57 +27,57 @@ export class EntiteService {
     }
 
     /**
-      * Returns user based on id
+      * Returns entite based on id
       * @param id:number
-      * @returns {Promise<User>}
+      * @returns {Promise<Entite>}
       */
-    getUserById(id: number): Promise<Entite> {
+    getEntiteById(id: number): Promise<Entite> {
         const url = `${this.apiUrl}/?id=${id}`;
         return this.http.get(url)
             .toPromise()
             .then(response => response.json() as Entite)
             .catch(this.handleError);
     }
+   
     /**
-     * Adds new user
-     * @param user:User
-     * @returns {Promise<User>}
+     * Adds new entite
+     * @param entite:Entite
+     * @returns {Promise<SaveEntiteResponse>}
      */
-    add(entite: Entite): Promise<Entite> {
-        return this.http.post(`${this.apiUrl}addUser/`, JSON.stringify(entite), { headers: this.headers })
+    add(entite: Entite): Promise<SaveEntiteResponse> {
+        return this.http.post(`${this.apiUrl}addEntite/`, JSON.stringify(entite), { headers: this.headers })
             .toPromise()
             .then(response => {
                 // console.log(response);
-                return response.json() as Entite;
+                return response.json() as SaveEntiteResponse;
             })
             .catch(this.handleError);
     }
 
     /**
-     * Updates user that matches to id
-     * @param user:User
-     * @returns {Promise<User>}
+     * Updates entite that matches to id
+     * @param entite:Entite
+     * @returns {Promise<SaveEntiteResponse>}
      */
-    update(entite: Entite): Promise<Entite> {
-        return this.http.post(this.apiUrl, JSON.stringify(entite), { headers: this.headers })
+    update(entite: Entite): Promise<SaveEntiteResponse> {
+        return this.http.post(`${this.apiUrl}updateEntite/`, JSON.stringify(entite), { headers: this.headers })
             .toPromise()
-            .then(response => response.json() as Entite)
+            .then(response => response.json() as SaveEntiteResponse)
             .catch(this.handleError);
     }
 
     /**
-     * Removes user
+     * Removes entite
      * @param id:string
-     * @returns {Promise<User>}
+     * @returns {Promise<Entite>}
      */
-    remove(id: string): Promise<any> {
-        return this.http.post(this.apiUrl, JSON.stringify({ _id: id, delete: 1 }), { headers: this.headers })
+    remove(id: number): Promise<SaveEntiteResponse> {
+        return this.http.post(`${this.apiUrl}deleteEntite/`, JSON.stringify({ 'id': id }), { headers: this.headers })
             .toPromise()
-            .then(response => console.log(response))
+            .then(response => response.json() as SaveEntiteResponse)
+                // console.log(response))
             .catch(this.handleError);
     }
-
-
 
     /**
      * Handles error thrown during HTTP call

@@ -39,7 +39,7 @@ import { ArchiveComponent } from './component/archive/index';
 
 import { UsersComponent, AddUserDialogComponent } from './component/users/index';
 import { CourrierComponent, AddCourrierDialog, UpdateCourrierDialog } from './component/courrier/index';
-import { EntiteComponent, AddEntiteDialogComponent, UpdateEntiteDialogComponent } from './component/entite/index';
+import { EntiteComponent, AddEntiteDialogComponent } from './component/entite/index';
 
 import {
   UserService,
@@ -69,7 +69,7 @@ import { DatePipe } from "@angular/common";
 
     EntiteComponent,
     AddEntiteDialogComponent,
-    UpdateEntiteDialogComponent,
+    
 
     CourrierComponent,
     AddCourrierDialog,
@@ -123,7 +123,7 @@ import { DatePipe } from "@angular/common";
     AddUserDialogComponent,
 
     AddEntiteDialogComponent,
-    UpdateEntiteDialogComponent,
+    
 
     AddCourrierDialog,
     UpdateCourrierDialog

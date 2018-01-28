@@ -38,7 +38,7 @@ $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
             'host'      => 'localhost',
             'dbname'    => 'gc_db',
             'user'      => 'root',
-            'password'  => '1234',
+            'password'  => '',
             'charset'   => 'utf8',
         )
     ),
@@ -594,6 +594,15 @@ $app->get('/listEntites/', function() use ($app){
 
 $app->post('/addEntite/', function(Request $request) use ($app){
 	$entite=getDataFromRequest($request); 
+    if($entite['type'] === 'Direction'){
+        $entite['id_parent'] = 1;
+    }elseif ($entite['type'] === 'Division') {
+        $entite['id_parent'] = 2;
+    }elseif ($entite['type'] === 'Service') {
+        $entite['id_parent'] = 3;
+    }else{
+        $entite['id_parent'] = 0;
+    }
 	$app['db']->insert('entite', 
 							array(
 								'nom' => $entite['nom'],
@@ -602,7 +611,12 @@ $app->post('/addEntite/', function(Request $request) use ($app){
 								)
 	);
 	$entite['id']=$app['db']->lastInsertId();
-	$reponse = array('operation' =>'Ajout reussi.');
+	$reponse = array(
+                    'operation' =>'ok',
+                    'entite'=>$entite,
+                    'message'=> 'Ajout réussi'
+                    );
+   
 	return  $app->json($reponse);    
 });
 
@@ -624,18 +638,53 @@ $app->post('/addEntite/', function(Request $request) use ($app){
  *     }
  * 
  */
+$app->post('/updateUser/', function(Request $request) use ($app){
+  $user=getDataFromRequest($request);
+  $data=$app['db']->fetchAssoc('SELECT * FROM utilisateur WHERE id<>? AND login=?', [(int) $user['id'],(string) $user['login']]);
+    if(!$data){
+        $app['db']->update('utilisateur', 
+                array(
+                    'login' => $user['login'],
+                    'mot_passe'=> $user['mot_passe'],
+                    'nom'=> $user['nom'],
+                    'prenom'=> $user['prenom'],
+                    'email'=> $user['email'],
+                    'role'=> $user['role'],
+                    'id_entite'=> $user['entite']['id']
+                ),
+                array('id' => $user['id'])
+                );
+        $reponse = array(
+                'operation' =>'ok',
+                'user'=>$user,
+                'message'=> 'Modification réussi'
+                );
+        return  $app->json($reponse);   
+    }
+   
+    $reponse = array(
+                'operation' => 'ko' , 
+                'erreur' => 'UtilisateurExiste',
+                'message' => "Utilisateur " .$user['login']. " existant!!");
+    return $app->json($reponse);
+});
+//////
 $app->post('/updateEntite/', function(Request $request) use ($app){
 	$entite=getDataFromRequest($request);
     $app['db']->update('entite', 
         array(
             'nom' => $entite['nom'],
             'type'=> $entite['type'],
-            'id_parent'=> $entite['id_parent'],
+            
         ),
         array('id' => $entite['id'])
         );
 		
-$reponse = array('operation' =>'- reussite');
+$reponse = array(
+                'operation' =>'ok',
+                'entite'=>$entite,
+                'message'=> 'Modification réussi'
+        );
 return  $app->json($reponse);
 });
 
@@ -657,10 +706,13 @@ return  $app->json($reponse);
 $app->post('/deleteEntite/', function(Request $request) use ($app){	
 	$entite=getDataFromRequest($request);
     $app['db']->delete("entite", array("id" => $entite['id']));
-    $reponse = array('operation' =>'Suppression exécuté');
+    $reponse = array(
+        'operation' =>'ok',
+        'entite'=>$entite,
+        'message'=> 'Suppression réussi'
+        );
+    return $app->json($reponse);
 });
-
-
 
 $app->run();
 
