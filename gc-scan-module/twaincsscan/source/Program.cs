@@ -61,12 +61,22 @@ namespace TWAINCSScan
                 socket.OnClose = () => formscan.Invoke(new MethodInvoker(formscan.Hide));
                 socket.OnMessage = message => socket.Send(message);
             });
+            NotifyIcon notifyIcon1 = new NotifyIcon();
+            notifyIcon1.Icon = new System.Drawing.Icon(@"scanner.ico");
+            notifyIcon1.Text = "GC Scan Module";
+            notifyIcon1.Visible = true;
+            notifyIcon1.BalloonTipIcon = ToolTipIcon.Info;
+            notifyIcon1.BalloonTipText = "Module GC Scan est lancé !";
+            notifyIcon1.BalloonTipTitle = "Information";
+            notifyIcon1.ShowBalloonTip(1000);
 
             if (!formscan.ExitRequested())
             {
                 Application.Run();
             }
             formscan = null;
+
+            
             Application.Exit();
         }
     }

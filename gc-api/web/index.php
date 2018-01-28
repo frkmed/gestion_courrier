@@ -8,20 +8,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
     if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
         header("Access-Control-Allow-Headers:        {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
-
     exit(0);
 }
-
 ini_set('display_errors', 1);
 
-
 require_once __DIR__.'/../vendor/autoload.php';
-
 $app = require __DIR__.'/../src/app.php';
 require __DIR__.'/../config/prod.php';
 require __DIR__.'/../src/controllers.php';
 
+use Silex\Application, Symfony\Component\HttpFoundation\Request;
 
+$app->before(function(Request $request, Application $app) {
+    if (($request->isMethod('POST') || $request->isMethod('OPTIONS') || $request->isMethod('PUT')) && strpos($request->headers->get('Content-Type'), 'application/json') === 0) {
+        $request->request->set('data', json_decode($request->getContent(), true) ?: []);
+    }
+});
+
+$app->register(new Silex\Provider\MonologServiceProvider(), array(
+    'monolog.logfile' => __DIR__.'/development.log',
+));
 // set debug mode
 $app['debug'] = true;
 
@@ -93,6 +99,7 @@ $app->get('/auth/{login}/{mot_pass}', function ($login,$mot_pass) use ($app) {
 });
 
 /**
+
  * @api {post} /saveCourrier/:titre/:description/:dateCourrier/:type/:nature/:adresse/:reference/:idEntite Enregistrement d'un courrier
  * @apiName saveCourrier
  * @apiGroup Courrier
@@ -360,11 +367,7 @@ $app->delete('/supprimerCourrier/{id}', function ($id) use ($app) {
  *     }
  */
 
-
-///////////////////////Test valide///////////////////////////////////
-
 $app->get('/listUsers/', function() use ($app){
-	//SELECT u.id,login,u.nom,prenom,email,mot_passe,role,id_entite FROM utilisateur u,entite e WHERE e.id = u.id_entite 
     $sql = "
         SELECT
             u.id,
@@ -409,7 +412,7 @@ $app->get('/listUsers/', function() use ($app){
     });
 
 /**
- * @api {post} /addUser/:login/:nom/:prenom/:email/:mot_passe/:role/:id_entite Ajouter un utilisateur
+ * @api {post} /addUser/ Ajouter un utilisateur
  * @apiName addUser
  * @apiGroup Utilisateurs
  * 
@@ -435,29 +438,39 @@ $app->get('/listUsers/', function() use ($app){
  *     }
  */
 
-///////////////////////Test valide///////////////////////////////////
-
-$app->post('/addUser/{login}/{nom}/{prenom}/{email}/{mot_passe}/{role}/{id_entite}', function($login,$nom,$prenom,$email,$mot_passe,$role,$id_entite) use ($app){
-   	$sql = "INSERT INTO utilisateur(login,nom,prenom,email,mot_passe,role,id_entite) VALUES (:login,:nom,:prenom,:email,:mot_passe,:role,:id_entite)";
-    $query = $app['db']->prepare($sql);
-    $sql2 = "SELECT login,nom,prenom,email,role FROM utilisateur WHERE login=?";
-    	$users = $app['db']->fetchAssoc($sql2,array($login));
-    	if(empty($users)){    	
-       	$query->execute(array(
-            "login" => $login, 
-            "nom" => $nom,
-            "prenom" => $prenom,
-            "email" => $email,
-            "mot_passe" => $mot_passe,
-            "role" => $role,
-            "id_entite" => $id_entite
-            ));        
-        $reponse = array('operation' =>'Ajout reussi.');
-		return  $app->json($reponse);
-    	}else{
-		$reponse = array('operation' => 'ko' , 'erreur' => "Utilisateur " .$login. " existant!!");
-		return $app->json($reponse);		
-		}	
+$app->post('/addUser/', function(Request $request) use ($app){
+   $user=getDataFromRequest($request); 
+   
+   
+   $data=$app['db']->fetchAssoc('SELECT * FROM utilisateur WHERE login=?', [(string) $user['login']]);
+   
+   if(!$data){
+		$app['db']->insert('utilisateur', 
+									array(
+										'login' => $user['login'],
+										'mot_passe'=> $user['mot_passe'],
+										'nom'=> $user['nom'],
+										'prenom'=> $user['prenom'],
+										'email'=> $user['email'],
+										'role'=> $user['role'],
+										'id_entite'=> $user['entite']['id']
+										)
+		);   
+		$user['id']=$app['db']->lastInsertId();
+		
+		$reponse = array(
+						'operation' =>'ok',
+						'user'=>$user,
+						'message'=> 'Ajout réussi'
+						);
+		return  $app->json($reponse);   
+	}
+   
+    $reponse = array(
+				'operation' => 'ko' , 
+				'erreur' => 'UtilisateurExiste',
+				'message' => "Utilisateur " .$user['login']. " existant!!");
+    return $app->json($reponse);                        
 });
 
 
@@ -483,23 +496,35 @@ $app->post('/addUser/{login}/{nom}/{prenom}/{email}/{mot_passe}/{role}/{id_entit
  *
  */
 
-$app->put('/updateUser/{id}/{login}/{nom}/{prenom}/{email}/{mot_passe}/{role}/{id_entite}', function($id,$login,$nom,$prenom,$email,$mot_passe,$role,$entite) use ($app){
-
-    $sql = "UPDATE utilisateur SET login ='?', nom ='?', prenom ='?', email='?', mot_passe='?', role ='?', id_entite =? WHERE id =?";
-    $query = $app['db']->prepare($sql);
-    $query->execute(array(
-        "id" => $id,
-        "login" => $login,
-        "nom" => $nom,
-        "prenom" => $prenom,
-        "email" => $email,
-        "mot_passe" => $mot_passe,
-        "role" => $role,
-        "id_entite" => $id_entite
-    ));      
-    
-       $reponse = array('operation' =>'Modification reussite');
-		return  $app->json($reponse);
+$app->post('/updateUser/', function(Request $request) use ($app){
+  $user=getDataFromRequest($request);
+  $data=$app['db']->fetchAssoc('SELECT * FROM utilisateur WHERE id<>? AND login=?', [(int) $user['id'],(string) $user['login']]);
+	if(!$data){
+		$app['db']->update('utilisateur', 
+				array(
+					'login' => $user['login'],
+					'mot_passe'=> $user['mot_passe'],
+					'nom'=> $user['nom'],
+					'prenom'=> $user['prenom'],
+					'email'=> $user['email'],
+					'role'=> $user['role'],
+					'id_entite'=> $user['entite']['id']
+				),
+				array('id' => $user['id'])
+				);
+	    $reponse = array(
+				'operation' =>'ok',
+				'user'=>$user,
+				'message'=> 'Modification réussi'
+				);
+		return  $app->json($reponse);   
+	}
+   
+    $reponse = array(
+				'operation' => 'ko' , 
+				'erreur' => 'UtilisateurExiste',
+				'message' => "Utilisateur " .$user['login']. " existant!!");
+    return $app->json($reponse);
 });
 
 /**
@@ -517,17 +542,17 @@ $app->put('/updateUser/{id}/{login}/{nom}/{prenom}/{email}/{mot_passe}/{role}/{i
  * 
  */
 
-$app->delete('/deleteUser/{id}', function($id) use ($app){
-    $sql = "DELETE FROM utilisateur WHERE id = $id AND login != 'admin'";
-    $query = $app['db']->prepare($sql);
-   
-        $query->execute();
-        $reponse = array('operation' =>'Suppression exécuté');
+$app->post('/deleteUser/', function(Request $request) use ($app){
+    $user=getDataFromRequest($request);
+    $app['db']->delete("utilisateur", array("id" => $user['id']));
+    $reponse = array(
+        'operation' =>'ok',
+        'user'=>$user,
+        'message'=> 'Suppression réussi'
+        );
    
     return  $app->json($reponse);
 });
-
-
 
 /**
  * @api {get} /listEntites/ Affichage de la liste des entités
@@ -539,7 +564,7 @@ $app->delete('/deleteUser/{id}', function($id) use ($app){
  *     {
  *       {nom: "nom", type: "type"};
  *     }
- @apiError ListeEntitésVide 'La liste des entités est vide' si aucune entité n a été insérer.
+ * @apiError ListeEntitésVide 'La liste des entités est vide' si aucune entité n a été insérer.
  * @apiErrorExample Error-Response:
  *     {
  *			"operation": "ko",
@@ -550,22 +575,21 @@ $app->delete('/deleteUser/{id}', function($id) use ($app){
 
 $app->get('/listEntites/', function() use ($app){
     $sql = "SELECT id,nom,type FROM entite";
-    $entites = $app['db']->fetchAssoc($sql,array());
+    $entites = $app['db']->fetchAll($sql,array());
     if(is_null($entites)){
-    	$response = array('operation' => 'ko' , 'erreur' => "La liste des utilisateurs est vide. Aucun utilisateur n'est ajouté !!");
-		return $app->json($reponse);
+        $response = array('operation' => 'ko' , 'erreur' => "La liste des entities est vide. Aucun entite n'est ajouté !!");
+        return $app->json($reponse);
     }
     $response = [];
-    foreach ($entites as $entite) {
-        $response[] = [   
-        	'id' => $entites['id'],         
-            'nom' => $entites['nom'],
-            'type' => $entites['type']          
+    foreach ($entites as $u) {
+        $response[] = [
+            'id' => $u['id'],
+            'nom' => $u['nom'],
+            'type' => $u['type'],
         ];
     }
     return $app->json($response);
-    });
-
+});
 
 /**
  * @api {post} /addEntite/:nom/:type/:id_parent Ajouter une entité
@@ -586,27 +610,32 @@ $app->get('/listEntites/', function() use ($app){
  *     }
  */
 
-$app->post('/addEntite/{nom}/{type}/{id_parent}', function($nom,$type,$id_parent) use ($app){
-
-    $sql = "INSERT INTO entite('nom','type','id_parent') VALUES (:nom,:type,:id_parent)";
-        $query = $app['db']->prepare($sql);
-
-        $sql = "SELECT nom,type,id_parent FROM entite";
-    	$entites = $app['db']->fetchAssoc($sql,array());
-    	foreach ($entites as $entite) {
-    		if(($entite[$nom] == ':nom') && ($entite[$type] == ':type') && ($entite[$id_parent] == ':id_parent')){
-    			$response = array('operation' => 'ko' , 'erreur' => "L'entité " . $entite[$nom] . " existe déjà !!");
-				return $app->json($reponse);
-    		}
-    	}
-
-        $query->bindValue(':nom', $nom, PDO::PARAM_STR);
-        $query->bindValue(':type', $type, PDO::PARAM_STR);
-        $query->bindValue(':id_parent', $id_parent, PDO::PARAM_STR);    
-        $query->execute();
-        
-        $reponse = array('operation' =>'Ajout reussi.');
-		return  $app->json($reponse);    
+$app->post('/addEntite/', function(Request $request) use ($app){
+	$entite=getDataFromRequest($request); 
+    if($entite['type'] === 'Direction'){
+        $entite['id_parent'] = 1;
+    }elseif ($entite['type'] === 'Division') {
+        $entite['id_parent'] = 2;
+    }elseif ($entite['type'] === 'Service') {
+        $entite['id_parent'] = 3;
+    }else{
+        $entite['id_parent'] = 0;
+    }
+	$app['db']->insert('entite', 
+							array(
+								'nom' => $entite['nom'],
+								'type'=> $entite['type'],
+								'id_parent'=> $entite['id_parent']
+								)
+	);
+	$entite['id']=$app['db']->lastInsertId();
+	$reponse = array(
+                    'operation' =>'ok',
+                    'entite'=>$entite,
+                    'message'=> 'Ajout réussi'
+                    );
+   
+	return  $app->json($reponse);    
 });
 
 
@@ -627,16 +656,54 @@ $app->post('/addEntite/{nom}/{type}/{id_parent}', function($nom,$type,$id_parent
  *     }
  * 
  */
-$app->put('/updateEntite/{id}/{nom}/{type}/{id_parent}', function($id,$nom,$type,$id_parent) use ($app){
-
-    $sql = "UPDATE entite SET nom = :nom, type = :type, id_parent= :id_parent WHERE id = $id";
-    $query = $app['db']->prepare($sql);       
-        $query->bindValue(':nom', $nom, PDO::PARAM_STR);
-        $query->bindValue(':type', $type, PDO::PARAM_STR);
-        $query->bindValue(':id_parent', $id_parent, PDO::PARAM_STR);
-        $query->execute();
-       $reponse = array('operation' =>'Modification reussite');
-		return  $app->json($reponse);
+$app->post('/updateUser/', function(Request $request) use ($app){
+  $user=getDataFromRequest($request);
+  $data=$app['db']->fetchAssoc('SELECT * FROM utilisateur WHERE id<>? AND login=?', [(int) $user['id'],(string) $user['login']]);
+    if(!$data){
+        $app['db']->update('utilisateur', 
+                array(
+                    'login' => $user['login'],
+                    'mot_passe'=> $user['mot_passe'],
+                    'nom'=> $user['nom'],
+                    'prenom'=> $user['prenom'],
+                    'email'=> $user['email'],
+                    'role'=> $user['role'],
+                    'id_entite'=> $user['entite']['id']
+                ),
+                array('id' => $user['id'])
+                );
+        $reponse = array(
+                'operation' =>'ok',
+                'user'=>$user,
+                'message'=> 'Modification réussi'
+                );
+        return  $app->json($reponse);   
+    }
+   
+    $reponse = array(
+                'operation' => 'ko' , 
+                'erreur' => 'UtilisateurExiste',
+                'message' => "Utilisateur " .$user['login']. " existant!!");
+    return $app->json($reponse);
+});
+//////
+$app->post('/updateEntite/', function(Request $request) use ($app){
+	$entite=getDataFromRequest($request);
+    $app['db']->update('entite', 
+        array(
+            'nom' => $entite['nom'],
+            'type'=> $entite['type'],
+            
+        ),
+        array('id' => $entite['id'])
+        );
+		
+$reponse = array(
+                'operation' =>'ok',
+                'entite'=>$entite,
+                'message'=> 'Modification réussi'
+        );
+return  $app->json($reponse);
 });
 
 /**
@@ -654,17 +721,16 @@ $app->put('/updateEntite/{id}/{nom}/{type}/{id_parent}', function($id,$nom,$type
  * 
  */
 
-$app->delete('/deleteEntite/{id}', function($id) use ($app){
-    $sql = "DELETE FROM entite WHERE id = $id";
-    $query = $app['db']->prepare($sql);
-   
-        $query->execute();
-        $reponse = array('operation' =>'Suppression exécuté');
-   
-    return  $app->json($reponse);
+$app->post('/deleteEntite/', function(Request $request) use ($app){	
+	$entite=getDataFromRequest($request);
+    $app['db']->delete("entite", array("id" => $entite['id']));
+    $reponse = array(
+        'operation' =>'ok',
+        'entite'=>$entite,
+        'message'=> 'Suppression réussi'
+        );
+    return $app->json($reponse);
 });
-
-
 
 $app->run();
 

@@ -1,34 +1,37 @@
-import {Component, OnInit, Inject} from '@angular/core';
-import {CourrierService} from '../../_services/courrier.service';
-import {Observable} from 'rxjs/Observable';
-import {DataSource} from '@angular/cdk/collections';
-import {Courrier} from '../../_models/courrier';
-import {Entite} from '../../_models/entite';
+import { Component, OnInit, Inject, AfterViewInit } from '@angular/core';
+import { CourrierService } from '../../_services/courrier.service';
+import { Observable } from 'rxjs/Observable';
+import { DataSource } from '@angular/cdk/collections';
+import { Courrier } from '../../_models/courrier';
+import { Entite } from '../../_models/entite';
 import { SaveDocumentResponse } from "../../_responses";
 import { GenericResponse } from "../../_responses/genericresponse";
-import {EntiteService} from '../../_services/entite.service';
-import {MatPaginator, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
-import {ViewChild} from '@angular/core';
-import {QueueingSubject} from 'queueing-subject';
+import { EntiteService } from '../../_services/entite.service';
+import { MatPaginator, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { ViewChild } from '@angular/core';
+import { QueueingSubject } from 'queueing-subject';
 import websocketConnect from 'rxjs-websockets';
 
 @Component({
-  selector: 'courrier',
+  selector: 'app-courrier',
   templateUrl: './courrier.component.html',
   styleUrls: ['./courrier.component.css']
 })
-export class CourrierComponent implements OnInit {
+export class CourrierComponent implements OnInit, AfterViewInit {
   displayedColumns = ['reference', 'titre', 'type', 'dateCourrier', 'nature'];
   dataSource = new MatTableDataSource<any>();
-  query:string = "";
+  query = '';
+  dialogRef1;
 
-  constructor(private courrierService: CourrierService, public dialog: MatDialog) {}
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  constructor(private courrierService: CourrierService, public dialog: MatDialog) { }
 
   ngOnInit() {
     this.loadCourrierList();
   }
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+
   /**
    * Set the paginator after the view init since this component will
    * be able to query its view for the initialized paginator.
@@ -46,8 +49,8 @@ export class CourrierComponent implements OnInit {
       error => console.log('loadCourrierList Method: ' + <any>error, 'alert alert-danger')
       );
   }
-  
-  
+
+
   rechercherCourrier() {
     this.courrierService.rechercherCourrier(this.query)
       .subscribe(
@@ -65,17 +68,17 @@ export class CourrierComponent implements OnInit {
   }
 
   openAddDialog(): void {
-    let dialogRef1 = this.dialog.open(AddCourrierDialog, {data: {title: 'First Dialog'}});
+    this.dialogRef1 = this.dialog.open(AddCourrierDialog, { data: { title: 'First Dialog' } });
 
-    dialogRef1.afterClosed().subscribe(result => {
+    this.dialogRef1.afterClosed().subscribe(result => {
       console.log('The dialog 1 was closed');
     });
   }
 
   openUpdateDialog(): void {
-    let dialogRef1 = this.dialog.open(UpdateCourrierDialog, {data: {title: 'First Dialog'}});
+    this.dialogRef1 = this.dialog.open(UpdateCourrierDialog, { data: { title: 'First Dialog' } });
 
-    dialogRef1.afterClosed().subscribe(result => {
+    this.dialogRef1.afterClosed().subscribe(result => {
       console.log('The dialog 1 was closed');
     });
   }
@@ -97,9 +100,7 @@ export class AddCourrierDialog {
   constructor(public dialogRef: MatDialogRef<AddCourrierDialog>, public entiteService: EntiteService, public courrierService: CourrierService,
     @Inject(MAT_DIALOG_DATA) public data: any) {
 
-    this.entiteService.getAll().subscribe(data => {
-      this.entites = data;
-    });
+   this.loadEntiteList();
   }
 
   onNoClick(): void {
@@ -118,20 +119,30 @@ export class AddCourrierDialog {
 
   addAttachement(filename: string) {
     const input = new QueueingSubject<string>()
-    const {messages, connectionStatus} = websocketConnect('ws://localhost:8181', input)
-    
+    const { messages, connectionStatus } = websocketConnect('ws://localhost:8181', input)
+
     const messagesSubscription = messages.subscribe((message: string) => {
-      
-      this.courrierService.saveDoc(message).subscribe((res:SaveDocumentResponse) => {
+
+      this.courrierService.saveDoc(message).subscribe((res: SaveDocumentResponse) => {
         this.attachements.set(this.attachements.size, res.fichier);
       });
-      
+
       messagesSubscription.unsubscribe();
     })
   }
 
   removeAttachement(idx: number) {
     this.attachements.delete(idx);
+  }
+
+
+  async loadEntiteList() {
+    await this.entiteService.getEntites().then(
+      data => {
+        this.entites = data;
+      },
+      error => console.log('loadEntitesList Method: ' + <any>error, 'alert alert-danger')
+    );
   }
 
 }

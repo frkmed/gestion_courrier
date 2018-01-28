@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpModule } from '@angular/http';
 
 import {
   MatTableModule,
@@ -18,8 +19,9 @@ import {
   MatIconModule,
   MatDialogModule,
   MatCheckboxModule,
+  MatSnackBarModule,
   MatDatepickerModule,
-MatNativeDateModule
+  MatNativeDateModule
 } from '@angular/material';
 
 import { routing } from './app.routing';
@@ -37,7 +39,7 @@ import { ArchiveComponent } from './component/archive/index';
 
 import { UsersComponent, AddUserDialogComponent } from './component/users/index';
 import { CourrierComponent, AddCourrierDialog, UpdateCourrierDialog } from './component/courrier/index';
-import { EntiteComponent, AddEntiteDialogComponent, UpdateEntiteDialogComponent } from './component/entite/index';
+import { EntiteComponent, AddEntiteDialogComponent } from './component/entite/index';
 
 import {
   UserService,
@@ -47,6 +49,7 @@ import {
 } from './_services/index';
 import { ConfirmDialogsModule } from './_module/confirmdialog/ConfirmDialogsModule';
 import { DatePipe } from "@angular/common";
+
 
 
 @NgModule({
@@ -66,7 +69,7 @@ import { DatePipe } from "@angular/common";
 
     EntiteComponent,
     AddEntiteDialogComponent,
-    UpdateEntiteDialogComponent,
+    
 
     CourrierComponent,
     AddCourrierDialog,
@@ -77,6 +80,7 @@ import { DatePipe } from "@angular/common";
     BrowserModule,
     FormsModule,
     HttpClientModule,
+    HttpModule,
     routing,
     BrowserAnimationsModule,
     MatTableModule,
@@ -91,9 +95,13 @@ import { DatePipe } from "@angular/common";
     MatTabsModule,
     MatIconModule,
     MatCheckboxModule,
+
+    ConfirmDialogsModule,
+    MatSnackBarModule,
     MatDatepickerModule,
     MatNativeDateModule,
     ConfirmDialogsModule
+
   ],
   providers: [
     DatePipe,
@@ -115,7 +123,7 @@ import { DatePipe } from "@angular/common";
     AddUserDialogComponent,
 
     AddEntiteDialogComponent,
-    UpdateEntiteDialogComponent,
+    
 
     AddCourrierDialog,
     UpdateCourrierDialog

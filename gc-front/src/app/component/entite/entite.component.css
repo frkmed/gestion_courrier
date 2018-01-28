@@ -1,19 +1,24 @@
 .mat-form-field {
-  font-size: 14px;
-  color: white;
-  width: 100%;
-}
-.example-container {
-  display: flex;
-  flex-direction: column;
-  min-width: 300px;
-}
-
-.mat-table {
-  overflow: auto;
-  max-height: 500px;
-}
-
-.mat-header-cell.mat-sort-header-sorted {
-  color: black;
-}
+    font-size: 14px;
+    color: white;
+    width: 100%;
+  }
+  .example-container {
+    display: flex;
+    flex-direction: column;
+    min-width: 300px;
+  }
+  
+  .mat-table {
+    overflow: auto;
+    max-height: 500px;
+  }
+  
+  .mat-header-cell.mat-sort-header-sorted {
+    color: black;
+  }
+  .mat-fab{
+    top: 28px;
+    left: 4px;
+    z-index: 999;
+  }

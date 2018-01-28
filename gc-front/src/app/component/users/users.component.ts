@@ -7,7 +7,8 @@ import {
   MatSelectModule,
   MatDialog,
   MatDialogRef,
-  MAT_DIALOG_DATA
+  MAT_DIALOG_DATA,
+  MatSnackBar
 } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
 
@@ -37,7 +38,8 @@ export class UsersComponent implements OnInit, AfterViewInit {
     private dialogsService: ConfirmDialogsService,
     private userService: UserService,
     private entiteService: EntiteService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    public snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
@@ -49,7 +51,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
   }
 
   async loadUsersList() {
-    this.userService.getAll().subscribe(
+    await this.userService.getUsers().then(
       data => {
         this.dataSource = new MatTableDataSource<User>(data);
         this.dataSource.sort = this.sort;
@@ -80,6 +82,9 @@ export class UsersComponent implements OnInit, AfterViewInit {
     );
 
     this.dialogRef1.afterClosed().subscribe(result => {
+      this.dataSource.data.push(this.user);
+      this.dataSource.sort = this.sort;
+      this.dataSource.paginator = this.paginator;
     });
   }
 
@@ -95,6 +100,8 @@ export class UsersComponent implements OnInit, AfterViewInit {
       }
     );
     this.dialogRef1.afterClosed().subscribe(result => {
+      this.user = result;
+      console.log(this.user);
     });
   }
 
@@ -104,8 +111,23 @@ export class UsersComponent implements OnInit, AfterViewInit {
       .subscribe(
       res => {
         if (res) {
-          console.log('User deleted');
+          this.userService.remove(user.id)
+            .then(response => {
+              if (response.operation === 'ok') {
+                this.dataSource.data.splice(this.dataSource.data.indexOf(user, 0), 1);
+                this.dataSource.sort = this.sort;
+                this.dataSource.paginator = this.paginator;
+                this.snackBar.open(response.message, 'Fermer', {
+                  duration: 2000,
+                });
+              } else {
+                this.snackBar.open('ERREUR', 'Fermer', {
+                  duration: 2000,
+                });
+              }
+            });
         }
+
       });
   }
 }
@@ -124,9 +146,10 @@ export class AddUserDialogComponent implements OnInit {
     public dialogRef: MatDialogRef<AddUserDialogComponent>,
     public userService: UserService,
     public entiteService: EntiteService,
+    public snackBar: MatSnackBar,
     @Inject(MAT_DIALOG_DATA) private data: any
   ) {
-    this.onLoad();
+    this.loadEntiteList();
   }
 
   ngOnInit() {
@@ -140,17 +163,40 @@ export class AddUserDialogComponent implements OnInit {
   }
 
   saveUser(): void {
-    /*this.userService.create(this.user).subscribe(data => {
-       console.log(data);
-     });*/
-
-    console.log(this.user.entite);
-    this.dialogRef.close();
+    if (this.user.id) {
+      this.userService.update(this.user)
+        .then(response => {
+          if (response.operation === 'ok') {
+            this.user = response.user;
+            this.dialogRef.close();
+          } else {
+            this.snackBar.open(response.message, 'Fermer', {
+              duration: 2000,
+            });
+          }
+        });
+    } else {
+      this.userService.add(this.user)
+        .then(response => {
+          if (response.operation === 'ok') {
+            this.user.id = response.user.id;
+            this.dialogRef.close();
+          } else {
+            this.snackBar.open(response.message, 'Fermer', {
+              duration: 2000,
+            });
+          }
+        });
+    }
   }
-  onLoad() {
-    this.entiteService.getAll().subscribe(data => {
-      this.entites = data;
-    });
+
+  async loadEntiteList() {
+    await this.entiteService.getEntites().then(
+      data => {
+        this.entites = data;
+      },
+      error => console.log('loadEntitesList Method: ' + <any>error, 'alert alert-danger')
+    );
   }
 }
 

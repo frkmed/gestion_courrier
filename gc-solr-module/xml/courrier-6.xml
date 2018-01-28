@@ -4,7 +4,7 @@
 	<field name="id_courrier">6</field>
 	<field name="titre">toto</field>
 	<field name="description">toto</field>
-	<field name="datecourrier">0000-00-00</field>
+	<field name="datecourrier">2018-01-08</field>
 	<field name="type">Courrier Arrivée</field>
 	<field name="nature">Fax</field>
 	<field name="adresse">rrrrrr</field>

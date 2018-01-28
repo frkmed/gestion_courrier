@@ -39,7 +39,7 @@ export class CourrierService {
   }
   
   rechercherCourrier(query: string) : Observable<RechercherCourrierResponse> {
-    if (query.trim() === '') query="*:*";
+    if (query.trim() === '') { query = "*:*"; }
     return this.http.get<RechercherCourrierResponse>(this.rechercherCourrierUrl + encodeURIComponent(query));
   }
 
