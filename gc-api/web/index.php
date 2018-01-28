@@ -1,8 +1,18 @@
 <?php
-ini_set('display_errors', 1);
-
-
 header("Access-Control-Allow-Origin: *");
+header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, DELETE, PUT');
+// Access-Control headers are received during OPTIONS requests
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
+        header("Access-Control-Allow-Methods: GET, POST,OPTIONS");
+
+    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
+        header("Access-Control-Allow-Headers:        {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
+
+    exit(0);
+}
+
+ini_set('display_errors', 1);
 
 
 require_once __DIR__.'/../vendor/autoload.php';
@@ -14,6 +24,16 @@ require __DIR__.'/../src/controllers.php';
 
 // set debug mode
 $app['debug'] = true;
+
+
+use Silex\Application, Symfony\Component\HttpFoundation\Request;
+
+$app->before(function(Request $request, Application $app) {
+    if (($request->isMethod('POST') || $request->isMethod('OPTIONS') || $request->isMethod('PUT')) && strpos($request->headers->get('Content-Type'), 'application/json') === 0) {
+        $request->request->set('data', json_decode($request->getContent(), true) ?: []);
+    }
+});
+
 
 $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
     'dbs.options' => array (
@@ -27,6 +47,11 @@ $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
         )
     ),
 ));
+
+function getDataFromRequest(Request $request)
+{
+    return $request->request->get('data');
+}
 
 
 /**
@@ -95,29 +120,31 @@ $app->get('/auth/{login}/{mot_pass}', function ($login,$mot_pass) use ($app) {
  *			"message": "Valeur du champ x incorrecte !"
  *     }
  */
-$app->post('/saveCourrier/{titre}/{description}/{dateCourrier}/{type}/{nature}/{adresse}/{reference}/{idEntite}', function ($titre, $description, $dateCourrier, $type, $nature, $adresse, $reference, $idEntite) use ($app) {
-	if (trim($titre) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ titre est obligatoire !'));
-	if (trim($description) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ description est obligatoire !'));
-	if (trim($dateCourrier) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ date courrier est obligatoire !'));
-	if (trim($type) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ type est obligatoire !'));
-	if (trim($nature) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ nature est obligatoire !'));
-	if (trim($adresse) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ adresse est obligatoire !'));
-	if (trim($reference) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ reference est obligatoire !'));
-	if (trim($idEntite) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ idEntite est obligatoire !'));
-	if (is_numeric($idEntite) == false) return  $app->json(array('operation' =>'ko','erreur'=> 'ValeurInvalide', 'message'=> 'Valeur de idEntite est invalide !'));
+$app->post('/saveCourrier', function (Request $request) use ($app) {
+	$courrier=getDataFromRequest($request);
+	
+	if (trim($courrier['titre']) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ titre est obligatoire !'));
+	if (trim($courrier['description']) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ description est obligatoire !'));
+	if (trim($courrier['datecourrier']) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ date courrier est obligatoire !'));
+	if (trim($courrier['type']) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ type est obligatoire !'));
+	if (trim($courrier['nature']) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ nature est obligatoire !'));
+	if (trim($courrier['adresse']) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ adresse est obligatoire !'));
+	if (trim($courrier['reference']) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ reference est obligatoire !'));
+	if (trim($courrier['idEntite']) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ idEntite est obligatoire !'));
+	if (is_numeric($courrier['idEntite']) == false) return  $app->json(array('operation' =>'ko','erreur'=> 'ValeurInvalide', 'message'=> 'Valeur de idEntite est invalide !'));
 
 	
    	$sql = "INSERT INTO courrier(titre,description ,datecourrier ,type ,nature ,adresse ,reference ,id_entite) VALUES (:titre, :description, :dateCourrier, :type, :nature, :adresse, :reference, :idEntite)";
     $query = $app['db']->prepare($sql);
     $query->execute(array(
-            "titre" => $titre, 
-            "description" => $description,
-            "dateCourrier" => $dateCourrier,
-            "type" => $type,
-            "nature" => $nature,
-            "adresse" => $adresse,
-            "reference" => $reference,
-            "idEntite" => $idEntite			
+            "titre" => $courrier['titre'], 
+            "description" => $courrier['description'],
+            "dateCourrier" => $courrier['datecourrier'],
+            "type" => $courrier['type'],
+            "nature" => $courrier['nature'],
+            "adresse" => $courrier['adresse'],
+            "reference" => $courrier['reference'],
+            "idEntite" => $courrier['idEntite']			
             ));
 			
 	$reponse = array('operation' =>'ok');
@@ -186,7 +213,13 @@ $app->post('/saveDocument', function () use ($app) {
  *     }
  */
 $app->get('/rechercherCourrier/{query}', function ($query) use ($app) {
-	$solrResponse = file_get_contents('http://localhost:8983/solr/courrier-data/select?q=' . $query);
+	
+	$encodedQuery = $query;
+	if ($query != '*:*') {
+		$encodedQuery = urlencode($query);
+	} 
+	
+	$solrResponse = file_get_contents('http://localhost:8983/solr/courrier-data/select?q=' . $encodedQuery);
 	$solrJson = json_decode($solrResponse);
 	
 	$docs = $solrJson->{'response'}->{'docs'};

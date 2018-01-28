@@ -4,11 +4,13 @@ import {Observable} from 'rxjs/Observable';
 import {Courrier} from '../_models/index';
 import { GenericResponse, SaveDocumentResponse, RechercherCourrierResponse } from "../_responses";
 import { DatePipe } from "@angular/common";
+import { HttpHeaders } from "@angular/common/http";
 
 @Injectable()
 export class CourrierService {
   private baseUrl = 'http://localhost/gestion_courrier/gc-api/web/index.php';
-  private addNewCourrierUrl = this.baseUrl + '/saveCourrier/';
+  
+  private addNewCourrierUrl = this.baseUrl + '/saveCourrier';
   private deleteCourrierUrl = this.baseUrl + '/supprimerCourrier/';
   private saveDocUrl = this.baseUrl + '/saveDocument';
   private rechercherCourrierUrl = this.baseUrl + '/rechercherCourrier/';
@@ -19,24 +21,11 @@ export class CourrierService {
   getAll(): Observable<RechercherCourrierResponse> {
     return this.http.get<RechercherCourrierResponse>(this.getAllCourrierUrl);
   }
-
-  create(courrier: Courrier, docs: Map<number, string>) {
-    console.log(courrier);
+ 
+  create(courrier: Courrier, docs: Map<number, string>) : Observable<GenericResponse> {
+    let headers:HttpHeaders = new HttpHeaders({'Content-Type' : 'application/json'});
     
-    let titre = encodeURIComponent(courrier.titre);
-    let description = encodeURIComponent(courrier.description);
-    let dateCourrier = encodeURIComponent(this.datePipe.transform(courrier.datecourrier, 'dd-MM-yyyy'));
-    let typeCourrier = encodeURIComponent(courrier.type);
-    let nature = encodeURIComponent(courrier.nature);
-    let adresse = encodeURIComponent(courrier.adresse);
-    let reference = encodeURIComponent(courrier.reference);
-    let idEntite = courrier.idEntite;
-
-    let url = this.addNewCourrierUrl + `${titre}/${description}/${dateCourrier}/${typeCourrier}/${nature}/${adresse}/${reference}/${idEntite}`;
-    console.log(url);
-    let rep = this.http.post(url, '');
-
-    console.log(rep);
+    return this.http.post<GenericResponse>(this.addNewCourrierUrl, JSON.stringify(courrier), {headers : headers});
   }
 
   delete(id: number) {

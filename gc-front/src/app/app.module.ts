@@ -33,7 +33,6 @@ import { MenuComponent } from './component/menu/index';
 import { AdministrationComponent } from './component/administration/index';
 import { StatistiquesComponent } from './component/statistiques/index';
 import { RechercheCourrierComponent } from './component/recherche-courrier/index';
-import { EnregistrementComponent } from './component/enregistrement/index';
 import { ArchiveComponent } from './component/archive/index';
 
 import { UsersComponent, AddUserDialogComponent } from './component/users/index';
@@ -56,7 +55,6 @@ import { DatePipe } from "@angular/common";
     LoginComponent,
     HomeComponent,
     MenuComponent,
-    EnregistrementComponent,
     RechercheCourrierComponent,
     ArchiveComponent,
 
