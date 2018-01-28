@@ -3,6 +3,7 @@ import 'rxjs/add/operator/toPromise';
 import { Headers, Http } from '@angular/http';
 
 import { User } from '../_models/index';
+import { SaveUserResponse } from '../_responses/index';
 
 @Injectable()
 export class UserService {
@@ -41,14 +42,13 @@ export class UserService {
     /**
      * Adds new user
      * @param user:User
-     * @returns {Promise<User>}
+     * @returns {Promise<SaveUserResponse>}
      */
-    add(user: User): Promise<User> {
+    add(user: User): Promise<SaveUserResponse> {
         return this.http.post(`${this.apiUrl}addUser/`, JSON.stringify(user), { headers: this.headers })
             .toPromise()
             .then(response => {
-                // console.log(response);
-                return response.json() as User;
+                return response.json() as SaveUserResponse;
             })
             .catch(this.handleError);
     }
@@ -56,12 +56,12 @@ export class UserService {
     /**
      * Updates user that matches to id
      * @param user:User
-     * @returns {Promise<User>}
+     * @returns {Promise<SaveUserResponse>}
      */
-    update(user: User): Promise<User> {
+    update(user: User): Promise<SaveUserResponse> {
         return this.http.post(`${this.apiUrl}updateUser/`, JSON.stringify(user), { headers: this.headers })
             .toPromise()
-            .then(response => response.json() as User)
+            .then(response => response.json() as SaveUserResponse)
             .catch(this.handleError);
     }
 
@@ -70,10 +70,10 @@ export class UserService {
      * @param id:string
      * @returns {Promise<User>}
      */
-    remove(id: number): Promise<any> {
+    remove(id: number): Promise<SaveUserResponse> {
         return this.http.post(`${this.apiUrl}deleteUser/`, JSON.stringify({ 'id': id }), { headers: this.headers })
             .toPromise()
-            .then(response => console.log(response))
+            .then(response => response.json() as SaveUserResponse)
             .catch(this.handleError);
     }
 

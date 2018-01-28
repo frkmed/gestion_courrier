@@ -8,14 +8,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
     if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
         header("Access-Control-Allow-Headers:        {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
-
     exit(0);
 }
 ini_set('display_errors', 1);
 
-
 require_once __DIR__.'/../vendor/autoload.php';
-
 $app = require __DIR__.'/../src/app.php';
 require __DIR__.'/../config/prod.php';
 require __DIR__.'/../src/controllers.php';
@@ -34,7 +31,6 @@ $app->register(new Silex\Provider\MonologServiceProvider(), array(
 // set debug mode
 $app['debug'] = true;
 
-
 $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
     'dbs.options' => array (
         'localhost' => array(
@@ -42,7 +38,7 @@ $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
             'host'      => 'localhost',
             'dbname'    => 'gc_db',
             'user'      => 'root',
-            'password'  => '',
+            'password'  => '1234',
             'charset'   => 'utf8',
         )
     ),
@@ -52,6 +48,7 @@ function getDataFromRequest(Request $request)
 {
     return $request->request->get('data');
 }
+
 
 /**
  * @api {get} /auth/:login/:mot_pass Authentification d'un utilisateur
@@ -352,9 +349,6 @@ $app->delete('/supprimerCourrier/{id}', function ($id) use ($app) {
  *     }
  */
 
-
-///////////////////////Test valide///////////////////////////////////
-
 $app->get('/listUsers/', function() use ($app){
     $sql = "
         SELECT
@@ -400,7 +394,7 @@ $app->get('/listUsers/', function() use ($app){
     });
 
 /**
- * @api {post} /addUser/:login/:nom/:prenom/:email/:mot_passe/:role/:id_entite Ajouter un utilisateur
+ * @api {post} /addUser/ Ajouter un utilisateur
  * @apiName addUser
  * @apiGroup Utilisateurs
  * 
@@ -426,29 +420,39 @@ $app->get('/listUsers/', function() use ($app){
  *     }
  */
 
-///////////////////////Test valide///////////////////////////////////
-
 $app->post('/addUser/', function(Request $request) use ($app){
-    $user=getDataFromRequest($request);
-    
-   $app['db']->insert('utilisateur', 
-                                array(
-                                    'login' => $user['login'],
-                                    'mot_passe'=> $user['mot_passe'],
-                                    'nom'=> $user['nom'],
-                                    'prenom'=> $user['prenom'],
-                                    'email'=> $user['email'],
-                                    'role'=> $user['role'],
-                                    'id_entite'=> $user['entite']['id']
-                                    )
-    );
-
-    $user['id']=$app['db']->lastInsertId();
-
-    $reponse = array('operation' =>'Ajout reussi.');
-    return  $app->json($user);     
-    /*$reponse = array('operation' => 'ko' , 'erreur' => "Utilisateur " .$login. " existant!!");
-    return $app->json($reponse);  */                         
+   $user=getDataFromRequest($request); 
+   
+   
+   $data=$app['db']->fetchAssoc('SELECT * FROM utilisateur WHERE login=?', [(string) $user['login']]);
+   
+   if(!$data){
+		$app['db']->insert('utilisateur', 
+									array(
+										'login' => $user['login'],
+										'mot_passe'=> $user['mot_passe'],
+										'nom'=> $user['nom'],
+										'prenom'=> $user['prenom'],
+										'email'=> $user['email'],
+										'role'=> $user['role'],
+										'id_entite'=> $user['entite']['id']
+										)
+		);   
+		$user['id']=$app['db']->lastInsertId();
+		
+		$reponse = array(
+						'operation' =>'ok',
+						'user'=>$user,
+						'message'=> 'Ajout réussi'
+						);
+		return  $app->json($reponse);   
+	}
+   
+    $reponse = array(
+				'operation' => 'ko' , 
+				'erreur' => 'UtilisateurExiste',
+				'message' => "Utilisateur " .$user['login']. " existant!!");
+    return $app->json($reponse);                        
 });
 
 
@@ -475,21 +479,34 @@ $app->post('/addUser/', function(Request $request) use ($app){
  */
 
 $app->post('/updateUser/', function(Request $request) use ($app){
-        $user=getDataFromRequest($request);
-        $app['db']->update('utilisateur', 
-        array(
-            'login' => $user['login'],
-            'mot_passe'=> $user['mot_passe'],
-            'nom'=> $user['nom'],
-            'prenom'=> $user['prenom'],
-            'email'=> $user['email'],
-            'role'=> $user['role'],
-            'id_entite'=> $user['entite']['id']
-        ),
-        array('id' => $user['id'])
-        );
-       $reponse = array('operation' =>'Modification reussite');
-		return  $app->json($reponse);
+  $user=getDataFromRequest($request);
+  $data=$app['db']->fetchAssoc('SELECT * FROM utilisateur WHERE id<>? AND login=?', [(int) $user['id'],(string) $user['login']]);
+	if(!$data){
+		$app['db']->update('utilisateur', 
+				array(
+					'login' => $user['login'],
+					'mot_passe'=> $user['mot_passe'],
+					'nom'=> $user['nom'],
+					'prenom'=> $user['prenom'],
+					'email'=> $user['email'],
+					'role'=> $user['role'],
+					'id_entite'=> $user['entite']['id']
+				),
+				array('id' => $user['id'])
+				);
+	    $reponse = array(
+				'operation' =>'ok',
+				'user'=>$user,
+				'message'=> 'Modification réussi'
+				);
+		return  $app->json($reponse);   
+	}
+   
+    $reponse = array(
+				'operation' => 'ko' , 
+				'erreur' => 'UtilisateurExiste',
+				'message' => "Utilisateur " .$user['login']. " existant!!");
+    return $app->json($reponse);
 });
 
 /**
@@ -509,164 +526,14 @@ $app->post('/updateUser/', function(Request $request) use ($app){
 
 $app->post('/deleteUser/', function(Request $request) use ($app){
     $user=getDataFromRequest($request);
-    print_r($user);
     $app['db']->delete("utilisateur", array("id" => $user['id']));
-    $reponse = array('operation' =>'Suppression exécuté');
+    $reponse = array(
+        'operation' =>'ok',
+        'user'=>$user,
+        'message'=> 'Suppression réussi'
+        );
    
     return  $app->json($reponse);
-});
-
-
-/**
- * @api {post} /saveCourrier/:titre/:description/:dateCourrier/:type/:nature/:adresse/:reference/:idEntite Enregistrement d'un courrier
- * @apiName saveCourrier
- * @apiGroup Courrier
- *
- * @apiParam {String} titre Titre (Objet) du courrier.
- * @apiParam {String} description Un texte descriptif du courrier, une sorte de résumé du contenu du courrier.
- * @apiParam {Date} dateCourrier Date du courrier. si le courrier est un courrier arrivée, il s'agit de la date de réception du courrier. si le courrier est un courrier départ, il s'agit de la date d'envoi. Le format utilisé est "JJ/MM/AAAA".
- * @apiParam {String} type Type du courrier. Ne peut prendre que une des deux valeurs suivantes : 'Courrier Arrivée' / 'Courrier Départ'.
- * @apiParam {String} nature Nature du courrier. peut prendre une des valeurs suivantes : 'Lettre' / 'Fax' / 'E-mail' / 'Colis' / 'Autre'.
- * @apiParam {String} reference Référence du courrier. c'est une référence unique associé au courrier en vue de l'identifier.
- * @apiParam {String} idEntite ID de l'entite concerné par le courrier. Si le courrier est un courrier arrivée, c'est l'id de l'entité destinataire. Si le courrier est un courrier départ, c'est l'id de l'entité source. 
-
- *
- * @apiSuccess {String} Objet JSON avec "operation" : "ok".
- * @apiSuccessExample Success-Response:
- *     {
- *       "operation": "ok"
- *     }
- * @apiError ValeurInvalide 'Valeur du champ x incorrecte !' si une valeur d'une des champs envoyés à ce service n'est pas valide.
- * @apiErrorExample Error-Response:
- *     {
- *			"operation": "ko",
- *			"erreur": "ValeurInvalide",
- *			"message": "Valeur du champ x incorrecte !"
- *     }
- */
-$app->post('/saveCourrier/{titre}/{description}/{dateCourrier}/{type}/{nature}/{adresse}/{reference}/{idEntite}', function ($titre, $description, $dateCourrier, $type, $nature, $adresse, $reference, $idEntite) use ($app) {
-	$reponse = array('operation' =>'ko','erreur'=> 'NOT_IMPLEMENTED');
-	return  $app->json($reponse);	
-});
-
-/**
- * @api {post} /saveDocument Enregistrement d'un document scanné sur le serveur
- * @apiName saveDocument
- * @apiGroup Courrier
- *
- * @apiParam {Base64String} body Le contenu du document scanné, encodé dans le format Base64.
- *
- * @apiSuccess {String} Objet JSON avec "operation" : "ok".
- * @apiSuccess {String} fichier le nom du fichier sur le serveur du document scanné.
- * @apiSuccessExample Success-Response:
- *     {
- *      	"operation": "ok",
- *			"fichier" : "courrier-scan-2018-01-01-13-28-00.tiff"
- *     }
- * @apiError FormatBase64Invalide 'Format Base64 invalide du document !' si le contenu envoyé du document ne respecte pas le format Base64.
- * @apiErrorExample Error-Response:
- *     {
- *			"operation": "ko",
- *			"erreur": "ValeurInvalide",
- *			"message": "Format Base64 invalide du document !"
- *     }
- */
-$app->post('/saveDocument', function () use ($app) {
-	$reponse = array('operation' =>'ko','erreur'=> 'NOT_IMPLEMENTED');
-	return  $app->json($reponse);	
-});
-
-/**
- * @api {get} /rechercherCourrier/:query Recherche d'un courrier par mots clés
- * @apiName rechercherCourrier
- * @apiGroup Courrier
- *
- * @apiParam {String} query Mot clés à chercher dans le courrier stocké dans la base de données
- *
- * @apiSuccess {String} Objet JSON avec "operation" : "ok".
- * @apiSuccess {Array} resultat Un tableau JSON de resultat, dont chaque élément du tableau est un courrier qui correspond au mot(s) clé(s) utilisés dans la recherche.
- * @apiSuccessExample Success-Response:
- *     {
- *      	"operation": "ok",
- *			"resultat" : [{
- *							"reference" : "FAX/23/2018",
- *							"titre": "Lancement du concours de recrutement des techniciens 3éme grade",
- *							"type": "Courrier Départ",
- *							"date": "20/01/2018",
- *							"nature": "Fax"
- *							"idEntite": "5",
- *							"nomEntite": "DRH"
- *							},
- *							...
- *							]
- *     }
- */
-$app->get('/rechercherCourrier/{query}', function ($query) use ($app) {
-	$reponse = array('operation' =>'ko','erreur'=> 'NOT_IMPLEMENTED');
-	return  $app->json($reponse);	
-});
-
-/**
- * @api {get} /detailCourrier/:id Lire le détail d'un courrier à partir de son ID.
- * @apiName detailCourrier
- * @apiGroup Courrier
- *
- * @apiParam {Number} id ID du courrier.
- *
- * @apiSuccess {String} Objet JSON avec "operation" : "ok".
- * @apiSuccess {Objet} courrier Un objet JSON contenant toute les informations du courrier
- * @apiSuccessExample Success-Response:
- *     {
- *      	"operation": "ok",
- *			"courrier" : {
- *							"reference" : "FAX/23/2018",
- *							"titre": "Lancement du concours de recrutement des techniciens 3éme grade",
- *							"description": "La direction des ressources humaines lance un concours au profit des techniciens spécialisés ...",
- *							"type": "Courrier Départ",
- *							"adresse": "SNTL , Direction des ressources humaines Hay EL KAMRA, RABAT",
- *							"date": "20/01/2018",
- *							"nature": "Fax"
- *							"idEntite": "5",
- *							"nomEntite": "DRH"
- *							}
- *     }
- * @apiError IdInvalide 'Id invalide !' si l'id n'est pas une valeur numérique.
- * @apiError CourrierInexistant 'Le courrier avec id x est inexistant !' si l'id ne correspond à aucun courrier au niveau de la table du courrier.
- * @apiErrorExample Error-Response:
- *     {
- *			"operation": "ko",
- *			"erreur": "CourrierInexistant",
- *			"message": "Le courrier avec id 5 est inexistant !"
- *		}
- */
-$app->get('/detailCourrier/{id}', function ($id) use ($app) {
-	$reponse = array('operation' =>'ko','erreur'=> 'NOT_IMPLEMENTED');
-	return  $app->json($reponse);	
-});
-
-/**
- * @api {get} /supprimerCourrier/:id Supprimer un courrier à partir de son ID.
- * @apiName supprimerCourrier
- * @apiGroup Courrier
- *
- * @apiParam {Number} id ID du courrier.
- *
- * @apiSuccess {String} Objet JSON avec "operation" : "ok".
- * @apiSuccessExample Success-Response:
- *     {
- *      	"operation": "ok",
- *     }
- * @apiError CourrierInexistant 'Le courrier avec id x est inexistant !' si l'id ne correspond à aucun courrier au niveau de la table du courrier.
- * @apiErrorExample Error-Response:
- *     {
- *			"operation": "ko",
- *			"erreur": "CourrierInexistant",
- *			"message": "Le courrier avec id 5 est inexistant !"
- *		}
- */
-$app->get('/supprimerCourrier/{id}', function ($id) use ($app) {
-	$reponse = array('operation' =>'ko','erreur'=> 'NOT_IMPLEMENTED');
-	return  $app->json($reponse);	
 });
 
 /**
@@ -725,27 +592,18 @@ $app->get('/listEntites/', function() use ($app){
  *     }
  */
 
-$app->post('/addEntite/{nom}/{type}/{id_parent}', function($nom,$type,$id_parent) use ($app){
-
-    $sql = "INSERT INTO entite('nom','type','id_parent') VALUES (:nom,:type,:id_parent)";
-        $query = $app['db']->prepare($sql);
-
-        $sql = "SELECT nom,type,id_parent FROM entite";
-    	$entites = $app['db']->fetchAssoc($sql,array());
-    	foreach ($entites as $entite) {
-    		if(($entite[$nom] == ':nom') && ($entite[$type] == ':type') && ($entite[$id_parent] == ':id_parent')){
-    			$response = array('operation' => 'ko' , 'erreur' => "L'entité " . $entite[$nom] . " existe déjà !!");
-				return $app->json($reponse);
-    		}
-    	}
-
-        $query->bindValue(':nom', $nom, PDO::PARAM_STR);
-        $query->bindValue(':type', $type, PDO::PARAM_STR);
-        $query->bindValue(':id_parent', $id_parent, PDO::PARAM_STR);    
-        $query->execute();
-        
-        $reponse = array('operation' =>'Ajout reussi.');
-		return  $app->json($reponse);    
+$app->post('/addEntite/', function(Request $request) use ($app){
+	$entite=getDataFromRequest($request); 
+	$app['db']->insert('entite', 
+							array(
+								'nom' => $entite['nom'],
+								'type'=> $entite['type'],
+								'id_parent'=> $entite['id_parent']
+								)
+	);
+	$entite['id']=$app['db']->lastInsertId();
+	$reponse = array('operation' =>'Ajout reussi.');
+	return  $app->json($reponse);    
 });
 
 
@@ -766,16 +624,19 @@ $app->post('/addEntite/{nom}/{type}/{id_parent}', function($nom,$type,$id_parent
  *     }
  * 
  */
-$app->put('/updateEntite/{id}/{nom}/{type}/{id_parent}', function($id,$nom,$type,$id_parent) use ($app){
-
-    $sql = "UPDATE entite SET nom = :nom, type = :type, id_parent= :id_parent WHERE id = $id";
-    $query = $app['db']->prepare($sql);       
-        $query->bindValue(':nom', $nom, PDO::PARAM_STR);
-        $query->bindValue(':type', $type, PDO::PARAM_STR);
-        $query->bindValue(':id_parent', $id_parent, PDO::PARAM_STR);
-        $query->execute();
-       $reponse = array('operation' =>'Modification reussite');
-		return  $app->json($reponse);
+$app->post('/updateEntite/', function(Request $request) use ($app){
+	$entite=getDataFromRequest($request);
+    $app['db']->update('entite', 
+        array(
+            'nom' => $entite['nom'],
+            'type'=> $entite['type'],
+            'id_parent'=> $entite['id_parent'],
+        ),
+        array('id' => $entite['id'])
+        );
+		
+$reponse = array('operation' =>'- reussite');
+return  $app->json($reponse);
 });
 
 /**
@@ -793,14 +654,10 @@ $app->put('/updateEntite/{id}/{nom}/{type}/{id_parent}', function($id,$nom,$type
  * 
  */
 
-$app->delete('/deleteEntite/{id}', function($id) use ($app){
-    $sql = "DELETE FROM entite WHERE id = $id";
-    $query = $app['db']->prepare($sql);
-   
-        $query->execute();
-        $reponse = array('operation' =>'Suppression exécuté');
-   
-    return  $app->json($reponse);
+$app->post('/deleteEntite/', function(Request $request) use ($app){	
+	$entite=getDataFromRequest($request);
+    $app['db']->delete("entite", array("id" => $entite['id']));
+    $reponse = array('operation' =>'Suppression exécuté');
 });
 
 

@@ -111,11 +111,22 @@ export class UsersComponent implements OnInit, AfterViewInit {
       .subscribe(
       res => {
         if (res) {
-          this.userService.remove(user.id);
+          this.userService.remove(user.id)
+            .then(response => {
+              if (response.operation === 'ok') {
+                this.dataSource.data.splice(this.dataSource.data.indexOf(user, 0), 1);
+                this.dataSource.sort = this.sort;
+                this.dataSource.paginator = this.paginator;
+                this.snackBar.open(response.message, 'Fermer', {
+                  duration: 2000,
+                });
+              } else {
+                this.snackBar.open('ERREUR', 'Fermer', {
+                  duration: 2000,
+                });
+              }
+            });
         }
-        this.snackBar.open('TEST', 'IIIII', {
-          duration: 2000,
-        });
 
       });
   }
@@ -135,6 +146,7 @@ export class AddUserDialogComponent implements OnInit {
     public dialogRef: MatDialogRef<AddUserDialogComponent>,
     public userService: UserService,
     public entiteService: EntiteService,
+    public snackBar: MatSnackBar,
     @Inject(MAT_DIALOG_DATA) private data: any
   ) {
     this.loadEntiteList();
@@ -154,13 +166,26 @@ export class AddUserDialogComponent implements OnInit {
     if (this.user.id) {
       this.userService.update(this.user)
         .then(response => {
-          this.dialogRef.close();
+          if (response.operation === 'ok') {
+            this.user = response.user;
+            this.dialogRef.close();
+          } else {
+            this.snackBar.open(response.message, 'Fermer', {
+              duration: 2000,
+            });
+          }
         });
     } else {
       this.userService.add(this.user)
         .then(response => {
-          this.user.id = response.id;
-          this.dialogRef.close();
+          if (response.operation === 'ok') {
+            this.user.id = response.user.id;
+            this.dialogRef.close();
+          } else {
+            this.snackBar.open(response.message, 'Fermer', {
+              duration: 2000,
+            });
+          }
         });
     }
   }
