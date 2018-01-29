@@ -9,7 +9,7 @@ import { SaveEntiteResponse } from "../_responses/saveentiteresponse";
 export class EntiteService {
     private headers = new Headers({ 'Content-Type': 'application/json' });
     private serviceUrl = 'http://localhost:4200/assets/demo_users.txt';
-    private apiUrl = 'http://localhost:9090/gestion_courrier/gc-api/web/index.php/';
+    private apiUrl = 'http://localhost/gestion_courrier/gc-api/web/index.php/';
 
     constructor(private http: Http) { }
 

@@ -22,7 +22,7 @@ export class CourrierService {
     return this.http.get<RechercherCourrierResponse>(this.getAllCourrierUrl);
   }
  
-  create(courrier: Courrier, docs: Map<number, string>) : Observable<GenericResponse> {
+  create(courrier: Courrier) : Observable<GenericResponse> {
     let headers:HttpHeaders = new HttpHeaders({'Content-Type' : 'application/json'});
     
     return this.http.post<GenericResponse>(this.addNewCourrierUrl, JSON.stringify(courrier), {headers : headers});

@@ -61,7 +61,7 @@
 		</div>
 
 	</div>
-	<div class="row" *ngFor="let key of attachements.keys()">
+	<div class="row" *ngFor="let key of documents.keys()">
 		<div class="col-md-12">
 			<div class="attachment-list">
 
@@ -69,11 +69,11 @@
 					fxlayoutalign="space-between center"
 					style="flex-direction: row; box-sizing: border-box; display: flex; max-height: 100%; place-content: center space-between; align-items: center;">
 					<div>
-						<span class="filename">{{attachements.get(key)}}</span>
+						<span class="filename">{{documents.get(key)}}</span>
 					</div>
 
 					<button aria-label="Delete attachment" class="mat-icon-button"
-						mat-icon-button="" (click)="removeAttachement(key)">
+						mat-icon-button="" (click)="removeDocument(key)">
 						<span class="mat-button-wrapper"> <mat-icon
 								class="s-16 mat-icon material-icons" role="img"
 								aria-hidden="true">close</mat-icon>
@@ -90,7 +90,7 @@
 <div mat-dialog-actions>
 	<button class="col-md-3" mat-button (click)="saveCourrier()"
 		mat-raised-button color="primary">Enregistrer</button>
-	<button mat-button (click)="addAttachement('coucou.png')" mat-icon-button>
+	<button mat-button (click)="addDocument()" mat-icon-button>
 		<span class="mat-button-wrapper"> <mat-icon
 				class="mat-icon material-icons" role="img" aria-hidden="true">attach_file</mat-icon>
 		</span>

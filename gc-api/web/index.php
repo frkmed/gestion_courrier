@@ -153,7 +153,16 @@ $app->post('/saveCourrier', function (Request $request) use ($app) {
             "reference" => $courrier['reference'],
             "idEntite" => $courrier['idEntite']			
             ));
-			
+	
+	$courrier_id = $app['db']->lastInsertId();
+	foreach ($courrier['documents'] as $doc) {
+		$sql = "INSERT INTO document(id_courrier, fichier, contenu) VALUES (:idCourrier, :fichier, '')";
+		$query = $app['db']->prepare($sql);
+		$query->execute(array(
+				"idCourrier" => $courrier_id, 
+				"fichier" => $doc		
+				));		
+	}		
 	$reponse = array('operation' =>'ok');
 	return $app->json($reponse);
 });
@@ -170,7 +179,7 @@ $app->post('/saveCourrier', function (Request $request) use ($app) {
  * @apiSuccessExample Success-Response:
  *     {
  *      	"operation": "ok",
- *			"fichier" : "courrier-scan-2018-01-01-13-28-00.tiff"
+ *			"fichier" : "courrier-scan-2018-01-01-13-28-00.png"
  *     }
  * @apiError FormatBase64Invalide 'Format Base64 invalide du document !' si le contenu envoyé du document ne respecte pas le format Base64.
  * @apiErrorExample Error-Response:

@@ -45,3 +45,8 @@ testem.log
 Thumbs.db
 
 gc-front/package-lock.json
+
+/images/*
+/xml/*
+/gc-ocr-module.log
+

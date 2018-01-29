@@ -9,4 +9,5 @@ export class Courrier {
     reference: string;
     idEntite: number;
     nomEntite: string;
+    documents: string[];
 }

@@ -1,15 +1,15 @@
-import { Component, OnInit, Inject, AfterViewInit } from '@angular/core';
-import { CourrierService } from '../../_services/courrier.service';
-import { Observable } from 'rxjs/Observable';
-import { DataSource } from '@angular/cdk/collections';
-import { Courrier } from '../../_models/courrier';
-import { Entite } from '../../_models/entite';
-import { SaveDocumentResponse } from "../../_responses";
-import { GenericResponse } from "../../_responses/genericresponse";
-import { EntiteService } from '../../_services/entite.service';
-import { MatPaginator, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ViewChild } from '@angular/core';
-import { QueueingSubject } from 'queueing-subject';
+import {Component, OnInit, Inject, AfterViewInit} from '@angular/core';
+import {CourrierService} from '../../_services/courrier.service';
+import {Observable} from 'rxjs/Observable';
+import {DataSource} from '@angular/cdk/collections';
+import {Courrier} from '../../_models/courrier';
+import {Entite} from '../../_models/entite';
+import {SaveDocumentResponse} from "../../_responses";
+import {GenericResponse} from "../../_responses/genericresponse";
+import {EntiteService} from '../../_services/entite.service';
+import {MatPaginator, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
+import {ViewChild} from '@angular/core';
+import {QueueingSubject} from 'queueing-subject';
 import websocketConnect from 'rxjs-websockets';
 
 @Component({
@@ -25,7 +25,7 @@ export class CourrierComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private courrierService: CourrierService, public dialog: MatDialog) { }
+  constructor(private courrierService: CourrierService, public dialog: MatDialog) {}
 
   ngOnInit() {
     this.loadCourrierList();
@@ -68,7 +68,7 @@ export class CourrierComponent implements OnInit, AfterViewInit {
   }
 
   openAddDialog(): void {
-    this.dialogRef1 = this.dialog.open(AddCourrierDialog, { data: { title: 'First Dialog' } });
+    this.dialogRef1 = this.dialog.open(AddCourrierDialog, {data: {title: 'First Dialog'}});
 
     this.dialogRef1.afterClosed().subscribe(result => {
       console.log('The dialog 1 was closed');
@@ -76,7 +76,7 @@ export class CourrierComponent implements OnInit, AfterViewInit {
   }
 
   openUpdateDialog(): void {
-    this.dialogRef1 = this.dialog.open(UpdateCourrierDialog, { data: { title: 'First Dialog' } });
+    this.dialogRef1 = this.dialog.open(UpdateCourrierDialog, {data: {title: 'First Dialog'}});
 
     this.dialogRef1.afterClosed().subscribe(result => {
       console.log('The dialog 1 was closed');
@@ -95,12 +95,11 @@ export class CourrierComponent implements OnInit, AfterViewInit {
 export class AddCourrierDialog {
   newCourrier: Courrier = new Courrier();
   entites: Entite[];
-  attachements: Map<number, string> = new Map<number, string>();
+  documents:Map<number,string> = new Map<number, string>()
 
   constructor(public dialogRef: MatDialogRef<AddCourrierDialog>, public entiteService: EntiteService, public courrierService: CourrierService,
     @Inject(MAT_DIALOG_DATA) public data: any) {
-
-   this.loadEntiteList();
+    this.loadEntiteList();
   }
 
   onNoClick(): void {
@@ -109,30 +108,32 @@ export class AddCourrierDialog {
   }
 
   saveCourrier(): void {
-    this.courrierService.create(this.newCourrier, this.attachements).subscribe(
+    this.newCourrier.documents = Array.from(this.documents.values());
+    this.courrierService.create(this.newCourrier).subscribe(
       data => {
+        console.log(this.newCourrier);
         console.log("create done ! " + data);
       },
       error => console.log('saveCourrier Method: ' + <any>error, 'alert alert-danger')
-      );
+    );
   }
 
-  addAttachement(filename: string) {
+  addDocument(filename: string) {
     const input = new QueueingSubject<string>()
-    const { messages, connectionStatus } = websocketConnect('ws://localhost:8181', input)
+    const {messages, connectionStatus} = websocketConnect('ws://localhost:8181', input)
 
     const messagesSubscription = messages.subscribe((message: string) => {
 
       this.courrierService.saveDoc(message).subscribe((res: SaveDocumentResponse) => {
-        this.attachements.set(this.attachements.size, res.fichier);
+        this.documents.set(this.documents.size, res.fichier);
       });
 
       messagesSubscription.unsubscribe();
     })
   }
 
-  removeAttachement(idx: number) {
-    this.attachements.delete(idx);
+  removeDocument(idx: number) {
+    this.documents.delete(idx);
   }
 
 
