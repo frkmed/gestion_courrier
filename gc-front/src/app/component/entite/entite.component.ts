@@ -81,26 +81,32 @@ export class EntiteComponent implements OnInit, AfterViewInit {
     );
 
     this.dialogRef1.afterClosed().subscribe(result => {
-      this.dataSource.data.push(this.entite);
-      this.dataSource.sort = this.sort;
-      this.dataSource.paginator = this.paginator;
+      if (result) {
+        this.dataSource.data.push(this.entite);
+        this.dataSource.sort = this.sort;
+        this.dataSource.paginator = this.paginator;
+      }
     });
   }
 
   updateDialog(entite): void {
+    this.entite = Object.assign({}, entite);
     this.dialogRef1 = this.dialog.open(
       AddEntiteDialogComponent,
       {
         width: '450px',
         data: {
           title: 'Editer l\'entite',
-          entite: entite
+          entite: this.entite
         }
       }
     );
     this.dialogRef1.afterClosed().subscribe(result => {
-      this.entite = result;
-      console.log(this.entite);
+      if (result) {
+        this.dataSource.data[this.dataSource.data.indexOf(entite, 0)] = this.entite;
+        this.dataSource.sort = this.sort;
+        this.dataSource.paginator = this.paginator;
+      }
     });
   }
 
@@ -139,7 +145,6 @@ export class EntiteComponent implements OnInit, AfterViewInit {
 export class AddEntiteDialogComponent implements OnInit {
   title;
   entite: Entite;
-  //entites: Entite[];
 
   constructor(
     public dialogRef: MatDialogRef<AddEntiteDialogComponent>,
@@ -147,7 +152,6 @@ export class AddEntiteDialogComponent implements OnInit {
     public snackBar: MatSnackBar,
     @Inject(MAT_DIALOG_DATA) private data: any
   ) {
-    //this.loadEntiteList();
   }
 
   ngOnInit() {
@@ -160,43 +164,37 @@ export class AddEntiteDialogComponent implements OnInit {
     return c1 && c2 ? c1.id === c2.id : c1 === c2;
   }*/
 
-  
+
+
+
   saveEntite(): void {
     if (this.entite.id) {
       this.entiteService.update(this.entite)
         .then(response => {
           if (response.operation === 'ok') {
             this.entite = response.entite;
-            this.dialogRef.close();
-          } else {
-            this.snackBar.open(response.message, 'Fermer', {
-              duration: 2000,
-            });
+            this.dialogRef.close(true);
           }
+
+          this.snackBar.open(response.message, 'Fermer', {
+            duration: 2000,
+          });
         });
     } else {
       this.entiteService.add(this.entite)
         .then(response => {
           if (response.operation === 'ok') {
             this.entite.id = response.entite.id;
-            this.dialogRef.close();
-          } else {
-            this.snackBar.open(response.message, 'Fermer', {
-              duration: 2000,
-            });
+            this.dialogRef.close(true);
           }
+          this.snackBar.open(response.message, 'Fermer', {
+            duration: 2000,
+          });
         });
     }
   }
 
-  /*async loadEntiteList() {
-    await this.entiteService.getEntites().then(
-      data => {
-        this.entites = data;
-      },
-      error => console.log('loadEntitesList Method: ' + <any>error, 'alert alert-danger')
-    );
-  }*/
+
 }
 
 

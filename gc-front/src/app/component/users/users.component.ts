@@ -82,26 +82,33 @@ export class UsersComponent implements OnInit, AfterViewInit {
     );
 
     this.dialogRef1.afterClosed().subscribe(result => {
-      this.dataSource.data.push(this.user);
-      this.dataSource.sort = this.sort;
-      this.dataSource.paginator = this.paginator;
+      if (result) {
+        this.dataSource.data.push(this.user);
+        this.dataSource.sort = this.sort;
+        this.dataSource.paginator = this.paginator;
+      }
     });
   }
 
   updateDialog(user): void {
+    this.user = Object.assign({}, user);
+
     this.dialogRef1 = this.dialog.open(
       AddUserDialogComponent,
       {
         width: '450px',
         data: {
           title: 'Editer l\'utilisateur',
-          user: user
+          user: this.user
         }
       }
     );
     this.dialogRef1.afterClosed().subscribe(result => {
-      this.user = result;
-      console.log(this.user);
+      if (result) {
+        this.dataSource.data[this.dataSource.data.indexOf(user, 0)] = this.user;
+        this.dataSource.sort = this.sort;
+        this.dataSource.paginator = this.paginator;
+      }
     });
   }
 
@@ -127,7 +134,6 @@ export class UsersComponent implements OnInit, AfterViewInit {
               }
             });
         }
-
       });
   }
 }
@@ -167,25 +173,22 @@ export class AddUserDialogComponent implements OnInit {
       this.userService.update(this.user)
         .then(response => {
           if (response.operation === 'ok') {
-            this.user = response.user;
-            this.dialogRef.close();
-          } else {
-            this.snackBar.open(response.message, 'Fermer', {
-              duration: 2000,
-            });
+            this.dialogRef.close(true);
           }
+          this.snackBar.open(response.message, 'Fermer', {
+            duration: 2000,
+          });
         });
     } else {
       this.userService.add(this.user)
         .then(response => {
           if (response.operation === 'ok') {
             this.user.id = response.user.id;
-            this.dialogRef.close();
-          } else {
-            this.snackBar.open(response.message, 'Fermer', {
-              duration: 2000,
-            });
+            this.dialogRef.close(true);
           }
+          this.snackBar.open(response.message, 'Fermer', {
+            duration: 2000,
+          });
         });
     }
   }
