@@ -1,5 +1,5 @@
 export class Courrier {
-    id: number;
+    id: number = 0;
     titre: string;
     description: string;
     datecourrier: Date;

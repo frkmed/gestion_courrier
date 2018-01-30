@@ -100,19 +100,20 @@ $app->get('/auth/{login}/{mot_pass}', function ($login,$mot_pass) use ($app) {
 
 /**
 
- * @api {post} /saveCourrier/:titre/:description/:dateCourrier/:type/:nature/:adresse/:reference/:idEntite Enregistrement d'un courrier
+ * @api {post} /saveCourrier Enregistrement/Modification d'un courrier
  * @apiName saveCourrier
  * @apiGroup Courrier
  *
- * @apiParam {String} titre Titre (Objet) du courrier.
- * @apiParam {String} description Un texte descriptif du courrier, une sorte de résumé du contenu du courrier.
- * @apiParam {Date} dateCourrier Date du courrier. si le courrier est un courrier arrivée, il s'agit de la date de réception du courrier. si le courrier est un courrier départ, il s'agit de la date d'envoi. Le format utilisé est "JJ/MM/AAAA".
- * @apiParam {String} type Type du courrier. Ne peut prendre que une des deux valeurs suivantes : 'Courrier Arrivée' / 'Courrier Départ'.
- * @apiParam {String} nature Nature du courrier. peut prendre une des valeurs suivantes : 'Lettre' / 'Fax' / 'E-mail' / 'Colis' / 'Autre'.
- * @apiParam {String} reference Référence du courrier. c'est une référence unique associé au courrier en vue de l'identifier.
- * @apiParam {String} idEntite ID de l'entite concerné par le courrier. Si le courrier est un courrier arrivée, c'est l'id de l'entité destinataire. Si le courrier est un courrier départ, c'est l'id de l'entité source. 
-
- *
+ * @apiParam {ObjetJSON} Objet JSON avec les paramétres suivants :
+ *     {
+ * 			"titre" : Titre (Objet) du courrier.
+ * 			"description" : Un texte descriptif du courrier, une sorte de résumé du contenu du courrier.
+ * 			"dateCourrier" : Date du courrier. si le courrier est un courrier arrivée, il s'agit de la date de réception du courrier. si le courrier est un courrier départ, il s'agit de la date d'envoi. Le format utilisé est "JJ/MM/AAAA".
+ * 			"type" : Type du courrier. Ne peut prendre que une des deux valeurs suivantes : 'Courrier Arrivée' / 'Courrier Départ'.
+ * 			"nature" : Nature du courrier. peut prendre une des valeurs suivantes : 'Lettre' / 'Fax' / 'E-mail' / 'Colis' / 'Autre'.
+ * 			"reference" : Référence du courrier. c'est une référence unique associé au courrier en vue de l'identifier.
+ * 			"idEntite" : ID de l'entite concerné par le courrier. Si le courrier est un courrier arrivée, c'est l'id de l'entité destinataire. Si le courrier est un courrier départ, c'est l'id de l'entité source. 
+ *     }
  * @apiSuccess {String} Objet JSON avec "operation" : "ok".
  * @apiSuccessExample Success-Response:
  *     {
@@ -127,7 +128,6 @@ $app->get('/auth/{login}/{mot_pass}', function ($login,$mot_pass) use ($app) {
  *			"message": "Valeur du champ x incorrecte !"
  *     }
  */
- 
 $app->post('/saveCourrier', function (Request $request) use ($app) {
 	$courrier=getDataFromRequest($request);
 	
@@ -142,9 +142,10 @@ $app->post('/saveCourrier', function (Request $request) use ($app) {
 	if (is_numeric($courrier['idEntite']) == false) return  $app->json(array('operation' =>'ko','erreur'=> 'ValeurInvalide', 'message'=> 'Valeur de idEntite est invalide !'));
 
 	
-   	$sql = "INSERT INTO courrier(titre,description ,datecourrier ,type ,nature ,adresse ,reference ,id_entite) VALUES (:titre, :description, :dateCourrier, :type, :nature, :adresse, :reference, :idEntite)";
+   	$sql = "REPLACE INTO courrier(id, titre,description ,datecourrier ,type ,nature ,adresse ,reference ,id_entite) VALUES (:id, :titre, :description, :dateCourrier, :type, :nature, :adresse, :reference, :idEntite)";
     $query = $app['db']->prepare($sql);
     $query->execute(array(
+			"id" => $courrier['id'],
             "titre" => $courrier['titre'], 
             "description" => $courrier['description'],
             "dateCourrier" => $courrier['datecourrier'],
