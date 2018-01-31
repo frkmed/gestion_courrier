@@ -27,3 +27,13 @@
 	{
 	margin-bottom: 0
 }
+
+.mat-fab{
+    top: 28px;
+    left: 4px;
+    z-index: 999;
+  }
+
+  .mat-header-cell.mat-sort-header-sorted {
+    color: black;
+  }

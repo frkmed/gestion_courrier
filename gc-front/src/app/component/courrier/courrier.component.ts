@@ -18,7 +18,7 @@ import websocketConnect from 'rxjs-websockets';
   styleUrls: ['./courrier.component.css']
 })
 export class CourrierComponent implements OnInit, AfterViewInit {
-  displayedColumns = ['reference', 'titre', 'type', 'dateCourrier', 'nature'];
+  displayedColumns = ['reference', 'titre', 'type', 'dateCourrier', 'nature', 'action'];
   dataSource = new MatTableDataSource<any>();
   query = '';
   dialogRef1;
@@ -75,12 +75,17 @@ export class CourrierComponent implements OnInit, AfterViewInit {
     });
   }
 
-  openUpdateDialog(): void {
+  openUpdateDialog(courrier): void {
     this.dialogRef1 = this.dialog.open(UpdateCourrierDialog, {data: {title: 'First Dialog'}});
 
     this.dialogRef1.afterClosed().subscribe(result => {
       console.log('The dialog 1 was closed');
     });
+  }
+
+
+  deleteconfirmDialog(courrier){
+    
   }
 
 
