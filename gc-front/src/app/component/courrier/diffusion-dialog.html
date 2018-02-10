@@ -1,0 +1,90 @@
+<h1 mat-dialog-title>
+	{{title}}
+</h1>
+<div mat-dialog-content>
+	<div class="row">
+		<div class="col-md-12">
+			<mat-table [dataSource]="dataSource" matSort>
+				<ng-container matColumnDef="action" style="width: 40px !important;">
+					<mat-header-cell *matHeaderCellDef>action</mat-header-cell>
+					<mat-cell *matCellDef="let dest">
+						<mat-form-field style="width: 40px !important;">
+							<mat-select [(ngModel)]="dest.action">
+								<mat-option value="A">A</mat-option>
+								<mat-option value="CC">CC</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</mat-cell>
+				</ng-container>
+				<ng-container matColumnDef="entite" style="width: 120px !important;">
+					<mat-header-cell *matHeaderCellDef>Destinataire</mat-header-cell>
+					<mat-cell *matCellDef="let dest">
+						<mat-form-field style="width: 80px !important;">
+							<mat-select [compareWith]="compareFn" [(ngModel)]="dest.entite">
+								<mat-option *ngFor="let entite of entites" [value]="entite">
+									{{ entite.nom }}
+								</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</mat-cell>
+				</ng-container>
+				<ng-container matColumnDef="responsable">
+					<mat-header-cell *matHeaderCellDef>Responsable</mat-header-cell>
+					<mat-cell *matCellDef="let dest">
+						<mat-form-field style="width: 100px !important;">
+							<input matInput [(ngModel)]="dest.reponsable">
+						</mat-form-field>
+					</mat-cell>
+				</ng-container>
+				<ng-container matColumnDef="instruction">
+					<mat-header-cell *matHeaderCellDef>Instruction</mat-header-cell>
+					<mat-cell *matCellDef="let dest">
+						<mat-form-field style="width: 200px !important;">
+							<mat-select [compareWith]="compareFn" [(ngModel)]="dest.instruction">
+								<mat-option *ngFor="let instruction of instructions" [value]="instruction">
+									{{ instruction.libelle }}
+								</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</mat-cell>
+				</ng-container>
+				<ng-container matColumnDef="delai">
+					<mat-header-cell *matHeaderCellDef>Delai</mat-header-cell>
+					<mat-cell *matCellDef="let dest">
+						<mat-form-field style="width: 40px !important;">
+							<mat-select [(ngModel)]="dest.delai">
+								<mat-option value="2">2 J</mat-option>
+								<mat-option value="3">3 J</mat-option>
+								<mat-option value="4">4 J</mat-option>
+								<mat-option value="5">5 J</mat-option>
+								<mat-option value="6">6 J</mat-option>
+								<mat-option value="7">7 J</mat-option>
+								<mat-option value="8">8 J</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</mat-cell>
+				</ng-container>
+				<ng-container matColumnDef="reponse">
+					<mat-header-cell *matHeaderCellDef>Reponse</mat-header-cell>
+					<mat-cell *matCellDef="let dest">
+						<mat-form-field style="width: 50px !important;">
+							<mat-select [(ngModel)]="dest.reponse">
+								<mat-option value="O">OUI</mat-option>
+								<mat-option value="N">NON</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</mat-cell>
+				</ng-container>
+
+
+
+				<mat-header-row class="bg-warning" *matHeaderRowDef="displayedColumns"></mat-header-row>
+				<mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+			</mat-table>
+		</div>
+	</div>
+</div>
+<div mat-dialog-actions>
+	<button class="col-md-3" mat-button (click)="diffuser()" mat-raised-button color="primary">Diffiser</button>
+	<button class="col-md-2 ml-auto" mat-button [mat-dialog-close]="data.animal" mat-raised-button cdkFocusInitial>Fermer</button>
+</div>

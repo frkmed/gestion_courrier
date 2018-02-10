@@ -1,3 +1,6 @@
+import { Documents } from "./documents";
+import { Entite, Diffusion } from "./index";
+
 export class Courrier {
     id: number = 0;
     titre: string;
@@ -7,7 +10,8 @@ export class Courrier {
     nature: string;
     adresse: string;
     reference: string;
-    idEntite: number;
-    nomEntite: string;
-    documents: string[];
+    entite: Entite;
+    documents: Documents[];
+    destinataire: Entite;
+    destinataires: Diffusion[]
 }

@@ -41,13 +41,13 @@
   <div class="row">
     <div class="col-md-6">
       <mat-form-field>
-        <mat-select [compareWith]="compareFn"  placeholder="Entite Organistionnelle" [(ngModel)]="user.entite">
-          <mat-option  *ngFor="let entite of entites" [value]="entite">
+        <mat-select [compareWith]="compareFn" placeholder="Entite Organistionnelle" [(ngModel)]="user.entite">
+          <mat-option *ngFor="let entite of entites" [value]="entite">
             {{ entite.nom }}
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <input  type="hidden"  [(ngModel)]="user.entite" />
+      <input type="hidden" [(ngModel)]="user.entite" />
     </div>
   </div>
 </div>

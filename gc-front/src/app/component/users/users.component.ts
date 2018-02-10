@@ -12,8 +12,9 @@ import {
 } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
 
-import { UserService, EntiteService } from '../../_services/index';
-import { User, Entite } from '../../_models/index';
+import { UserService, EntiteService } from '../../_services';
+import { User, Entite } from '../../_models';
+
 import { ConfirmDialogsService } from '../../_module/confirmdialog/ConfirmDialogsService';
 
 
@@ -32,12 +33,9 @@ export class UsersComponent implements OnInit, AfterViewInit {
   user: User;
   dialogRef1;
 
-  public result: any;
-
   constructor(
     private dialogsService: ConfirmDialogsService,
     private userService: UserService,
-    private entiteService: EntiteService,
     public dialog: MatDialog,
     public snackBar: MatSnackBar
   ) { }
@@ -51,7 +49,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
   }
 
   async loadUsersList() {
-    await this.userService.getUsers().then(
+    await this.userService.getAll().then(
       data => {
         this.dataSource = new MatTableDataSource<User>(data);
         this.dataSource.sort = this.sort;
@@ -118,7 +116,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
       .subscribe(
       res => {
         if (res) {
-          this.userService.remove(user.id)
+          this.userService.delete(user.id)
             .then(response => {
               if (response.operation === 'ok') {
                 this.dataSource.data.splice(this.dataSource.data.indexOf(user, 0), 1);
@@ -180,7 +178,7 @@ export class AddUserDialogComponent implements OnInit {
           });
         });
     } else {
-      this.userService.add(this.user)
+      this.userService.create(this.user)
         .then(response => {
           if (response.operation === 'ok') {
             this.user.id = response.user.id;

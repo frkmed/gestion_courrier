@@ -11,7 +11,7 @@ var tesseract_cmd = "\"C:\\Program Files (x86)\\Tesseract-OCR\\tesseract.exe\"";
 var db_host = "localhost";
 var db_name = "gc_db";
 var db_user = "root";
-var db_password = "";
+var db_password = "1234";
 
 //launch ocr_scan every 10s
 ocr_scan();
@@ -72,9 +72,3 @@ function ocr_scan() {
 	});
 	console.log("Relancement de ocr_scan aprés 10 secondes ...");
 }
-
-
-
-
-
-
