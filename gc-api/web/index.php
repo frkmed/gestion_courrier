@@ -383,6 +383,39 @@ $app->get('/rechercherCourrier/{query}', function ($query) use ($app) {
 
 
 /**
+ * @api {get} /listCourrier Lister le courrier
+ * @apiName listCourrier
+ * @apiGroup Courrier
+ *
+ * @apiSuccess {String} Objet JSON avec "operation" : "ok".
+ * @apiSuccess {Array} resultat Un tableau JSON, dont chaque élément du tableau est un courrier enregistré au niveau de la base de données.
+ * @apiSuccessExample Success-Response:
+ *     {
+ *      	"operation": "ok",
+ *			"resultat" : [{
+ *							"reference" : "FAX/23/2018",
+ *							"titre": "Lancement du concours de recrutement des techniciens 3éme grade",
+ *							"type": "Courrier Départ",
+ *							"date": "20/01/2018",
+ *							"nature": "Fax"
+ *							"idEntite": "5",
+ *							"nomEntite": "DRH"
+ *							},
+ *							...
+ *							]
+ *     }
+ */
+$app->get('/listCourrier', function () use ($app) {
+	
+	$sql = "SELECT * FROM courrier order by datecourrier desc";
+	$results = $app['db']->fetchAll($sql, array());
+	$reponse = array('operation' =>'ok','resultat'=> $results);
+	return  $app->json($reponse);
+
+});
+
+
+/**
  * @api {get} /detailCourrier/:id Lire le détail d'un courrier à partir de son ID.
  * @apiName detailCourrier
  * @apiGroup Courrier

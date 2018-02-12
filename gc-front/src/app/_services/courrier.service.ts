@@ -17,7 +17,7 @@ export class CourrierService {
   private deleteCourrierUrl = this.baseUrl + '/supprimerCourrier/';
   private saveDocUrl = this.baseUrl + '/saveDocument';
   private rechercherCourrierUrl = this.baseUrl + '/rechercherCourrier/';
-  private getAllCourrierUrl = this.rechercherCourrierUrl + '*:*';
+  private getAllCourrierUrl = this.baseUrl + '/listCourrier';
 
   constructor(
     //private http2: HttpClient,
