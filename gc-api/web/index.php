@@ -138,8 +138,8 @@ $app->post('/saveCourrier', function (Request $request) use ($app) {
 	if (trim($courrier['nature']) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ nature est obligatoire !'));
 	if (trim($courrier['adresse']) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ adresse est obligatoire !'));
 	if (trim($courrier['reference']) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ reference est obligatoire !'));
-	if (trim($courrier['idEntite']) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ idEntite est obligatoire !'));
-	if (is_numeric($courrier['idEntite']) == false) return  $app->json(array('operation' =>'ko','erreur'=> 'ValeurInvalide', 'message'=> 'Valeur de idEntite est invalide !'));
+	if (trim($courrier['entite']['id']) == '') return  $app->json(array('operation' =>'ko','erreur'=> 'ChampObligatoire', 'message'=> 'Le champ idEntite est obligatoire !'));
+	if (is_numeric($courrier['entite']['id']) == false) return  $app->json(array('operation' =>'ko','erreur'=> 'ValeurInvalide', 'message'=> 'Valeur de idEntite est invalide !'));
 
 	
    	$sql = "REPLACE INTO courrier(id, titre,description ,datecourrier ,type ,nature ,adresse ,reference ,id_entite) VALUES (:id, :titre, :description, :dateCourrier, :type, :nature, :adresse, :reference, :idEntite)";
@@ -153,19 +153,36 @@ $app->post('/saveCourrier', function (Request $request) use ($app) {
             "nature" => $courrier['nature'],
             "adresse" => $courrier['adresse'],
             "reference" => $courrier['reference'],
-            "idEntite" => $courrier['idEntite']			
+            "idEntite" => $courrier['entite']['id']			
             ));
-	
-	$courrier_id = $app['db']->lastInsertId();
+
+            $courrier['id']= $courrier['id']!=0?$courrier['id']:$app['db']->lastInsertId();
 	foreach ($courrier['documents'] as $doc) {
-		$sql = "INSERT INTO document(id_courrier, fichier, contenu) VALUES (:idCourrier, :fichier, '')";
+		$sql = "REPLACE INTO document(id,id_courrier, fichier) VALUES (:id,:idCourrier, :fichier)";
 		$query = $app['db']->prepare($sql);
 		$query->execute(array(
-				"idCourrier" => $courrier_id, 
-				"fichier" => $doc		
+                "id" => $doc['id'],
+				"idCourrier" => $courrier['id'], 
+				"fichier" => $doc['fichier']		
+				));		
+    }	
+    $app['db']->delete("diffusion", array("id_courrier" => $courrier['id']));
+    foreach ($courrier['destinataires'] as $dest) {
+		$sql = "INSERT INTO diffusion(id,id_courrier,id_entite,action) VALUES (:id,:idCourrier, :idEntite,:action)";
+		$query = $app['db']->prepare($sql);
+		$query->execute(array(
+                "id" => $dest['id'],
+				"idCourrier" => $courrier['id'], 
+				"idEntite" => $dest['entite']['id'],
+				"action" => $dest['action']
 				));		
 	}		
-	$reponse = array('operation' =>'ok');
+    $reponse = array('operation' =>'ok');
+    $reponse = array(
+        'operation' =>'ok',
+        'courrier'=>$courrier,
+        'message'=> $courrier['id']?'Modification réussi':'Ajout réussi'
+        );
 	return $app->json($reponse);
 });
 
@@ -199,7 +216,7 @@ $app->post('/saveDocument', function () use ($app) {
 		return  $app->json($reponse);
     }
 	$docFileName = "courrier-scan-" . (new DateTime())->format('Y-m-d-H-i-s') . ".png";
-	file_put_contents('/xampp/htdocs/gestion_courrier/gc-ocr-module/images/' . $docFileName, $data);
+	file_put_contents('../../gc-ocr-module/images/' . $docFileName, $data);
 	
 	$reponse = array('operation' =>'ok', 'fichier' => $docFileName);
 	return $app->json($reponse);
@@ -249,15 +266,113 @@ $app->get('/rechercherCourrier/{query}', function ($query) use ($app) {
 	}
 	
 	if (count($idCourrierArray) > 0) {
-		$sql = "SELECT * FROM courrier WHERE id in (";
+        $sql = "SELECT 
+                    c.id,
+                    c.titre,
+                    c.description,
+                    c.datecourrier,
+                    c.type cType,
+                    c.nature,
+                    c.adresse,
+                    c.reference,
+                    c.id_entite,
+                    e.id_parent,
+                    e.type eType,
+                    e.nom
+                FROM
+                    courrier c
+                INNER JOIN entite e ON e.id = c.id_entite
+                ORDER BY c.id
+                ";
+               /* WHERE c.id in (";
 		$sep = "";
 		foreach ($idCourrierArray as $e) {
 			$sql .= $sep . $e;
 			$sep = ',';
 		}
-		$sql .= ")";
-		$results = $app['db']->fetchAll($sql, array());
-		$reponse = array('operation' =>'ok','resultat'=> $results);
+		$sql .= ")";*/
+        $courriers = $app['db']->fetchAll($sql, array());
+
+        $document = $app['db']->fetchAll("SELECT id,id_courrier,fichier FROM document",array());
+        $sql="SELECT
+                d.id,
+                d.responsable,
+                d.action,
+                d.delai,
+                d.reponse,
+                d.id_courrier,
+                d.id_entite,
+                e.id_parent,
+                e.type,
+                e.nom,
+                d.id_instruction,
+                i.libelle
+            FROM
+                diffusion d
+            INNER JOIN entite e ON e.id = d.id_entite
+            LEFT JOIN instruction i ON i.id = d.id_instruction
+            ORDER BY d.action
+            ";
+        $diffusion = $app['db']->fetchAll($sql,array());
+        $response = [];
+        foreach ($courriers as $c) {
+            $doc=array();
+            foreach ($document as $d) {
+                if($d['id_courrier']==$c['id']){
+                    $doc[]= [
+                        'id'=>$d['id'],
+                        'fichier'=>$d['fichier'],
+                        'id_courrier'=>$d['id_courrier']
+                        ];
+                }
+            }
+            $dest=array();
+            foreach ($diffusion as $f) {
+                if($f['id_courrier']==$c['id']){
+                    $dest[]= [
+                        'id'=>$f['id'],
+                        'action'=>$f['action'],
+                        'responsable'=>$f['responsable'],
+                        'delai'=>$f['delai'],
+                        'reponse'=>$f['reponse'],
+                        'entite'=>[
+                            'id'=>$f['id_entite'],
+                            'nom'=>$f['nom'],
+                            'type'=>$f['type'],
+                            'id_parent'=>$f['id_parent']
+                        ],
+                        'instruction'=>[
+                            'id'=>$f['id_instruction'],
+                            'libelle'=>$f['libelle'],
+                        ]
+                    ];
+                }
+            }
+
+            $response[] = [
+                'id' => $c['id'],
+                'titre' => $c['titre'],
+                'description' => $c['description'],
+                'datecourrier' => $c['datecourrier'],
+                'type' => $c['cType'],
+                'nature' => $c['nature'],
+                'adresse' =>  $c['adresse'],
+                'reference' => $c['reference'],
+                'entite' =>[
+                    'id'=>$c['id_entite'],
+                    'id_parent'=>$c['id_parent'],
+                    'type'=>$c['eType'],
+                    'nom'=>$c['nom']
+                ],
+                'documents'=>$doc,
+                'destinataires'=>$dest
+                ];
+        }
+        
+        foreach ($courriers as $u) {
+            
+        }
+		$reponse = array('operation' =>'ok','resultat'=> $response);
 		return  $app->json($reponse);
 	} else {
 		$reponse = array('operation' =>'ok','resultat'=> array());
@@ -265,6 +380,135 @@ $app->get('/rechercherCourrier/{query}', function ($query) use ($app) {
 	}
 
 });
+
+
+/**
+ * @api {get} /listCourrier Lister le courrier
+ * @apiName listCourrier
+ * @apiGroup Courrier
+ *
+ * @apiSuccess {String} Objet JSON avec "operation" : "ok".
+ * @apiSuccess {Array} resultat Un tableau JSON, dont chaque élément du tableau est un courrier enregistré au niveau de la base de données.
+ * @apiSuccessExample Success-Response:
+ *     {
+ *      	"operation": "ok",
+ *			"resultat" : [{
+ *							"reference" : "FAX/23/2018",
+ *							"titre": "Lancement du concours de recrutement des techniciens 3éme grade",
+ *							"type": "Courrier Départ",
+ *							"date": "20/01/2018",
+ *							"nature": "Fax"
+ *							"idEntite": "5",
+ *							"nomEntite": "DRH"
+ *							},
+ *							...
+ *							]
+ *     }
+ */
+$app->get('/listCourrier', function () use ($app) {
+
+        $sql = "SELECT 
+                    c.id,
+                    c.titre,
+                    c.description,
+                    c.datecourrier,
+                    c.type cType,
+                    c.nature,
+                    c.adresse,
+                    c.reference,
+                    c.id_entite,
+                    e.id_parent,
+                    e.type eType,
+                    e.nom
+                FROM
+                    courrier c
+                INNER JOIN entite e ON e.id = c.id_entite
+                ORDER BY c.id";
+        $courriers = $app['db']->fetchAll($sql, array());
+
+        $document = $app['db']->fetchAll("SELECT id,id_courrier,fichier FROM document",array());
+        $sql="SELECT
+                d.id,
+                d.responsable,
+                d.action,
+                d.delai,
+                d.reponse,
+                d.id_courrier,
+                d.id_entite,
+                e.id_parent,
+                e.type,
+                e.nom,
+                d.id_instruction,
+                i.libelle
+            FROM
+                diffusion d
+            INNER JOIN entite e ON e.id = d.id_entite
+            LEFT JOIN instruction i ON i.id = d.id_instruction
+            ORDER BY d.action
+            ";
+        $diffusion = $app['db']->fetchAll($sql,array());
+        $response = [];
+        foreach ($courriers as $c) {
+            $doc=array();
+            foreach ($document as $d) {
+                if($d['id_courrier']==$c['id']){
+                    $doc[]= [
+                        'id'=>$d['id'],
+                        'fichier'=>$d['fichier'],
+                        'id_courrier'=>$d['id_courrier']
+                        ];
+                }
+            }
+            $dest=array();
+            foreach ($diffusion as $f) {
+                if($f['id_courrier']==$c['id']){
+                    $dest[]= [
+                        'id'=>$f['id'],
+                        'action'=>$f['action'],
+                        'responsable'=>$f['responsable'],
+                        'delai'=>$f['delai'],
+                        'reponse'=>$f['reponse'],
+                        'entite'=>[
+                            'id'=>$f['id_entite'],
+                            'nom'=>$f['nom'],
+                            'type'=>$f['type'],
+                            'id_parent'=>$f['id_parent']
+                        ],
+                        'instruction'=>[
+                            'id'=>$f['id_instruction'],
+                            'libelle'=>$f['libelle'],
+                        ]
+                    ];
+                }
+            }
+
+            $response[] = [
+                'id' => $c['id'],
+                'titre' => $c['titre'],
+                'description' => $c['description'],
+                'datecourrier' => $c['datecourrier'],
+                'type' => $c['cType'],
+                'nature' => $c['nature'],
+                'adresse' =>  $c['adresse'],
+                'reference' => $c['reference'],
+                'entite' =>[
+                    'id'=>$c['id_entite'],
+                    'id_parent'=>$c['id_parent'],
+                    'type'=>$c['eType'],
+                    'nom'=>$c['nom']
+                ],
+                'documents'=>$doc,
+                'destinataires'=>$dest
+                ];
+        }
+        
+        foreach ($courriers as $u) {
+            
+        }
+		$reponse = array('operation' =>'ok','resultat'=> $response);
+		return  $app->json($reponse);
+});
+
 
 /**
  * @api {get} /detailCourrier/:id Lire le détail d'un courrier à partir de son ID.
@@ -325,11 +569,10 @@ $app->get('/detailCourrier/{id}', function ($id) use ($app) {
  *			"message": "Le courrier avec id 5 est inexistant !"
  *		}
  */
-$app->delete('/supprimerCourrier/{id}', function ($id) use ($app) {
-	if (is_numeric($id) == false) return  $app->json(array('operation' =>'ko','erreur'=> 'IdInvalide', 'message'=> 'Valeur de id est invalide !'));
+$app->post('/supprimerCourrier/', function (Request $request) use ($app) {	
+  /*  (is_numeric($id) == false) return  $app->json(array('operation' =>'ko','erreur'=> 'IdInvalide', 'message'=> 'Valeur de id est invalide !'));
 
-	
-   	$sql = "DELETE FROM courrier where id=:id";
+	$sql = "DELETE FROM courrier where id=:id";
     $query = $app['db']->prepare($sql);
     $query->execute(array(
             "id" => $id		
@@ -341,7 +584,19 @@ $app->delete('/supprimerCourrier/{id}', function ($id) use ($app) {
 	} else {
 		$reponse = array('operation' =>'ko','erreur'=> 'CourrierInexistant', 'message'=> 'Courrier avec id ' . $id . ' est inexistant !' );
 		return  $app->json($reponse);
-	}
+    }*/
+    
+
+    $courrier=getDataFromRequest($request);
+    $app['db']->delete("document", array("id_courrier" => $courrier['id']));
+    $app['db']->delete("courrier", array("id" => $courrier['id']));
+    $reponse = array(
+        'operation' =>'ok',
+        'courrier'=>$courrier,
+        'message'=> 'Suppression réussi'
+        );
+   
+    return  $app->json($reponse);
 });
 
 
@@ -741,6 +996,23 @@ $app->post('/deleteEntite/', function(Request $request) use ($app){
         'message'=> 'Suppression réussi'
         );
     return $app->json($reponse);
+});
+
+$app->get('/listInstruction/', function() use ($app){
+    $sql = "SELECT id,libelle FROM instruction";
+    $entites = $app['db']->fetchAll($sql,array());
+    if(is_null($entites)){
+        $response = array('operation' => 'ko' , 'erreur' => "La liste des instructions est vide. Aucun instruction n'est ajouté !!");
+        return $app->json($reponse);
+    }
+    $response = [];
+    foreach ($entites as $u) {
+        $response[] = [
+            'id' => $u['id'],
+            'libelle' => $u['libelle']
+        ];
+    }
+    return $app->json($response);
 });
 
 $app->run();

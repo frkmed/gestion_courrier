@@ -1,103 +1,199 @@
-<h1 mat-dialog-title>Nouveau</h1>
+<h1 mat-dialog-title>
+  {{title}}
+</h1>
 <div mat-dialog-content>
-	<div class="row">
-		<div class="col-md-12">
-			<mat-form-field style="width:100%"> <input matInput
-				placeholder="Titre" [(ngModel)]="newCourrier.titre"> </mat-form-field>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-12">
-			<mat-form-field style="width:100%"> <textarea
-				matInput placeholder="Description"
-				[(ngModel)]="newCourrier.description"></textarea> </mat-form-field>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-6">
-			<mat-form-field> <mat-select placeholder="Type"
-				[(ngModel)]="newCourrier.type"> <mat-option
-				value="Courrier Arriv&eacute;e">Courrier Arriv&eacute;e</mat-option>
-			<mat-option value="Courrier D&eacute;part">Courrier
-			D&eacute;part</mat-option> </mat-select> </mat-form-field>
-		</div>
-		<div class="col-md-6">
-			<mat-form-field> <mat-select placeholder="Nature"
-				[(ngModel)]="newCourrier.nature"> <mat-option
-				value="Lettre">Lettre</mat-option> <mat-option value="Fax">Fax</mat-option>
-			<mat-option value="E-mail">E-mail</mat-option> <mat-option
-				value="Colis">Colis</mat-option> <mat-option value="Autre">Autre</mat-option>
-			</mat-select> </mat-form-field>
-		</div>
+  <div class="row">
+    <div class="col-md-12">
+      <mat-tab-group>
+        <mat-tab label="COURRIER">
+          <div class="col-md-12">
+            <h3 class="bg-warning">Enregistrement</h3>
+            <div class="row">
+              <div class="col-md-12">
+                <mat-form-field style="width:100%">
+                  <input matInput placeholder="Objet" [(ngModel)]="courrier.titre">
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <mat-form-field>
+                  <mat-select placeholder="Type" [(ngModel)]="courrier.type">
+                    <mat-option value="Courrier Arriv&eacute;e">Courrier Arriv&eacute;e</mat-option>
+                    <mat-option value="Courrier D&eacute;part">Courrier D&eacute;part
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-md-6">
+                <mat-form-field>
+                  <mat-select placeholder="Nature" [(ngModel)]="courrier.nature">
+                    <mat-option value="Lettre">Lettre</mat-option>
+                    <mat-option value="Fax">Fax</mat-option>
+                    <mat-option value="E-mail">E-mail</mat-option>
+                    <mat-option value="Colis">Colis</mat-option>
+                    <mat-option value="Autre">Autre</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
 
-	</div>
-	<div class="row">	
-		<div class="col-md-12">
-			<mat-form-field>
-			  <input matInput [matDatepicker]="picker" placeholder="Date"  [(ngModel)]="newCourrier.datecourrier">
-			  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-			  <mat-datepicker #picker></mat-datepicker>
-			</mat-form-field>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-12">
-			<mat-form-field placeholder="Adresse" style="width:100%">
-			<textarea matInput placeholder="Adresse"
-				[(ngModel)]="newCourrier.adresse"></textarea> </mat-form-field>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-6">
-			<mat-form-field style="width:100%"> <input matInput
-				placeholder="R&eacute;f&eacute;rence"
-				[(ngModel)]="newCourrier.reference"> </mat-form-field>
-		</div>
-		<div class="col-md-6">
-			<mat-form-field> <mat-select
-				placeholder="Entit&eacute;" [(ngModel)]="newCourrier.idEntite">
-			<mat-option *ngFor="let entite of entites" value="{{ entite.id }}">
-			{{ entite.nom }} </mat-option> </mat-select> </mat-form-field>
-		</div>
-
-	</div>
-	<div class="row" *ngFor="let key of documents.keys()">
-		<div class="col-md-12">
-			<div class="attachment-list">
-
-				<div class="attachment" fxlayout="row"
-					fxlayoutalign="space-between center"
-					style="flex-direction: row; box-sizing: border-box; display: flex; max-height: 100%; place-content: center space-between; align-items: center;">
-					<div>
-						<span class="filename">{{documents.get(key)}}</span>
-					</div>
-
-					<button aria-label="Delete attachment" class="mat-icon-button"
-						mat-icon-button="" (click)="removeDocument(key)">
-						<span class="mat-button-wrapper"> <mat-icon
-								class="s-16 mat-icon material-icons" role="img"
-								aria-hidden="true">close</mat-icon>
-						</span>
-						<div class="mat-button-ripple mat-ripple mat-button-ripple-round"
-							matripple=""></div>
-						<div class="mat-button-focus-overlay"></div>
-					</button>
-				</div>
-			</div>
-		</div>
-	</div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <mat-form-field>
+                  <input matInput [matDatepicker]="picker" placeholder="Date" [(ngModel)]="courrier.datecourrier">
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <mat-form-field style="width:100%">
+                  <input matInput placeholder="R&eacute;f&eacute;rence" [(ngModel)]="courrier.reference"> </mat-form-field>
+              </div>
+              <div class="col-md-6">
+                <mat-form-field>
+                  <mat-select [compareWith]="compareFn" placeholder="Entit&eacute; Organistionnelle" [(ngModel)]="courrier.entite">
+                    <mat-option *ngFor="let entite of entites" [value]="entite">
+                      {{ entite.nom }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <mat-form-field style="width:100%">
+                  <textarea matInput placeholder="Description" [(ngModel)]="courrier.description"></textarea>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <mat-form-field placeholder="Adresse" style="width:100%">
+                  <textarea matInput placeholder="Adresse" [(ngModel)]="courrier.adresse"></textarea>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+        <mat-tab label="DESTINATAIRES">
+          <div class="col-md-12">
+            <h3 class="bg-warning">Destinatires</h3>
+            <div class="row">
+              <div class="col-md-9">
+                <mat-form-field>
+                  <mat-select [compareWith]="compareFn" placeholder="Destinataire" [(ngModel)]="courrier.destinataire">
+                    <mat-option *ngFor="let entite of entites" [value]="entite">
+                      {{ entite.nom }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-md-3">
+                <button mat-button (click)="addDesinataireA(courrier.destinataire)" class="desteniataireACC">A</button>
+                <button mat-button (click)="addDesinataireCC(courrier.destinataire)" class="desteniataireACC">CC</button>
+              </div>
+            </div>
+            <div class="row" *ngFor="let dest of courrier.destinataires">
+              <div class="col-md-12">
+                <div class="attachment-list">
+                  <div class="attachment" fxlayout="row" fxlayoutalign="space-between center" style="flex-direction: row; box-sizing: border-box; display: flex; max-height: 100%; place-content: center space-between; align-items: center;">
+                    <div>
+                      <span class="filename">{{dest.action}} :</span>
+                    </div>
+                    <div>
+                      <span class="filename">{{dest.entite.nom}}:</span>
+                    </div>
+                    <button aria-label="Delete attachment" class="mat-icon-button" mat-icon-button="" (click)="removeDestinataire(dest)">
+                      <span class="mat-button-wrapper">
+                        <mat-icon class="s-16 mat-icon material-icons" role="img" aria-hidden="true">close</mat-icon>
+                      </span>
+                      <div class="mat-button-ripple mat-ripple mat-button-ripple-round" matripple=""></div>
+                      <div class="mat-button-focus-overlay"></div>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <mat-table [dataSource]="diffusionDataSource" matSort>
+              <ng-container matColumnDef="action" style="width: 40px !important;">
+                <mat-header-cell *matHeaderCellDef>action</mat-header-cell>
+                <mat-cell *matCellDef="let dest">
+                  {{dest.action}}
+                </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="entite" style="width: 120px !important;">
+                <mat-header-cell *matHeaderCellDef>Destinataire</mat-header-cell>
+                <mat-cell *matCellDef="let dest">
+                  {{dest.entite}}
+                </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="responsable">
+                <mat-header-cell *matHeaderCellDef>Responsable</mat-header-cell>
+                <mat-cell *matCellDef="let dest">
+                  {{dest.reponsable}}
+                </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="instruction">
+                <mat-header-cell *matHeaderCellDef>Instruction</mat-header-cell>
+                <mat-cell *matCellDef="let dest">
+                  {{dest.instruction}}
+                </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="delai">
+                <mat-header-cell *matHeaderCellDef>Delai</mat-header-cell>
+                <mat-cell *matCellDef="let dest">
+                  {{dest.delai}} J
+                </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="reponse">
+                <mat-header-cell *matHeaderCellDef>Reponse</mat-header-cell>
+                <mat-cell *matCellDef="let dest">
+                  {{dest.reponse=="O" ?"OUI":"NON"}}
+                </mat-cell>
+              </ng-container>
+              <mat-header-row class="bg-warning" *matHeaderRowDef="displayedColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
+          </div>
+        </mat-tab>
+        <mat-tab label="DOCUMENT JOINTE">
+          <h3 class="bg-warning">Document joints</h3>
+          <div class="row" *ngFor="let doc of courrier.documents">
+            <div class="col-md-12">
+              <div class="attachment-list">
+                <div class="attachment" fxlayout="row" fxlayoutalign="space-between center" style="flex-direction: row; box-sizing: border-box; display: flex; max-height: 100%; place-content: center space-between; align-items: center;">
+                  <div>
+                    <span class="filename">{{doc.fichier}}</span>
+                  </div>
+                  <button aria-label="Delete attachment" class="mat-icon-button" mat-icon-button="" (click)="removeDocument(doc)">
+                    <span class="mat-button-wrapper">
+                      <mat-icon class="s-16 mat-icon material-icons" role="img" aria-hidden="true">close</mat-icon>
+                    </span>
+                    <div class="mat-button-ripple mat-ripple mat-button-ripple-round" matripple=""></div>
+                    <div class="mat-button-focus-overlay"></div>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  </div>
 </div>
 <div mat-dialog-actions>
-	<button class="col-md-3" mat-button (click)="saveCourrier()"
-		mat-raised-button color="primary">Enregistrer</button>
-	<button mat-button (click)="addDocument()" mat-icon-button>
-		<span class="mat-button-wrapper"> <mat-icon
-				class="mat-icon material-icons" role="img" aria-hidden="true">attach_file</mat-icon>
-		</span>
-		<div class="mat-button-ripple mat-ripple mat-button-ripple-round"
-			matripple=""></div>
-		<div class="mat-button-focus-overlay"></div>
-	</button>
-	<button class="col-md-2 ml-auto" mat-button
-		[mat-dialog-close]="data.animal" mat-raised-button cdkFocusInitial>Fermer</button>
+  <button class="col-md-3" mat-button (click)="saveCourrier()" mat-raised-button color="primary">Enregistrer</button>
+  <button mat-button (click)="addDocument()" mat-icon-button>
+    <span class="mat-button-wrapper">
+      <mat-icon class="mat-icon material-icons" role="img" aria-hidden="true">attach_file</mat-icon>
+    </span>
+    <div class="mat-button-ripple mat-ripple mat-button-ripple-round" matripple=""></div>
+    <div class="mat-button-focus-overlay"></div>
+  </button>
+  <button class="col-md-2 ml-auto" mat-button [mat-dialog-close]="data.animal" mat-raised-button cdkFocusInitial>Fermer</button>
 </div>

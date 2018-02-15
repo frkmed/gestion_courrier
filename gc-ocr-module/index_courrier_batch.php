@@ -1,15 +1,11 @@
 <?php 
-
 $db_host = "localhost";
 $db_user = "root";
-$db_password = "";
+$db_password = "1234";
 $db_name = "gc_db";
-
 $solr_collection_dir = "xml/";
-
 sql2xml("SELECT courrier.id 'id_courrier', courrier.titre 'titre', courrier.description 'description', courrier.datecourrier 'datecourrier', courrier.type 'type', courrier.nature 'nature', courrier.adresse 'adresse', courrier.reference 'reference', entite.nom 'entite' FROM courrier left join entite on courrier.id_entite=entite.id", "courrier");
 sql2xml("select * from document", "document");
-
 /**
  * sql2xml output structured XML files
  *
@@ -25,12 +21,10 @@ function sql2xml($sql, $xmldocroot) {
     // init variables for row processing
     $row_current = $row_previous = null;
     // set MySQL username/password and connect to the database
-
 	$result = $mysqli->query($sql);
 	
     // get number of columns in result
     $ncols = $mysqli->field_count;
-
 	
     // loop through result set
     while ($row = $result->fetch_row()) {
@@ -49,7 +43,6 @@ function sql2xml($sql, $xmldocroot) {
 	$result->close();
 	$mysqli->close();
 }
-
 function writeUTF8File($filename,$content) { 
         $f=fopen($filename,"w"); 
         # Now UTF-8 - Add byte order mark 

@@ -15,16 +15,16 @@ export class MenuComponent implements OnInit {
       'link': '/courrier',
       'desc': 'Gestion du courrier',
     },
+    /*{
+      'title': 'DIFFUSION',
+      'link': '/diffusion',
+      'desc': 'Courrier a diffuser',
+    },*/
     {
       'title': 'ADMINISTRATION',
       'link': '/admin',
       'desc': 'Administration',
-    },
-    {
-      'title': 'UTILISATEURS',
-      'link': '/users',
-      'desc': 'Gestion des utilisateurs',
-    },
+    }
     /**
     {
       'title': 'ARCHIVAGE',

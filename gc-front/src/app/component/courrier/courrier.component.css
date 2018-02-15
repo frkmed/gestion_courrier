@@ -6,7 +6,8 @@
 .attachment-list
 	{
 	font-size: 13px;
-	padding-top: 16px
+	padding-top: 0px;
+	margin-bottom: 5px;
 }
 
 .attachment-list .attachment
@@ -14,7 +15,6 @@
 	background-color: rgba(0, 0, 0, .08);
 	border: 1px solid rgba(0, 0, 0, .16);
 	padding-left: 16px;
-	margin-top: 8px;
 	border-radius: 2px
 }
 
@@ -24,8 +24,7 @@
 }
 
 .attachment-list .attachment:last-child
-	{
-	margin-bottom: 0
+{
 }
 
 .mat-fab{
@@ -36,4 +35,22 @@
 
   .mat-header-cell.mat-sort-header-sorted {
     color: black;
-  }
+	}
+	h3{
+		font-size: 16px;
+		width: 100%;
+		text-align: center;
+		border: 1px solid gray;
+		margin-bottom: 20px;
+	}
+	.desteniataireACC{
+		min-width: 20px !important;
+		border: 1px solid;
+		margin-left: 2px;
+		padding: 0;
+		float: left;
+		background: yellowgreen;
+	}
+	.mat-column-select {
+		overflow: initial;
+	  }

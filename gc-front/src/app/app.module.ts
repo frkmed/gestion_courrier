@@ -21,7 +21,8 @@ import {
   MatCheckboxModule,
   MatSnackBarModule,
   MatDatepickerModule,
-  MatNativeDateModule
+  MatNativeDateModule,
+  MatCardModule
 } from '@angular/material';
 
 import { routing } from './app.routing';
@@ -38,19 +39,19 @@ import { RechercheCourrierComponent } from './component/recherche-courrier/index
 import { ArchiveComponent } from './component/archive/index';
 
 import { UsersComponent, AddUserDialogComponent } from './component/users/index';
-import { CourrierComponent, AddCourrierDialog, UpdateCourrierDialog } from './component/courrier/index';
+import { CourrierComponent, AddCourrierDialogComponent, DiffusionDialogComponent } from './component/courrier/index';
 import { EntiteComponent, AddEntiteDialogComponent } from './component/entite/index';
 
 import {
   UserService,
   CourrierService,
   AuthenticationService,
-  EntiteService
+  EntiteService,
+  InstructionService
 } from './_services/index';
 import { ConfirmDialogsModule } from './_module/confirmdialog/ConfirmDialogsModule';
 import { DatePipe } from "@angular/common";
-
-
+import { DiffusionComponent } from './component/diffusion/diffusion.component';
 
 @NgModule({
   declarations: [
@@ -69,11 +70,11 @@ import { DatePipe } from "@angular/common";
 
     EntiteComponent,
     AddEntiteDialogComponent,
-    
 
     CourrierComponent,
-    AddCourrierDialog,
-    UpdateCourrierDialog,
+    AddCourrierDialogComponent,
+    DiffusionDialogComponent,
+    DiffusionComponent,
 
   ],
   imports: [
@@ -95,13 +96,11 @@ import { DatePipe } from "@angular/common";
     MatTabsModule,
     MatIconModule,
     MatCheckboxModule,
-
-    ConfirmDialogsModule,
     MatSnackBarModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatCardModule,
     ConfirmDialogsModule
-
   ],
   providers: [
     DatePipe,
@@ -110,6 +109,7 @@ import { DatePipe } from "@angular/common";
     UserService,
     EntiteService,
     CourrierService,
+    InstructionService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: JwtInterceptor,
@@ -121,12 +121,10 @@ import { DatePipe } from "@angular/common";
 
   entryComponents: [
     AddUserDialogComponent,
-
     AddEntiteDialogComponent,
-    
 
-    AddCourrierDialog,
-    UpdateCourrierDialog
+    AddCourrierDialogComponent,
+    DiffusionDialogComponent
   ],
   bootstrap: [AppComponent]
 })
