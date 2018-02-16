@@ -11,41 +11,20 @@ export class MenuComponent implements OnInit {
   message: String = 'MENU COMPONENT';
   menu: any = [
     {
-      'title': 'COURRIER',
-      'link': '/courrier',
-      'desc': 'Gestion du courrier',
+      'title': 'COURRIER DEPART',
+      'link': '/courrierdepart',
+      'desc': 'Gestion du courrier de départ',
     },
-    /*{
-      'title': 'DIFFUSION',
-      'link': '/diffusion',
-      'desc': 'Courrier a diffuser',
-    },*/
+    {
+      'title': 'COURRIER ARRIVEE',
+      'link': '/courrierarrivee',
+      'desc': 'Gestion du courrier d\'arrivée',
+    },
     {
       'title': 'ADMINISTRATION',
       'link': '/admin',
       'desc': 'Administration',
     }
-    /**
-    {
-      'title': 'ARCHIVAGE',
-      'link': '/archive',
-      'desc': 'Gestion d\'archive',
-    },
-    {
-      'title': 'ENREGISTREMENT',
-      'link': '/enregistrement',
-      'desc': 'Nouveau courrier',
-    },
-    {
-      'title': 'RECHERCHE',
-      'link': '/recherche',
-      'desc': 'Recherche courrier',
-    },
-    {
-      'title': 'STATISTIQUES',
-      'link': '/stat',
-      'desc': 'Statistiques',
-    },*/
   ];
   selectedMenu: any;
 
@@ -63,8 +42,6 @@ export class MenuComponent implements OnInit {
     }
 
   }
-
-
   sendMessage(desc) {
     this.messageEvent.emit(desc ? desc : 'ACCUEIL');
   }

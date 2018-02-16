@@ -15,7 +15,7 @@ import {
 import { SelectionModel } from '@angular/cdk/collections';
 
 import { EntiteService, CourrierService } from '../../_services/';
-import { Courrier, Entite, Documents, Diffusion, Instruction } from '../../_models';
+import { Courrier, Entite, Documents, Diffusion, Instruction, User } from '../../_models';
 
 import { ConfirmDialogsService } from '../../_module/confirmdialog/ConfirmDialogsService';
 import { InstructionService } from '../../_services/instruction.service';
@@ -91,9 +91,9 @@ export class CourrierComponent implements OnInit, AfterViewInit {
     this.dialogRef1 = this.dialog.open(
       AddCourrierDialogComponent,
       {
-        width: '800px',
-        minHeight:'650px',
-        height:'650px',
+        width: '100%',
+        minHeight: '558px',
+        height: '558px',
         data: {
           title: 'Ajout d\'un nouveau courrier',
           courrier: this.courrier
@@ -113,12 +113,14 @@ export class CourrierComponent implements OnInit, AfterViewInit {
   openUpdateDialog(courrier): void {
     this.courrier = Object.assign({}, courrier);
 
+    console.log(this.courrier);
+
     this.dialogRef1 = this.dialog.open(
       AddCourrierDialogComponent,
       {
-        width: '800px',
-        minHeight:'650px',
-        height:'650px',
+        width: '100%',
+        minHeight: '558px',
+        height: '558px',
         data: {
           title: 'Editer le courrier',
           courrier: this.courrier
@@ -131,23 +133,6 @@ export class CourrierComponent implements OnInit, AfterViewInit {
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
       }
-    });
-  }
-
-  openDiffusionDialog(courrier): void {
-
-    this.dialogRef1 = this.dialog.open(
-      DiffusionDialogComponent,
-      {
-        width: '1000px',
-        data: {
-          title: 'Diffusion du courrier',
-          courrier: courrier
-        }
-      }
-    );
-    this.dialogRef1.afterClosed().subscribe(result => {
-      console.log("CLOSED");
     });
   }
 
@@ -185,31 +170,43 @@ export class AddCourrierDialogComponent implements OnInit {
   title;
   courrier: Courrier;
   entites: Entite[];
+  users:User[];
   instructions: Instruction[];
   exist: boolean;
-  dif: Diffusion;
 
-  //documents: Map<number, string> = new Map<number, string>()
-  displayedColumns = ['action', 'entite', 'responsable', 'instruction', 'delai', 'reponse'];
+  editedDiffusion: Diffusion;
+
+  displayedColumns = ['action', 'entite', 'responsable', 'instruction', 'delai'];
   diffusionDataSource = new MatTableDataSource<Diffusion>();
+  selectedRowIndex: Number = -1;
+  selectedRowID: Number = -1;
 
   constructor(
     public dialogRef: MatDialogRef<AddCourrierDialogComponent>,
     public entiteService: EntiteService,
     public courrierService: CourrierService,
-    public instructionService:InstructionService,
+    public instructionService: InstructionService,
     public snackBar: MatSnackBar,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.loadEntiteList();
+    this.loadInstructionList();
   }
 
   ngOnInit() {
     this.title = this.data ? this.data.title : '';
     this.courrier = this.data ? this.data.courrier : '';
     this.diffusionDataSource = new MatTableDataSource<Diffusion>(this.courrier.destinataires);
+    this.editedDiffusion = new Diffusion();
+    this.editedDiffusion.entite = new Entite();
   }
 
+  change(event,entite){
+    if(event.isUserInput===true){
+      this.users=entite.users;
+    }
+    
+  }
   compareFn(c1: Entite, c2: Entite): boolean {
     return c1 && c2 ? c1.id === c2.id : c1 === c2;
   }
@@ -256,48 +253,37 @@ export class AddCourrierDialogComponent implements OnInit {
     this.courrier.documents.splice(this.courrier.documents.indexOf(doc, 0), 1);
   }
 
-  addDesinataireA(dest) {
-    this.exist = false;
-    this.courrier.destinataires.forEach(element => {
-      if (element.entite === dest) {
-        this.exist = true;
-      }
-    });
 
-    if (this.exist) {
-      this.snackBar.open("Le desinataire existe déja", 'Fermer', {
-        duration: 2000,
-      });
+  selectDiffusionRow(row) {
+    if (row.id === this.selectedRowID) {
+      this.selectedRowIndex = -1;
+      this.selectedRowID = -1;
+      this.editedDiffusion = new Diffusion();
+      this.editedDiffusion.entite = new Entite();
     } else {
-      this.dif = new Diffusion();
-      this.dif.entite = dest;
-      this.dif.action = "A";
-      this.courrier.destinataires.push(this.dif);
+      this.editedDiffusion = row;
+      this.selectedRowIndex = row.id;
+      this.selectedRowID = row.id;
+      //this.change(event);
     }
   }
-
-  addDesinataireCC(dest) {
-    this.exist = false;
-    this.courrier.destinataires.forEach(element => {
-      if (element.entite === dest) {
-        this.exist = true;
-      }
-    });
-
-    if (this.exist) {
-      this.snackBar.open("Le desinataire existe déja", 'Fermer', {
-        duration: 2000,
-      });
-    } else {
-      this.dif = new Diffusion();
-      this.dif.entite = dest;
-      this.dif.action = "CC";
-      this.courrier.destinataires.push(this.dif);
-    }
+  addDiffusion() {
+    this.courrier.destinataires.push(Object.assign({}, this.editedDiffusion));
+    this.reloadDiffusionDataSource();
   }
 
-  removeDestinataire(dest) {
-    this.courrier.destinataires.splice(this.courrier.destinataires.indexOf(dest, 0), 1);
+  editDiffusion() {
+    this.courrier.destinataires[this.courrier.destinataires.indexOf(this.editedDiffusion, 0)] = this.editedDiffusion;
+    this.reloadDiffusionDataSource();
+  }
+
+  removeDiffusion() {
+    this.courrier.destinataires.splice(this.courrier.destinataires.indexOf(this.editedDiffusion, 0), 1);
+    this.reloadDiffusionDataSource();
+  }
+
+  reloadDiffusionDataSource() {
+    this.diffusionDataSource = new MatTableDataSource<Diffusion>(this.courrier.destinataires);
   }
 
   async loadEntiteList() {
@@ -319,67 +305,4 @@ export class AddCourrierDialogComponent implements OnInit {
 
 }
 
-@Component({
-  selector: 'app-diffusion-dialog',
-  templateUrl: './diffusion-dialog.html',
-  styleUrls: ['./courrier.component.css']
-})
-export class DiffusionDialogComponent implements OnInit {
-  displayedColumns = ['action', 'entite', 'responsable', 'instruction', 'delai', 'reponse'];
-  dataSource = new MatTableDataSource<Diffusion>();
-
-  title;
-  courrier: Courrier;
-  entites: Entite[];
-  instructions: Instruction[];
-  exist: boolean;
-  dif: Diffusion;
-
-  constructor(
-    public dialogRef: MatDialogRef<DiffusionDialogComponent>,
-    public entiteService: EntiteService,
-    public instructionService:InstructionService,
-    public courrierService: CourrierService,
-    public snackBar: MatSnackBar,
-    @Inject(MAT_DIALOG_DATA) public data: any
-  ) {
-    this.loadEntiteList();
-    this.loadInstructionList();
-  }
-
-  ngOnInit() {
-    this.title = this.data ? this.data.title : '';
-    this.courrier = this.data ? this.data.courrier : '';
-    console.log(this.courrier);
-
-    this.dataSource = new MatTableDataSource<Diffusion>(this.courrier.destinataires);
-  }
-
-  diffuser(){
-    this.courrier.destinataires=this.dataSource.data;
-  }
-
-
-  compareFn(c1: Entite, c2: Entite): boolean {
-    return c1 && c2 ? c1.id === c2.id : c1 === c2;
-  }
-
-  async loadEntiteList() {
-    await this.entiteService.getEntites().then(
-      data => {
-        this.entites = data;
-      },
-      error => console.log('loadEntitesList Method: ' + <any>error, 'alert alert-danger')
-    );
-  }
-
-  async loadInstructionList() {
-    await this.instructionService.getInstructions().then(
-      data => {
-        this.instructions = data;
-      },
-      error => console.log('loadInstructionsList Method: ' + <any>error, 'alert alert-danger')
-    );
-  }
-}
 

@@ -54,3 +54,13 @@
 	.mat-column-select {
 		overflow: initial;
 	  }
+	  .mat-dialog-content{
+		  min-height: 416px;
+	  }
+	  .highlight{
+		background: darkgrey; /* green */
+	  }
+
+	  .hiddden{
+	display: none;
+	  }

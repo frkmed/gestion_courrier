@@ -35,11 +35,9 @@ import { HomeComponent } from './component/home/index';
 import { MenuComponent } from './component/menu/index';
 import { AdministrationComponent } from './component/administration/index';
 import { StatistiquesComponent } from './component/statistiques/index';
-import { RechercheCourrierComponent } from './component/recherche-courrier/index';
-import { ArchiveComponent } from './component/archive/index';
 
 import { UsersComponent, AddUserDialogComponent } from './component/users/index';
-import { CourrierComponent, AddCourrierDialogComponent, DiffusionDialogComponent } from './component/courrier/index';
+import { CourrierComponent, AddCourrierDialogComponent } from './component/courrier/index';
 import { EntiteComponent, AddEntiteDialogComponent } from './component/entite/index';
 
 import {
@@ -51,7 +49,6 @@ import {
 } from './_services/index';
 import { ConfirmDialogsModule } from './_module/confirmdialog/ConfirmDialogsModule';
 import { DatePipe } from "@angular/common";
-import { DiffusionComponent } from './component/diffusion/diffusion.component';
 
 @NgModule({
   declarations: [
@@ -59,8 +56,7 @@ import { DiffusionComponent } from './component/diffusion/diffusion.component';
     LoginComponent,
     HomeComponent,
     MenuComponent,
-    RechercheCourrierComponent,
-    ArchiveComponent,
+  
 
     AdministrationComponent,
     StatistiquesComponent,
@@ -73,9 +69,6 @@ import { DiffusionComponent } from './component/diffusion/diffusion.component';
 
     CourrierComponent,
     AddCourrierDialogComponent,
-    DiffusionDialogComponent,
-    DiffusionComponent,
-
   ],
   imports: [
     BrowserModule,
@@ -124,7 +117,6 @@ import { DiffusionComponent } from './component/diffusion/diffusion.component';
     AddEntiteDialogComponent,
 
     AddCourrierDialogComponent,
-    DiffusionDialogComponent
   ],
   bootstrap: [AppComponent]
 })

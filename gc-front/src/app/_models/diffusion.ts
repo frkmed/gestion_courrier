@@ -1,12 +1,12 @@
 import { Documents } from "./documents";
-import { Entite } from "./index";
+import { Entite, User } from "./index";
 import { Instruction } from "./instruction";
 
 export class Diffusion {
     id: number = 0;
     entite: Entite;
     description: string;
-    responsable: String;
+    responsable: User;
     action: string;
     instruction: Instruction;
     delai: number;

@@ -48,7 +48,7 @@ $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
             'host'      => 'localhost',
             'dbname'    => 'gc_db',
             'user'      => 'root',
-            'password'  => '',
+            'password'  => '1234',
             'charset'   => 'utf8',
         )
     ),
@@ -156,7 +156,7 @@ $app->post('/saveCourrier', function (Request $request) use ($app) {
             "idEntite" => $courrier['entite']['id']			
             ));
 
-            $courrier['id']= $courrier['id']!=0?$courrier['id']:$app['db']->lastInsertId();
+    $courrier['id']= $courrier['id']!=0?$courrier['id']:$app['db']->lastInsertId();
 	foreach ($courrier['documents'] as $doc) {
 		$sql = "REPLACE INTO document(id,id_courrier, fichier) VALUES (:id,:idCourrier, :fichier)";
 		$query = $app['db']->prepare($sql);
@@ -168,13 +168,17 @@ $app->post('/saveCourrier', function (Request $request) use ($app) {
     }	
     $app['db']->delete("diffusion", array("id_courrier" => $courrier['id']));
     foreach ($courrier['destinataires'] as $dest) {
-		$sql = "INSERT INTO diffusion(id,id_courrier,id_entite,action) VALUES (:id,:idCourrier, :idEntite,:action)";
+		$sql = "INSERT INTO diffusion(id,id_courrier,id_entite,action,responsable,id_instruction,delai,id_utilisateur) VALUES (:id,:idCourrier, :idEntite,:action,:responsable,:id_instruction,:delai,:id_utilisateur)";
 		$query = $app['db']->prepare($sql);
 		$query->execute(array(
                 "id" => $dest['id'],
 				"idCourrier" => $courrier['id'], 
 				"idEntite" => $dest['entite']['id'],
-				"action" => $dest['action']
+                "action" => $dest['action'],
+                "id_instruction" => $dest['instruction']['id'],
+                "delai" => $dest['delai'],
+                "responsable" => $dest['responsable']['nom']+$dest['responsable']['prenom'],
+                "id_utilisateur"=>$dest['responsable']['id']
 				));		
 	}		
     $reponse = array('operation' =>'ok');
@@ -369,9 +373,6 @@ $app->get('/rechercherCourrier/{query}', function ($query) use ($app) {
                 ];
         }
         
-        foreach ($courriers as $u) {
-            
-        }
 		$reponse = array('operation' =>'ok','resultat'=> $response);
 		return  $app->json($reponse);
 	} else {
@@ -425,7 +426,6 @@ $app->get('/listCourrier', function () use ($app) {
                 INNER JOIN entite e ON e.id = c.id_entite
                 ORDER BY c.id";
         $courriers = $app['db']->fetchAll($sql, array());
-
         $document = $app['db']->fetchAll("SELECT id,id_courrier,fichier FROM document",array());
         $sql="SELECT
                 d.id,
@@ -439,11 +439,15 @@ $app->get('/listCourrier', function () use ($app) {
                 e.type,
                 e.nom,
                 d.id_instruction,
-                i.libelle
+                i.libelle,
+                d.id_utilisateur,
+                u.nom nomU,
+                u.prenom
             FROM
                 diffusion d
             INNER JOIN entite e ON e.id = d.id_entite
             LEFT JOIN instruction i ON i.id = d.id_instruction
+            LEFT JOIN utilisateur u ON u.id = d.id_utilisateur
             ORDER BY d.action
             ";
         $diffusion = $app['db']->fetchAll($sql,array());
@@ -465,7 +469,7 @@ $app->get('/listCourrier', function () use ($app) {
                     $dest[]= [
                         'id'=>$f['id'],
                         'action'=>$f['action'],
-                        'responsable'=>$f['responsable'],
+                        //'responsable'=>$f['responsable'],
                         'delai'=>$f['delai'],
                         'reponse'=>$f['reponse'],
                         'entite'=>[
@@ -477,6 +481,11 @@ $app->get('/listCourrier', function () use ($app) {
                         'instruction'=>[
                             'id'=>$f['id_instruction'],
                             'libelle'=>$f['libelle'],
+                        ],
+                        'responsable'=>[
+                            'id'=>$f['id_utilisateur'],
+                            'nom'=>$f['nomU'],
+                            'prenom'=>$f['prenom']
                         ]
                     ];
                 }
@@ -840,18 +849,32 @@ $app->post('/deleteUser/', function(Request $request) use ($app){
  */
 
 $app->get('/listEntites/', function() use ($app){
-    $sql = "SELECT id,nom,type FROM entite";
-    $entites = $app['db']->fetchAll($sql,array());
+
+    $entites = $app['db']->fetchAll("SELECT id,nom,type FROM entite",array());
+    $users = $app['db']->fetchAll("SELECT id,nom,prenom,id_entite FROM utilisateur",array());
+
     if(is_null($entites)){
         $response = array('operation' => 'ko' , 'erreur' => "La liste des entities est vide. Aucun entite n'est ajouté !!");
         return $app->json($reponse);
     }
     $response = [];
-    foreach ($entites as $u) {
+    foreach ($entites as $e) {
+        $user=array();
+        foreach ($users as $u) {
+            if($u['id_entite']==$e['id'] ){
+                $user[]= [
+                    'id'=>$u['id'],
+                    'nom'=>$u['nom'],
+                    'prenom'=>$u['prenom']
+                    ];
+            }
+        }
+
         $response[] = [
-            'id' => $u['id'],
-            'nom' => $u['nom'],
-            'type' => $u['type'],
+            'id' => $e['id'],
+            'nom' => $e['nom'],
+            'type' => $e['type'],
+            'users'=>$user
         ];
     }
     return $app->json($response);
